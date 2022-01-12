@@ -25,7 +25,7 @@ export const Radio = <T,>({
       name={name}
       control={control}
       rules={{ required }}
-      defaultValue={options[0].value}
+      // defaultValue={options[0].value}
       render={({ field, fieldState: { error } }) => (
         <FormControl component="fieldset">
           <FormLabel component="legend" required={required}>
