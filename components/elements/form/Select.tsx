@@ -22,7 +22,7 @@ export function Select<T>({
         name={name}
         control={control}
         rules={{ required }}
-        defaultValue={options[0].value}
+        // defaultValue={options[0].value}
         render={({ field, fieldState: { error } }) => (
           <FormControl variant="outlined" fullWidth required={required}>
             <InputLabel htmlFor={name} shrink>
