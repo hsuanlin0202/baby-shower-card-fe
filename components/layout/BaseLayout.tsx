@@ -2,7 +2,7 @@ import Head from "next/head";
 import { ReactNode } from "react";
 
 type Props = { children: ReactNode; title: string };
-export const BaseLayout = ({ children, title }: Props): JSX.Element => {
+export const Base = ({ children, title }: Props): JSX.Element => {
   return (
     <div>
       <Head>
