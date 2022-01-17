@@ -1,9 +1,12 @@
 import { join } from "path";
 import getConfig from "next/config";
 
-export interface BaseResponse {
-  statusCode: number;
-  message: string;
+export interface ErrorResponse {
+  error?: {
+    status: number;
+    name: string;
+    message: string;
+  };
 }
 
 type Query = Record<string, string | number | boolean | undefined>;
@@ -20,9 +23,9 @@ export function BABY_API(path: string, query?: Query) {
 }
 
 function status(response: Response) {
-  if (!response.ok) {
-    throw new Error(response.statusText);
-  }
+  // if (!response.ok) {
+  //   throw new Error(response.statusText);
+  // }
 
   return Promise.resolve(response);
 }
