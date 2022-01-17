@@ -1,4 +1,11 @@
 export interface LoginTypes {
-  account: string;
+  identifier: string;
   password: string;
+}
+
+export interface UserTypes {
+  role: number;
+  id: number;
+  username: string;
+  email: string;
 }

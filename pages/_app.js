@@ -1,8 +1,13 @@
-import "../styles/globals.css";
 import getConfig from "next/config";
+import { InitDataProvider } from "hooks";
+import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />;
+  return (
+    <InitDataProvider>
+      <Component {...pageProps} />
+    </InitDataProvider>
+  );
 }
 
 MyApp.getInitialProps = async (context) => {

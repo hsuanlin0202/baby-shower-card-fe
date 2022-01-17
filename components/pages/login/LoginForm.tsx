@@ -30,7 +30,7 @@ export const LoginForm = ({
     >
       <Form.Input
         type="text"
-        name="account"
+        name="identifier"
         label="帳號"
         control={control}
         required
@@ -46,7 +46,7 @@ export const LoginForm = ({
 
       <Button.Base
         type="submit"
-        className="w-full p-4 bg-gray-300 text-white text-lg rounded"
+        className="w-full p-4 bg-blue-500 text-white text-lg rounded"
       >
         登入
       </Button.Base>
