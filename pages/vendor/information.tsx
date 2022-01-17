@@ -1,8 +1,8 @@
 import Layout from "components/layout";
-import { useRouter } from "next/router";
 import { vendorPath } from "constant/router";
+import { useRouter } from "next/router";
 
-const VendorIndexPage = (): JSX.Element => {
+const Information = (): JSX.Element => {
   const router = useRouter();
   return (
     <Layout.CMS
@@ -11,8 +11,9 @@ const VendorIndexPage = (): JSX.Element => {
       pathList={vendorPath}
       router={router}
     >
-      order
+      廠商資料維護
     </Layout.CMS>
   );
 };
-export default VendorIndexPage;
+
+export default Information;
