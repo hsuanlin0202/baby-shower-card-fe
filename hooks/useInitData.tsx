@@ -1,5 +1,12 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { Notify, NotifyProps, Loader } from "components/elements";
+import { AuthStore } from "store/auth";
 
 type InitDataProps = {
   openLoader: (isOpen: boolean) => void;
@@ -21,6 +28,17 @@ type ProviderProps = {
 };
 
 export function InitDataProvider({ children }: ProviderProps): JSX.Element {
+  const { expiresIn, logout } = AuthStore((state) => ({
+    expiresIn: state.expiresIn,
+    logout: state.logout,
+  }));
+
+  useEffect(() => {
+    if (!!expiresIn) return;
+
+    logout();
+  }, [expiresIn]);
+
   const [isLoading, setLoading] = useState<boolean>(false);
 
   const [notify, setNotify] = useState<NotifyProps>({

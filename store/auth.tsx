@@ -18,11 +18,19 @@ export const AuthStore = create<AuthState>(
       username: "",
       email: "",
       expiresIn: 0,
-      setUser: (user) => set(user),
       token: "",
+      setUser: (user) => set(user),
       setToken: (token, expiresIn) =>
         set({ token: token, expiresIn: expiresIn }),
-      logout: () => set({ token: "", id: 0, role: 0, username: "", email: "" }),
+      logout: () =>
+        set({
+          role: 0,
+          id: 0,
+          username: "",
+          email: "",
+          expiresIn: 0,
+          token: "",
+        }),
     }),
     {
       name: "auth-storage",
