@@ -1,8 +1,10 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import Head from "next/head";
 import { PathTypes } from "types";
 import { SideMenu } from "./SideMenu";
 import { NextRouter } from "next/router";
+import { AuthStore } from "store/auth";
+import { getRoleString } from "functions/matcher";
 type Props = {
   name: string;
   role: string;
@@ -10,14 +12,21 @@ type Props = {
   router: NextRouter;
   children: ReactNode;
 };
-export const CMS = ({
-  name,
-  role,
-  pathList,
-  children,
-  router,
-}: Props): JSX.Element => {
-  const title = `${name}彌月卡片 | ${role}管理介面`;
+
+export const CMS = ({ pathList, children, router }: Props): JSX.Element => {
+  const { username, role } = AuthStore((state) => ({
+    username: state.username,
+    role: state.role,
+  }));
+
+  useEffect(() => {
+    if (!username && !username) {
+      router.push("/");
+      return;
+    }
+  }, [username, role]);
+
+  const title = `${username}彌月卡片 | ${getRoleString(role)}管理介面`;
 
   const pagePush = (path: string): void => {
     router.push(path);

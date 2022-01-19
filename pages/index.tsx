@@ -9,6 +9,7 @@ import { useEffect, useReducer } from "react";
 import { useForm } from "react-hook-form";
 import { AuthStore } from "store/auth";
 import { LoginTypes } from "types";
+import jwt_decode from "jwt-decode";
 
 const Login = () => {
   const router = useRouter();
@@ -67,7 +68,11 @@ const Login = () => {
         showNotify("open", "帳號密碼錯誤", "請再次確認您的資料。");
         return;
       }
-      setToken(result);
+
+      const decoded: { id: number; exp: number } = jwt_decode(result);
+
+      setToken(result, decoded.exp * 1000);
+
       userHandler(result);
     });
   };
@@ -80,7 +85,7 @@ const Login = () => {
           <p>這裡可能有一句話？</p>
         </div>
 
-        {state.type === "loading" && <Loader.Base className="mb-16" />}
+        {/* {state.type === "loading" && <></>} */}
 
         {state.type === "no-logged" && (
           <LoginForm
