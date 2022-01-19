@@ -1,12 +1,48 @@
 import React from "react";
-import { FormControl, InputLabel, Select as _Select } from "@mui/material";
+import { FormControl, Select as _Select } from "@mui/material";
 import { Controller } from "react-hook-form";
-import { CommonProps } from "./types";
+import { CommonProps, Option } from "./types";
 import clsx from "clsx";
+import { styled } from "@mui/material/styles";
+import InputBase from "@mui/material/InputBase";
+
+const BootstrapInput = styled(InputBase)(({ theme }) => ({
+  "label + &": {
+    marginTop: theme.spacing(3),
+  },
+  "& .MuiInputBase-input": {
+    borderRadius: 4,
+    position: "relative",
+    backgroundColor: theme.palette.background.paper,
+    border: "1px solid #ced4da",
+    fontSize: 16,
+    padding: "10px 26px 10px 12px",
+    transition: theme.transitions.create(["border-color", "box-shadow"]),
+    // Use the system font instead of the default Roboto font.
+    fontFamily: [
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      "Roboto",
+      '"Helvetica Neue"',
+      "Arial",
+      "sans-serif",
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(","),
+    "&:focus": {
+      borderRadius: 4,
+      borderColor: "#80bdff",
+      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+    },
+  },
+}));
 
 export type SelectProps<T> = CommonProps<T> & {
   type: "select";
-  options: { id: string; value: string; label: string }[];
+  options: Option[];
+  onChange?: (value: string) => void;
 };
 export function Select<T>({
   name,
@@ -15,39 +51,63 @@ export function Select<T>({
   label,
   options,
   className = "",
+  onChange = (event) => {},
 }: SelectProps<T>) {
   return (
-    <div className={clsx("w-full", className)}>
-      <Controller
-        name={name}
-        control={control}
-        rules={{ required }}
-        // defaultValue={options[0].value}
-        render={({ field, fieldState: { error } }) => (
-          <FormControl variant="outlined" fullWidth required={required}>
-            <InputLabel htmlFor={name} shrink>
-              {label}
-            </InputLabel>
+    <div className={clsx("w-full flex items-center space-x-2", className)}>
+      {!!label && <p className=" whitespace-nowrap">{label}</p>}
 
-            <_Select
-              native
-              label={label}
-              required={required}
-              inputProps={{
-                name,
-                id: name,
-              }}
-              {...field}
-            >
-              {options.map(({ id, value, label }) => (
-                <option key={id} value={value}>
-                  {label}
-                </option>
-              ))}
-            </_Select>
-          </FormControl>
-        )}
-      />
+      {!control && (
+        <FormControl variant="outlined" fullWidth required={required}>
+          <_Select
+            native
+            label={label}
+            required={required}
+            input={<BootstrapInput />}
+            inputProps={{
+              name,
+              id: name,
+            }}
+            onChange={(event) => onChange(event.target.value as string)}
+          >
+            {options.map(({ id, value, label }) => (
+              <option key={id} value={value}>
+                {label}
+              </option>
+            ))}
+          </_Select>
+        </FormControl>
+      )}
+
+      {!!control && (
+        <Controller
+          name={name}
+          control={control}
+          rules={{ required }}
+          // defaultValue={options[0].value}
+          render={({ field, fieldState: { error } }) => (
+            <FormControl variant="outlined" fullWidth required={required}>
+              <_Select
+                native
+                label={label}
+                required={required}
+                input={<BootstrapInput />}
+                inputProps={{
+                  name,
+                  id: name,
+                }}
+                {...field}
+              >
+                {options.map(({ id, value, label }) => (
+                  <option key={id} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </_Select>
+            </FormControl>
+          )}
+        />
+      )}
     </div>
   );
 }
