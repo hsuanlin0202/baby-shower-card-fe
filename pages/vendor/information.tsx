@@ -3,60 +3,21 @@ import { vendorPath } from "constant/router";
 import { useRouter } from "next/router";
 import Form from "components/elements/form";
 import { useForm } from "react-hook-form";
-import { ReactNode } from "react";
 import { Button } from "components/elements"
-
-type VendorTypes = {
-  vendor: string,
-  gender: string,
-  contact: string,
-  tel: string,
-  email: string,
-  country: string,
-  district: string,
-  address: string,
-  time: string,
-  description: string,
-}
-
-type InputLayoutProps = {
-  label: string,
-  children: ReactNode
-}
-
-const country = [
-  {
-    id: 'Taipei',
-    label: '台北市',
-    value: '台北市'
-  }
-]
-
-const district = [
-  {
-    id: 'Taipei',
-    label: '台北市',
-    value: '台北市'
-  }
-]
-
-
-const InputLayout = ({ label, children }: InputLayoutProps): JSX.Element => {
-  return (
-
-    <div className="flex space-x-4">
-      <label htmlFor="address" className="bg-gray-400 p-3 h-1/2 w-1/6">{label}</label>
-      <div className="flex-col space-y-4 flex-1">
-        {children}
-      </div>
-    </div>
-  )
-}
+import { VendorTypes } from "types"
+import { InputLayout } from "components/pages/vendor/information"
+import { locations } from "constant/locations"
 
 const Information = (): JSX.Element => {
   const router = useRouter();
 
   const { control, handleSubmit } = useForm<VendorTypes>();
+
+  const country = locations.map(location => location.country)
+
+  const onSubmit = (data: VendorTypes): void => {
+    console.log(data)
+  }
 
   return (
     <Layout.CMS
@@ -66,7 +27,10 @@ const Information = (): JSX.Element => {
       router={router}
     >
       廠商資料維護
-      <form className="w-full my-6 flex flex-col space-y-4">
+      <form
+        className="w-full my-6 flex flex-col space-y-4"
+        onSubmit={handleSubmit(onSubmit)}
+      >
 
         <InputLayout label="廠商名稱">
 
@@ -125,14 +89,6 @@ const Information = (): JSX.Element => {
               className="w-1/6"
             />
 
-            <Form.Input
-              type="select"
-              name="district"
-              options={district}
-              control={control}
-              required
-              className="w-1/6"
-            />
           </div>
           <Form.Input
             type="text"
@@ -172,13 +128,13 @@ const Information = (): JSX.Element => {
 
           <Button.Basic
             type="button"
-            className="border border-gray-800 text-gray-800 text-xl "
+            className="border border-gray-800 text-gray-800 text-xl hover:bg-gray-600 hover:text-white "
           >
             返回
           </Button.Basic>
           <Button.Basic
             type="submit"
-            className="bg-gray-800 text-white text-xl "
+            className="bg-gray-600 text-white text-xl transition-all duration-500 hover:bg-gray-800"
           >
             變更資料
           </Button.Basic>
