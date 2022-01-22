@@ -4,8 +4,12 @@ export interface LoginTypes {
 }
 
 export interface UserTypes {
-  role: number;
   id: number;
   username: string;
   email: string;
+  role?: number;
+  partners?: string[];
+  orders?: string[];
+  templates?: string[];
+  company?: string;
 }
