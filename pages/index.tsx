@@ -45,7 +45,7 @@ const Login = () => {
 
   const userHandler = (token: string): void => {
     openLoader(true);
-    getUser(token).then((result) => {
+    getUser(token, "role").then((result) => {
       openLoader(false);
       if (!result) {
         stateAction("auth-null");
