@@ -71,13 +71,14 @@ const createData = (index: number, data: OrderListTypes): OrderListTypes => {
 
 type Props = {
   data: OrderListTypes[];
+  pushPage: (id: string) => void;
 };
-export const StickyHeadTable = ({ data }: Props): JSX.Element => {
+export const StickyHeadTable = ({ data, pushPage }: Props): JSX.Element => {
   const [page, setPage] = React.useState(0);
 
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const rows = data.map((item, index) => createData(index, item));
+  const rows = data.map((item, index) => createData(index + 1, item));
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -131,12 +132,13 @@ export const StickyHeadTable = ({ data }: Props): JSX.Element => {
                       if (column.id === "edit")
                         return (
                           <TableCell key={column.id} align="center">
-                            <a
+                            <button
+                              type="button"
                               className="underline"
-                              href={`/edit-${row.orderNo}`}
+                              onClick={() => pushPage(row.orderNo)}
                             >
                               編輯
-                            </a>
+                            </button>
                           </TableCell>
                         );
 
