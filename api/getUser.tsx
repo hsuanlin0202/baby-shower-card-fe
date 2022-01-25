@@ -19,6 +19,8 @@ interface GetRoleResponse {
 }
 
 function toUser(raw: GetRoleResponse): UserTypes {
+  if (!raw.id || !raw.username || !raw.email) return null;
+
   const rawData = {
     role: raw.role || undefined,
     partners: raw.partners || undefined,
