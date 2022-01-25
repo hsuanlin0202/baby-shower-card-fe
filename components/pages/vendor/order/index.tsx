@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { NextRouter } from "next/router";
 import { mockData } from "api";
 import Form from "components/elements/form";
