@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { NextRouter } from "next/router";
 import { mockData } from "api";
 import Form from "components/elements/form";
@@ -19,9 +20,13 @@ const VendorOrderPage = ({ router }: Props): JSX.Element => {
     console.log(data);
   };
 
+  const pushPage = (id: string) => {
+    router.push(`/vendor/order/${id}`);
+  };
+
   return (
     <div>
-      <TopSection onSubmit={postSearch} />
+      <TopSection onSubmit={postSearch} pushPage={pushPage} />
 
       <div className="mt-4 flex flex-col items-end">
         <Form.Input
@@ -35,7 +40,7 @@ const VendorOrderPage = ({ router }: Props): JSX.Element => {
 
       <div className="mt-4 w-full overflow-x-scroll rounded-t-md">
         <div className="w-full min-w-228">
-          <StickyHeadTable data={mockData} />
+          <StickyHeadTable data={mockData} pushPage={pushPage} />
         </div>
       </div>
     </div>

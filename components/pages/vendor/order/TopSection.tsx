@@ -3,9 +3,10 @@ import Form from "components/elements/form";
 import { useForm } from "react-hook-form";
 
 type Props = {
+  pushPage: (path: string) => void;
   onSubmit: (data: { keyword: string }) => void;
 };
-export const TopSection = ({ onSubmit }: Props): JSX.Element => {
+export const TopSection = ({ pushPage, onSubmit }: Props): JSX.Element => {
   const { control, handleSubmit } = useForm<{ keyword: string }>();
 
   return (
@@ -13,6 +14,7 @@ export const TopSection = ({ onSubmit }: Props): JSX.Element => {
       <Button.Basic
         type="button"
         className="bg-red-500 text-white active:bg-red-600"
+        onClick={() => pushPage("new")}
       >
         <span>新增</span>
       </Button.Basic>

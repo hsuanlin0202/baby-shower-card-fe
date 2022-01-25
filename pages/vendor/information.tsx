@@ -20,12 +20,7 @@ const Information = (): JSX.Element => {
   }
 
   return (
-    <Layout.CMS
-      name="波特鬆餅"
-      role="廠商"
-      pathList={vendorPath}
-      router={router}
-    >
+    <Layout.CMS pathList={vendorPath} router={router}>
       廠商資料維護
       <form
         className="w-full my-6 flex flex-col space-y-4"

@@ -6,8 +6,6 @@ import { NextRouter } from "next/router";
 import { AuthStore } from "store/auth";
 import { getRoleString } from "functions/matcher";
 type Props = {
-  name: string;
-  role: string;
   pathList: PathTypes[];
   router: NextRouter;
   children: ReactNode;
@@ -26,7 +24,7 @@ export const CMS = ({ pathList, children, router }: Props): JSX.Element => {
     }
   }, [username, role]);
 
-  const title = `${username}彌月卡片 | ${getRoleString(role)}管理介面`;
+  const title = `${username}彌月卡片 | ${getRoleString(role || 0)}管理介面`;
 
   const pagePush = (path: string): void => {
     router.push(path);

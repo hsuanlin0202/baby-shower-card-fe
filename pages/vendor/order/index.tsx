@@ -6,12 +6,7 @@ import { useRouter } from "next/router";
 const Order = (): JSX.Element => {
   const router = useRouter();
   return (
-    <Layout.CMS
-      name="波特鬆餅"
-      role="廠商"
-      pathList={vendorPath}
-      router={router}
-    >
+    <Layout.CMS pathList={vendorPath} router={router}>
       <VendorOrderPage router={router} />
     </Layout.CMS>
   );
