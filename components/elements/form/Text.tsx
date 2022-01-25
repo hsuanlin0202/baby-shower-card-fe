@@ -7,6 +7,7 @@ import { CommonProps } from "./types";
 export type TextProps<T> = CommonProps<T> & {
   type: "text";
   size?: "small" | "medium";
+  headLabel?: boolean;
 };
 export const Text = <T,>({
   className,
@@ -18,6 +19,7 @@ export const Text = <T,>({
   required,
   disabled,
   size = "medium",
+  headLabel = false,
   ...props
 }: TextProps<T>): JSX.Element => {
   return (
@@ -28,7 +30,7 @@ export const Text = <T,>({
       render={({ field: { onChange, name, ref }, fieldState: { error } }) => (
         <TextField
           id={name}
-          label={label}
+          label={label ? label : undefined}
           className={clsx("w-full", className)}
           variant="outlined"
           InputProps={{

@@ -3,32 +3,34 @@ import { vendorPath } from "constant/router";
 import { useRouter } from "next/router";
 import Form from "components/elements/form";
 import { useForm } from "react-hook-form";
-import { Button } from "components/elements"
-import { VendorTypes } from "types"
-import { InputLayout } from "components/pages/vendor/information"
-import { locations } from "constant/locations"
+import { Button } from "components/elements";
+import { VendorTypes } from "types";
+import { InputLayout } from "components/pages/vendor/information";
+import { locations } from "constant/locations";
 
 const Information = (): JSX.Element => {
   const router = useRouter();
 
   const { control, handleSubmit } = useForm<VendorTypes>();
 
-  const country = locations.map(location => location.country)
+  const country = locations.map((location) => location.country);
 
   const onSubmit = (data: VendorTypes): void => {
-    console.log(data)
-  }
+    console.log(data);
+  };
 
   return (
-    <Layout.CMS pathList={vendorPath} router={router}>
+    <Layout.CMS
+      pathList={vendorPath}
+      router={router}
+      breadcrumbs={[{ title: "廠商資料維護", link: "" }]}
+    >
       廠商資料維護
       <form
         className="w-full my-6 flex flex-col space-y-4"
         onSubmit={handleSubmit(onSubmit)}
       >
-
         <InputLayout label="廠商名稱">
-
           <Form.Input
             type="text"
             name="vendor"
@@ -72,7 +74,6 @@ const Information = (): JSX.Element => {
           />
         </InputLayout>
 
-
         <InputLayout label="聯絡地址">
           <div className="flex space-x-4">
             <Form.Input
@@ -83,7 +84,6 @@ const Information = (): JSX.Element => {
               required
               className="w-1/6"
             />
-
           </div>
           <Form.Input
             type="text"
@@ -120,7 +120,6 @@ const Information = (): JSX.Element => {
         <div className="w-full h-1 bg-black"></div>
 
         <div className="flex space-x-4">
-
           <Button.Basic
             type="button"
             className="border border-gray-800 text-gray-800 text-xl hover:bg-gray-600 hover:text-white "

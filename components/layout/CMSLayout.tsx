@@ -4,14 +4,23 @@ import { PathTypes } from "types";
 import { SideMenu } from "./SideMenu";
 import { NextRouter } from "next/router";
 import { AuthStore } from "store/auth";
-import { getRoleString } from "functions/matcher";
+import Typography from "@mui/material/Typography";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import Link from "@mui/material/Link";
+
 type Props = {
   pathList: PathTypes[];
   router: NextRouter;
   children: ReactNode;
+  breadcrumbs: { link: string; title: string }[];
 };
 
-export const CMS = ({ pathList, children, router }: Props): JSX.Element => {
+export const CMS = ({
+  pathList,
+  children,
+  router,
+  breadcrumbs,
+}: Props): JSX.Element => {
   const { username, role } = AuthStore((state) => ({
     username: state.username,
     role: state.role,
@@ -24,9 +33,7 @@ export const CMS = ({ pathList, children, router }: Props): JSX.Element => {
     }
   }, [username, role]);
 
-  const title = `${username || ""}彌月卡片 | ${getRoleString(
-    role || 0
-  )}管理介面`;
+  const title = `${username || ""}`;
 
   const pagePush = (path: string): void => {
     router.push(path);
@@ -38,12 +45,37 @@ export const CMS = ({ pathList, children, router }: Props): JSX.Element => {
         <title>{title}</title>
       </Head>
 
-      <header className="w-full px-6 text-lg font-medium h-16 leading-16 border-b border-gray-300 text-gray-600">
-        <span>{title}</span>
-      </header>
-      <div className="flex h-screen -mt-10 pt-10">
-        <SideMenu list={pathList} pushPage={(path: string) => pagePush(path)} />
-        <main className="w-4/5 h-full p-6">{children}</main>
+      <div className="flex min-h-screen -mt-10 pt-10">
+        <SideMenu
+          title={title}
+          list={pathList}
+          pushPage={(path: string) => pagePush(path)}
+        />
+        <main className="w-4/5 h-full">
+          <div className="w-full px-6 flex items-center h-16  border-b border-gray-300 text-gray-600">
+            <Breadcrumbs aria-label="breadcrumb">
+              {breadcrumbs.map((breadcrumb, index) => {
+                if (!breadcrumb.link)
+                  return (
+                    <Typography color="text.primary">
+                      {breadcrumb.title}
+                    </Typography>
+                  );
+                return (
+                  <Link
+                    key={`breadcrumb-${index}`}
+                    underline="hover"
+                    color="inherit"
+                    href={breadcrumb.link}
+                  >
+                    {breadcrumb.title}
+                  </Link>
+                );
+              })}
+            </Breadcrumbs>
+          </div>
+          <div className="p-6 pb-10">{children}</div>
+        </main>
       </div>
     </div>
   );
