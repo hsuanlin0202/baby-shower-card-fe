@@ -44,10 +44,6 @@ const Login = () => {
   }, [token]);
 
   const userHandler = (token: string): void => {
-    router.push("/vendor/order");
-
-    return;
-
     openLoader(true);
     getUser(token, "role").then((result) => {
       openLoader(false);
