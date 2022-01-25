@@ -19,7 +19,7 @@ export const CMS = ({ pathList, children, router }: Props): JSX.Element => {
 
   useEffect(() => {
     if (!username && !username) {
-      // router.push("/");
+      router.push("/");
       return;
     }
   }, [username, role]);
