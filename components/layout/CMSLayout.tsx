@@ -19,12 +19,14 @@ export const CMS = ({ pathList, children, router }: Props): JSX.Element => {
 
   useEffect(() => {
     if (!username && !username) {
-      router.push("/");
+      // router.push("/");
       return;
     }
   }, [username, role]);
 
-  const title = `${username}彌月卡片 | ${getRoleString(role || 0)}管理介面`;
+  const title = `${username || ""}彌月卡片 | ${getRoleString(
+    role || 0
+  )}管理介面`;
 
   const pagePush = (path: string): void => {
     router.push(path);
