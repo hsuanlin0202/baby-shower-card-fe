@@ -6,6 +6,7 @@ import { CommonProps } from "./types";
 
 export type TextProps<T> = CommonProps<T> & {
   type: "text";
+  size?: "small" | "medium";
 };
 export const Text = <T,>({
   className,
@@ -16,6 +17,7 @@ export const Text = <T,>({
   control,
   required,
   disabled,
+  size = "medium",
   ...props
 }: TextProps<T>): JSX.Element => {
   return (
@@ -38,6 +40,7 @@ export const Text = <T,>({
           onChange={onChange}
           required={required}
           disabled={disabled}
+          size={size}
         />
       )}
     />

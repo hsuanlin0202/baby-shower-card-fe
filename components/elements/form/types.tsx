@@ -3,7 +3,7 @@ import { Path, Control } from "react-hook-form";
 
 export type CommonProps<T> = {
   name: Path<T>;
-  control: Control<T>;
+  control?: Control<T>;
   label?: string;
   icon?: ReactNode;
   required?: boolean;
@@ -12,4 +12,10 @@ export type CommonProps<T> = {
   className?: string;
   minLength?: number;
   pattern?: RegExp;
+};
+
+export type Option = {
+  id: string;
+  label: string;
+  value: string;
 };
