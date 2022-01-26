@@ -1,12 +1,13 @@
-import Layout from "components/layout";
-import { vendorPath } from "constant/router";
-import { useRouter } from "next/router";
-import Form from "components/elements/form";
-import { useForm } from "react-hook-form";
-import { Button } from "components/elements";
-import { VendorTypes } from "types";
-import { InputLayout } from "components/pages/vendor/information";
-import { locations } from "constant/locations";
+import Layout from 'components/layout';
+import { vendorPath } from 'constant/router';
+import { useRouter } from 'next/router';
+import Form from 'components/elements/form';
+import { useForm } from 'react-hook-form';
+import { Button } from 'components/elements';
+import { VendorTypes } from 'types';
+import { InputLayout } from 'components/pages/vendor/information';
+import { locations } from 'constant/locations';
+import { useState } from 'react';
 
 const Information = (): JSX.Element => {
   const router = useRouter();
@@ -15,21 +16,24 @@ const Information = (): JSX.Element => {
 
   const country = locations.map((location) => location.country);
 
+  const [district, setDistrict] = useState(locations[0].districts);
+
   const onSubmit = (data: VendorTypes): void => {
     console.log(data);
+  };
+
+  const onChangeCountry = (target: string): void => {
+    console.log(target);
   };
 
   return (
     <Layout.CMS
       pathList={vendorPath}
       router={router}
-      breadcrumbs={[{ title: "廠商資料維護", link: "" }]}
+      breadcrumbs={[{ title: '廠商資料維護', link: '' }]}
     >
       廠商資料維護
-      <form
-        className="w-full my-6 flex flex-col space-y-4"
-        onSubmit={handleSubmit(onSubmit)}
-      >
+      <form className="w-full my-6 flex flex-col space-y-4">
         <InputLayout label="廠商名稱">
           <Form.Input
             type="text"
@@ -80,6 +84,16 @@ const Information = (): JSX.Element => {
               type="select"
               name="country"
               options={country}
+              control={control}
+              onChange={() => console.log('change')}
+              required
+              className="w-1/6"
+            />
+
+            <Form.Input
+              type="select"
+              name="district"
+              options={district}
               control={control}
               required
               className="w-1/6"
