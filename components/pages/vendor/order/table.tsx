@@ -13,11 +13,11 @@ import { OrderListTypes } from "types";
 interface Column {
   id:
     | "index"
+    | "createdAt"
     | "orderNo"
-    | "customerName"
-    | "customerPhone"
-    | "createDate"
-    | "status"
+    | "contact"
+    | "mobile"
+    | "active"
     | "edit";
   label: string | JSX.Element;
   minWidth: number;
@@ -27,22 +27,22 @@ const columns: readonly Column[] = [
   { id: "index", label: "序號", minWidth: 1 },
   { id: "orderNo", label: "訂單編號", minWidth: 3 },
   {
-    id: "customerName",
+    id: "contact",
     label: "聯絡人",
     minWidth: 2,
   },
   {
-    id: "customerPhone",
+    id: "mobile",
     label: "聯絡人手機",
     minWidth: 3,
   },
   {
-    id: "createDate",
+    id: "createdAt",
     label: "創建日期",
     minWidth: 3,
   },
   {
-    id: "status",
+    id: "active",
     label: "啟用狀態",
     minWidth: 1,
   },
@@ -57,14 +57,14 @@ const columns: readonly Column[] = [
   },
 ];
 
-const createData = (index: number, data: OrderListTypes): OrderListTypes => {
+const createData = (index: number, data: OrderListTypes) => {
   return {
     index: index,
     orderNo: data.orderNo,
-    customerName: data.customerName,
-    customerPhone: data.customerPhone,
-    createDate: data.createDate,
-    status: data.status,
+    contact: data.contact,
+    mobile: data.mobile,
+    createdAt: new Date(data.createdAt).toLocaleDateString(),
+    active: data.active,
     edit: data.orderNo,
   };
 };
@@ -117,14 +117,14 @@ export const StickyHeadTable = ({ data, pushPage }: Props): JSX.Element => {
                     {columns.map((column) => {
                       const value = row[column.id];
 
-                      if (column.id === "status")
+                      if (column.id === "active")
                         return (
                           <TableCell key={column.id} align="center">
                             <button
                               type="button"
                               onClick={() => console.log(row.orderNo)}
                             >
-                              <Switch defaultChecked={row.status === 1} />
+                              <Switch defaultChecked={row.active === 1} />
                             </button>
                           </TableCell>
                         );
@@ -162,6 +162,7 @@ export const StickyHeadTable = ({ data, pushPage }: Props): JSX.Element => {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+        labelRowsPerPage="顯示行數"
       />
     </div>
   );
