@@ -17,10 +17,10 @@ const OrderEdit = (): JSX.Element => {
         { title: id === "new" ? "建立訂單" : "編輯訂單", link: "" },
       ]}
     >
-      {/* {id === "new" && <div className="text-center w-full ">add</div>}
-      {id !== "new" && <div className="text-center w-full ">{id}</div>} */}
-
-      <OrderDetail orderNo={id === "new" ? null : (id as string)} />
+      <OrderDetail
+        orderNo={id === "new" ? null : (id as string)}
+        router={router}
+      />
     </Layout.CMS>
   );
 };

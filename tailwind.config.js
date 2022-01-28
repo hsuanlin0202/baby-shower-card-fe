@@ -1,7 +1,6 @@
 const colors = require("tailwindcss/colors");
 
 module.exports = {
-  // purge: [],
   content: [
     "./pages/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
@@ -53,6 +52,7 @@ module.exports = {
         16: "4rem",
       },
       minWidth: {
+        0: "0rem",
         20: "5rem",
         24: "6rem",
         28: "7rem",

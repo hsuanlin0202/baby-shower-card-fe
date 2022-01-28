@@ -6,7 +6,12 @@ import {
   FormControlLabel,
   Radio as _Radio,
 } from "@mui/material";
-import { Controller } from "react-hook-form";
+import {
+  Controller,
+  Path,
+  PathValue,
+  UnpackNestedValue,
+} from "react-hook-form";
 import { CommonProps } from "./types";
 
 export type RadioProps<T> = CommonProps<T> & {
@@ -25,12 +30,12 @@ export const Radio = <T,>({
       name={name}
       control={control}
       rules={{ required }}
-      // defaultValue={options[0].value}
+      defaultValue={
+        options[0].value as UnpackNestedValue<PathValue<T, Path<T>>>
+      }
       render={({ field, fieldState: { error } }) => (
         <FormControl component="fieldset">
-          <FormLabel component="legend" required={required}>
-            {label}
-          </FormLabel>
+          <FormLabel component="legend">{label}</FormLabel>
 
           <RadioGroup aria-label={label} row {...field}>
             {options.map(({ id, label, value }) => (
