@@ -26,7 +26,6 @@ export const TopSection = ({ pushPage, onSubmit }: Props): JSX.Element => {
           control={control}
           label="搜尋"
           size="small"
-          headLabel
         />
 
         <Button.Basic

@@ -57,7 +57,10 @@ export const CMS = ({
               {breadcrumbs.map((breadcrumb, index) => {
                 if (!breadcrumb.link)
                   return (
-                    <Typography color="text.primary">
+                    <Typography
+                      key={`breadcrumb=${index}`}
+                      color="text.primary"
+                    >
                       {breadcrumb.title}
                     </Typography>
                   );
