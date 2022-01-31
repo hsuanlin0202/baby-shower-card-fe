@@ -1,6 +1,11 @@
 import React from "react";
 import { FormControl, Select as _Select } from "@mui/material";
-import { Controller } from "react-hook-form";
+import {
+  Controller,
+  Path,
+  PathValue,
+  UnpackNestedValue,
+} from "react-hook-form";
 import { CommonProps, Option } from "./types";
 import clsx from "clsx";
 import { styled } from "@mui/material/styles";
@@ -84,7 +89,9 @@ export function Select<T>({
           name={name}
           control={control}
           rules={{ required }}
-          // defaultValue={options[0].value}
+          defaultValue={
+            options[0].value as UnpackNestedValue<PathValue<T, Path<T>>>
+          }
           render={({ field, fieldState: { error } }) => (
             <FormControl variant="outlined" fullWidth required={required}>
               <_Select

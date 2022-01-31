@@ -45,19 +45,21 @@ const Login = () => {
 
   const userHandler = (token: string): void => {
     openLoader(true);
-    getUser(token, "role").then((result) => {
-      openLoader(false);
-      if (!result) {
-        stateAction("auth-null");
-        return;
+    getUser(token, ["role", "partners", "orders", "templates", "company"]).then(
+      (result) => {
+        openLoader(false);
+        if (!result) {
+          stateAction("auth-null");
+          return;
+        }
+
+        setUser(result);
+
+        if (result.role === 3) router.push("/vendor/order");
+
+        if (result.role === 4) console.log("家長後台");
       }
-
-      setUser(result);
-
-      if (result.role === 3) router.push("/vendor/order");
-
-      if (result.role === 4) console.log("家長後台");
-    });
+    );
   };
 
   const onSubmit = (data: LoginTypes): void => {
