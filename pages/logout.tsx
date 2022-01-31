@@ -1,11 +1,16 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { AuthStore } from "store/auth";
 
 const Logout = (): JSX.Element => {
   const router = useRouter();
 
+  const { logout } = AuthStore((state) => ({
+    logout: state.logout,
+  }));
+
   useEffect(() => {
-    console.log("清空local登入資料");
+    logout();
     router.push("/");
   }, []);
   return <>logout</>;
