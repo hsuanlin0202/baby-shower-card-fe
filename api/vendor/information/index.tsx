@@ -1,1 +1,2 @@
-export * from "./getPartnar";
+export * from './getPartner';
+export * from './putPartner';

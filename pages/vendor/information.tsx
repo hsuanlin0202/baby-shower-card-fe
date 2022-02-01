@@ -6,22 +6,21 @@ import { useForm } from "react-hook-form";
 import { Button } from "components/elements";
 import { VendorInformationTypes } from "types";
 import { InputLayout } from "components/pages/vendor/information";
-import { locations } from "constant/locations";
 import { AuthStore } from "store/auth";
 import { useEffect } from "react";
-import { getPartner } from "api";
+import { getPartner, putPartner } from "api";
 
 const Information = (): JSX.Element => {
   const router = useRouter();
 
-  const { control, handleSubmit, setValue } = useForm<
-    VendorInformationTypes & { city: string }
-  >();
+  const { control, handleSubmit, setValue } = useForm<VendorInformationTypes>();
 
-  const country = locations.map((location) => location.country);
-
-  const onSubmit = (data: VendorInformationTypes & { city: string }): void => {
+  const onSubmit = (data: VendorInformationTypes): void => {
     console.log(data);
+    putPartner(data, partners[0], token).then((res) => console.log(res));
+  };
+  const pagePush = (path: string): void => {
+    router.push(path);
   };
 
   const { token, partners } = AuthStore((state) => ({
@@ -34,8 +33,8 @@ const Information = (): JSX.Element => {
 
     getPartner(token, partners[0], []).then((res) => {
       console.log(res);
-      // @ts-ignore
-      Object.keys(res).forEach((val, _) => setValue(val, res[val]));
+
+      Object.keys(res).forEach((val, _) => setValue(val as any, res[val]));
     });
   }, [partners]);
 
@@ -91,16 +90,6 @@ const Information = (): JSX.Element => {
         </InputLayout>
 
         <InputLayout label="聯絡地址">
-          <div className="flex space-x-4">
-            <Form.Input
-              type="select"
-              name="city"
-              options={country}
-              control={control}
-              required
-              className="w-1/6"
-            />
-          </div>
           <Form.Input
             type="text"
             name="contactAddress"
@@ -136,6 +125,7 @@ const Information = (): JSX.Element => {
           <Button.Basic
             type="button"
             className="border border-gray-800 text-gray-800 text-xl hover:bg-gray-600 hover:text-white "
+            onClick={() => pagePush("/vendor/order")}
           >
             返回
           </Button.Basic>
