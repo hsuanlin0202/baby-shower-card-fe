@@ -18,7 +18,7 @@ const OrderEdit = (): JSX.Element => {
       ]}
     >
       <OrderDetail
-        orderNo={id === "new" ? null : (id as string)}
+        orderId={id === "new" ? null : (id as string)}
         router={router}
       />
     </Layout.CMS>

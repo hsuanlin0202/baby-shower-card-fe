@@ -55,7 +55,7 @@ function Base<T>({
           }}
           error={Boolean(error)}
           inputRef={ref}
-          value={value}
+          value={value || ""}
           onChange={onChange}
           required={required}
           className={clsx("w-full", className)}

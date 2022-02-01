@@ -4,6 +4,10 @@ import { mockData } from "api";
 import Form from "components/elements/form";
 import { TopSection } from "./TopSection";
 import { StickyHeadTable } from "./table";
+import { AuthStore } from "store/auth";
+import { useEffect, useState } from "react";
+import { OrderListTypes } from "types";
+import { getOrders } from "api/order";
 
 const SortOptions = [
   { id: "0", label: "訂單編號(由新到舊)", value: "orderNo-asc" },
@@ -19,13 +23,23 @@ type Props = {
 };
 
 export const VendorOrderPage = ({ router }: Props): JSX.Element => {
+  const [orders, setOrders] = useState<OrderListTypes[]>();
+
+  const { token } = AuthStore((state) => ({
+    token: state.token,
+  }));
+
   const postSearch = (data: { keyword: string }) => {
     console.log(data);
   };
 
-  const pushPage = (id: string) => {
+  const pushPage = (id: string | number) => {
     router.push(`/vendor/order/${id}`);
   };
+
+  useEffect(() => {
+    getOrders(token).then((result) => setOrders(result));
+  }, []);
 
   return (
     <div>
@@ -44,7 +58,7 @@ export const VendorOrderPage = ({ router }: Props): JSX.Element => {
 
       <div className="mt-4 w-full overflow-x-scroll rounded-t-md">
         <div className="w-full min-w-228">
-          <StickyHeadTable data={mockData} pushPage={pushPage} />
+          <StickyHeadTable orders={orders} pushPage={pushPage} />
         </div>
       </div>
     </div>
