@@ -1,5 +1,5 @@
 export interface VendorInformationTypes {
-  id: number;
+  id?: number;
   name: string;
   contact: string;
   contactPhone: string;
