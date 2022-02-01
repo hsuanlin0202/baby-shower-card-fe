@@ -60,6 +60,7 @@ const columns: readonly Column[] = [
 const createData = (index: number, data: OrderListTypes) => {
   return {
     index: index,
+    orderId: data.orderId,
     orderNo: data.orderNo,
     contact: data.contact,
     mobile: data.mobile,
@@ -70,15 +71,17 @@ const createData = (index: number, data: OrderListTypes) => {
 };
 
 type Props = {
-  data: OrderListTypes[];
-  pushPage: (id: string) => void;
+  orders: OrderListTypes[];
+  pushPage: (id: string | number) => void;
 };
-export const StickyHeadTable = ({ data, pushPage }: Props): JSX.Element => {
+export const StickyHeadTable = ({ orders, pushPage }: Props): JSX.Element => {
+  if (!orders) return <></>;
+
   const [page, setPage] = React.useState(0);
 
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const rows = data.map((item, index) => createData(index + 1, item));
+  const rows = orders.map((item, index) => createData(index + 1, item));
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -101,7 +104,7 @@ export const StickyHeadTable = ({ data, pushPage }: Props): JSX.Element => {
                 <TableCell
                   key={`table-head-${index}`}
                   align="center"
-                  style={{ minWidth: column.minWidth }}
+                  style={{ minWidth: column.minWidth, maxWidth: 300 }}
                 >
                   {column.label}
                 </TableCell>
@@ -124,7 +127,7 @@ export const StickyHeadTable = ({ data, pushPage }: Props): JSX.Element => {
                               type="button"
                               onClick={() => console.log(row.orderNo)}
                             >
-                              <Switch defaultChecked={row.active === 1} />
+                              <Switch defaultChecked={row.active} />
                             </button>
                           </TableCell>
                         );
@@ -135,7 +138,7 @@ export const StickyHeadTable = ({ data, pushPage }: Props): JSX.Element => {
                             <button
                               type="button"
                               className="underline"
-                              onClick={() => pushPage(row.orderNo)}
+                              onClick={() => pushPage(row.orderId)}
                             >
                               編輯
                             </button>
@@ -144,7 +147,7 @@ export const StickyHeadTable = ({ data, pushPage }: Props): JSX.Element => {
 
                       return (
                         <TableCell key={column.id} align="center">
-                          {value}
+                          <p className=" max-w-48 truncate mx-auto">{value}</p>
                         </TableCell>
                       );
                     })}

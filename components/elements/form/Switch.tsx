@@ -17,7 +17,7 @@ export const Switch = <T,>({
   label,
   control,
   required,
-  checked,
+  checked = true,
 }: SwitchProps<T>) => {
   return (
     <Controller
@@ -35,6 +35,11 @@ export const Switch = <T,>({
             name={name}
             checked={field.value as boolean}
             aria-label={label}
+            onChange={(e) => {
+              console.log("here");
+              e.preventDefault();
+              field.onChange(e.target.checked);
+            }}
             {...field}
           />
         </FormControl>

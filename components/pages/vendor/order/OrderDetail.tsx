@@ -1,31 +1,56 @@
-// @ts-nocheck-
+// @ts-nocheck
 import { useForm } from "react-hook-form";
 import Form from "components/elements/form";
 import { Button } from "components/elements";
-import { CardTypes, OrderFormType, OrderTypes } from "types";
+import { OrderFormType } from "types";
 import { toLocalDateTimeString } from "functions";
 import { FormGroup } from "./FormGroup";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useInitData } from "hooks";
 import { NextRouter } from "next/router";
-import { postOrder } from "api/order";
+import { getOrder, postOrder } from "api/order";
 import { AuthStore } from "store/auth";
 
-const defaultValues = {};
+const setValueList = [
+  "order-author",
+  "order-contact",
+  "order-contact-gender",
+  "order-mobile",
+  "order-active",
+  "order-expired-at",
+  "card-title",
+  "card-description",
+  "card-template",
+  "card-comment-active",
+  "card-father-name",
+  "card-mother-name",
+  "card-baby-name",
+  "card-baby-birthday",
+  "card-public",
+  "email-1",
+  "email-2",
+];
 
 type Props = {
-  orderNo: string;
+  orderId: string;
   router: NextRouter;
 };
 
-export const OrderDetail = ({ orderNo, router }: Props): JSX.Element => {
+export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
   const { showNotify, openLoader } = useInitData();
 
-  const { control, setValue, handleSubmit } = useForm<OrderFormType>();
+  const { control, setValue, handleSubmit, register } =
+    useForm<OrderFormType>();
 
   const today = new Date();
 
-  const createdAt = toLocalDateTimeString(today);
+  const [order, setOrder] = useState<OrderFormType>(null);
+
+  const [createdAt, setCreatedAt] = useState<string>(
+    toLocalDateTimeString(today)
+  );
+
+  const [photo, setPhoto] = useState<string>("");
 
   const { token } = AuthStore((state) => ({
     token: state.token,
@@ -47,19 +72,47 @@ export const OrderDetail = ({ orderNo, router }: Props): JSX.Element => {
     const formData = new FormData();
 
     for (const name in organizedData) {
-      formData.append(name, organizedData[name]);
-    }
+      if (name !== "card-photo") formData.append(name, organizedData[name]);
 
-    postOrder(token, formData);
+      if (name === "card-photo") {
+        const file = organizedData["card-photo"][0];
+        formData.append(`card-photo`, file, file["name"]);
+      }
+    }
+    openLoader(true);
+    postOrder(token, formData).then((result) => {
+      openLoader(false);
+      if (!result.id) {
+        console.log(result.message);
+        return;
+      }
+      router.replace(`/vendor/order/${result.id}`);
+    });
   };
 
   useEffect(() => {
-    if (!orderNo) return;
+    if (!orderId) return;
 
-    // Object.keys(defaultValues).forEach((val, _) =>
-    //   setValue(val, defaultValues[val])
-    // );
-  }, [orderNo]);
+    openLoader(true);
+    getOrder(token, orderId).then((result) => {
+      openLoader(false);
+      if (!result) {
+        showNotify("open", "找不到訂單", "請再試一次", () => {
+          showNotify("close", "", "");
+          router.replace("/vendor/order");
+        });
+        return;
+      }
+
+      setValueList.forEach((key) => {
+        setValue(key as any, result[key]);
+      });
+
+      setOrder(result);
+      setPhoto(result["card-photo"]);
+      setCreatedAt(toLocalDateTimeString(new Date(result["order-created-at"])));
+    });
+  }, [orderId]);
 
   return (
     <form
@@ -68,7 +121,7 @@ export const OrderDetail = ({ orderNo, router }: Props): JSX.Element => {
       encType="multipart/form-data"
     >
       <h2 className="text-2xl font-bold">
-        {orderNo ? `訂單編號： ${orderNo}` : "建立訂單"}
+        {order ? `訂單編號： ${order["order-no"]}` : "建立訂單"}
       </h2>
 
       <div className="flex items-center my-4">
@@ -90,7 +143,7 @@ export const OrderDetail = ({ orderNo, router }: Props): JSX.Element => {
           />
         </FormGroup>
 
-        {orderNo && (
+        {orderId && (
           <div className="flex space-x-4 mt-8 px-8 pt-8 border-t">
             <Button.Basic
               type="button"
@@ -110,15 +163,18 @@ export const OrderDetail = ({ orderNo, router }: Props): JSX.Element => {
 
         <hr className="my-8" />
 
-        <FormGroup title="訂單編號">
-          <Form.Input
-            type="text"
-            name="order-no"
-            control={control}
-            size="small"
-            required
-          />
-        </FormGroup>
+        {!orderId && (
+          <FormGroup title="訂單編號">
+            <Form.Input
+              type="text"
+              name="order-no"
+              control={control}
+              size="small"
+              required
+            />
+          </FormGroup>
+        )}
+
         <FormGroup title="填單人">
           <Form.Input
             type="text"
@@ -212,12 +268,27 @@ export const OrderDetail = ({ orderNo, router }: Props): JSX.Element => {
           />
         </FormGroup>
         <FormGroup title="照片上傳">
-          <input
-            type="file"
-            className="my-2"
-            name="card-photo"
-            accept="image/png, image/jpeg"
-          />
+          {photo && (
+            <div className="flex">
+              <img src={photo} className="w-20" />
+              <button
+                className="mx-2"
+                type="button"
+                onClick={() => setPhoto("")}
+              >
+                移除圖片
+              </button>
+            </div>
+          )}
+          {!photo && (
+            <input
+              type="file"
+              className="my-2"
+              name="card-photo"
+              {...register("card-photo")}
+              accept="image/png, image/jpeg"
+            />
+          )}
         </FormGroup>
         <FormGroup title="選擇模板">
           <Form.Input
@@ -281,7 +352,7 @@ export const OrderDetail = ({ orderNo, router }: Props): JSX.Element => {
             type="submit"
             className="bg-blue-500 text-white active:bg-blue-600"
           >
-            <span>{orderNo ? `儲存` : `新增`}</span>
+            <span>{orderId ? `儲存` : `新增`}</span>
           </Button.Basic>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 
 export interface OrderFormType {
-  "order-token": string;
+  "order-token"?: string;
   "order-no": string;
   "order-author": string;
   "order-contact": string;
@@ -9,6 +9,7 @@ export interface OrderFormType {
   "order-mobile": string;
   "order-active": boolean;
   "order-expired-at": string;
+  "order-created-at"?: string;
   "order-users-email"?: string[];
   "card-title": string;
   "card-description": string;
@@ -63,8 +64,9 @@ export interface OrderListTypes {
   orderNo: string;
   contact: string;
   mobile: string;
-  active: number;
-  createdAt: Date;
+  active: boolean;
+  createdAt: string;
+  orderId?: number;
 }
 
 export interface InputLayoutProps {

@@ -1,5 +1,5 @@
 import React from "react";
-import { FormControl, Select as _Select } from "@mui/material";
+import { FormControl, Select as _Select, MenuItem } from "@mui/material";
 import {
   Controller,
   Path,
@@ -92,27 +92,29 @@ export function Select<T>({
           defaultValue={
             options[0].value as UnpackNestedValue<PathValue<T, Path<T>>>
           }
-          render={({ field, fieldState: { error } }) => (
-            <FormControl variant="outlined" fullWidth required={required}>
-              <_Select
-                native
-                label={label}
-                required={required}
-                input={<BootstrapInput />}
-                inputProps={{
-                  name,
-                  id: name,
-                }}
-                {...field}
-              >
-                {options.map(({ id, value, label }) => (
-                  <option key={id} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </_Select>
-            </FormControl>
-          )}
+          render={({ field, fieldState: { error } }) => {
+            return (
+              <FormControl variant="outlined" fullWidth required={required}>
+                <_Select
+                  label={label}
+                  required={required}
+                  input={<BootstrapInput />}
+                  inputProps={{
+                    name,
+                    id: name,
+                  }}
+                  value={field.value || options[0].value}
+                  {...field}
+                >
+                  {options.map(({ id, value, label }) => (
+                    <MenuItem key={id} value={value}>
+                      {label}
+                    </MenuItem>
+                  ))}
+                </_Select>
+              </FormControl>
+            );
+          }}
         />
       )}
     </div>
