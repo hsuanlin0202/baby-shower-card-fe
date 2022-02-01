@@ -1,6 +1,6 @@
-import { RemoveUndefinedFromObj } from "functions/converters";
-import { UserTypes, VendorInformationTypes, VendorTemplateTypes } from "types";
-import { get, BABY_API, ErrorResponse } from "../../base";
+import { RemoveUndefinedFromObj } from 'functions/converters';
+import { UserTypes, VendorInformationTypes, VendorTemplateTypes } from 'types';
+import { get, BABY_API, ErrorResponse } from '../../base';
 
 interface PartnerResponse {
   id: number;
@@ -76,7 +76,7 @@ export function getPartner(
   const populateList = populate.map((item) => {
     return `populate=${item}`;
   });
-  const populateString = populateList.join().replaceAll(",", "&");
+  const populateString = populateList.join().replaceAll(',', '&');
   return get<GetPartnerResponse>(
     BABY_API(`partners/${id}${populateString ? `?${populateString}` : ``}`),
 

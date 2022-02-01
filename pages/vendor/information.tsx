@@ -16,11 +16,8 @@ const Information = (): JSX.Element => {
 
   const { control, handleSubmit, setValue } = useForm<VendorInformationTypes & { city: string }>();
 
-  const country = locations.map((location) => location.country);
-
   const onSubmit = (data: VendorInformationTypes & { city: string }): void => {
     console.log(data);
-    putPartner(data, 1).then((result) => console.log(result));
   };
   const pagePush = (path: string): void => {
     router.push(path);
@@ -78,16 +75,6 @@ const Information = (): JSX.Element => {
         </InputLayout>
 
         <InputLayout label="聯絡地址">
-          <div className="flex space-x-4">
-            <Form.Input
-              type="select"
-              name="city"
-              options={country}
-              control={control}
-              required
-              className="w-1/6"
-            />
-          </div>
           <Form.Input
             type="text"
             name="contactAddress"
@@ -134,6 +121,3 @@ const Information = (): JSX.Element => {
 };
 
 export default Information;
-// function useHistory<T>() {
-//   throw new Error('Function not implemented.');
-// }
