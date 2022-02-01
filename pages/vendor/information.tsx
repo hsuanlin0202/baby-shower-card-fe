@@ -4,22 +4,43 @@ import { useRouter } from 'next/router';
 import Form from 'components/elements/form';
 import { useForm } from 'react-hook-form';
 import { Button } from 'components/elements';
-import { VendorTypes } from 'types';
+import { VendorInformationTypes } from 'types';
 import { InputLayout } from 'components/pages/vendor/information';
-import { putPartner } from 'api/vendor';
+import { locations } from 'constant/locations';
+import { AuthStore } from 'store/auth';
+import { useEffect } from 'react';
+import { getPartner } from 'api';
 
 const Information = (): JSX.Element => {
   const router = useRouter();
 
-  const { control, handleSubmit } = useForm<VendorTypes>();
+  const { control, handleSubmit, setValue } = useForm<VendorInformationTypes & { city: string }>();
 
-  const onSubmit = (data: VendorTypes): void => {
+  const country = locations.map((location) => location.country);
+
+  const onSubmit = (data: VendorInformationTypes & { city: string }): void => {
     console.log(data);
     putPartner(data, 1).then((result) => console.log(result));
   };
   const pagePush = (path: string): void => {
     router.push(path);
   };
+
+  const { token, partners } = AuthStore((state) => ({
+    token: state.token,
+    partners: state.partners,
+  }));
+
+  useEffect(() => {
+    if (!partners) return;
+
+    getPartner(token, partners[0], []).then((res) => {
+      console.log(res);
+      // @ts-ignore
+      Object.keys(res).forEach((val, _) => setValue(val, res[val]));
+    });
+  }, [partners]);
+
   return (
     <Layout.CMS
       pathList={vendorPath}
@@ -29,32 +50,17 @@ const Information = (): JSX.Element => {
       廠商資料維護
       <form className="w-full my-6 flex flex-col space-y-4" onSubmit={handleSubmit(onSubmit)}>
         <InputLayout label="廠商名稱">
-          <Form.Input
-            type="text"
-            name="name"
-            label="廠商名稱"
-            control={control}
-            required
-            className="w-1/4"
-          />
+          <Form.Input type="text" name="name" control={control} required className="w-1/4" />
         </InputLayout>
 
         <InputLayout label="聯絡人">
-          <Form.Input
-            type="text"
-            name="contact"
-            label="聯絡人"
-            control={control}
-            required
-            className="w-1/4"
-          />
+          <Form.Input type="text" name="contact" control={control} required className="w-1/4" />
         </InputLayout>
 
         <InputLayout label="聯絡電話">
           <Form.Input
             type="text"
             name="contactPhone"
-            label="聯絡電話"
             control={control}
             required
             className="w-1/4"
@@ -65,7 +71,6 @@ const Information = (): JSX.Element => {
           <Form.Input
             type="text"
             name="contactEmail"
-            label="電子信箱"
             control={control}
             required
             className="w-full"
@@ -73,10 +78,19 @@ const Information = (): JSX.Element => {
         </InputLayout>
 
         <InputLayout label="聯絡地址">
+          <div className="flex space-x-4">
+            <Form.Input
+              type="select"
+              name="city"
+              options={country}
+              control={control}
+              required
+              className="w-1/6"
+            />
+          </div>
           <Form.Input
             type="text"
             name="contactAddress"
-            label="詳細地址"
             control={control}
             required
             className="w-full"
@@ -84,21 +98,13 @@ const Information = (): JSX.Element => {
         </InputLayout>
 
         <InputLayout label="營業時間">
-          <Form.Input
-            type="text"
-            name="openHour"
-            label="營業時間"
-            control={control}
-            required
-            className="w-full"
-          />
+          <Form.Input type="text" name="openHour" control={control} required className="w-full" />
         </InputLayout>
 
         <InputLayout label="廠商說明">
           <Form.Input
             type="text"
             name="information"
-            label="廠商說明"
             control={control}
             required
             className="w-full"

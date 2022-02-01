@@ -57,7 +57,36 @@ export function get<T>(req: RequestInfo, headers = {}): Promise<T> {
     .catch(error);
 }
 
+<<<<<<< HEAD
 export function post<T>(req: RequestInfo, body: object, headers = {}): Promise<T> {
+=======
+export function put<T>(
+  req: RequestInfo,
+  body: object,
+  headers = {}
+): Promise<T> {
+  return fetch(
+    new Request(req, {
+      method: "PUT",
+      body: JSON.stringify(body),
+      headers: new Headers({
+        accept: "text/plain",
+        "Content-Type": "application/json-patch+json",
+        ...headers,
+      }),
+    })
+  )
+    .then(status)
+    .then(json)
+    .catch(error);
+}
+
+export function post<T>(
+  req: RequestInfo,
+  body: object,
+  headers = {}
+): Promise<T> {
+>>>>>>> 2ed30274a775f1b06c21cf8ac9015afddf362b37
   return fetch(
     new Request(req, {
       method: 'POST',
@@ -82,6 +111,26 @@ export function put<T>(req: RequestInfo, body: object, headers = {}): Promise<T>
       headers: new Headers({
         accept: 'text/plain',
         'Content-Type': 'application/json-patch+json',
+        ...headers,
+      }),
+    })
+  )
+    .then(status)
+    .then(json)
+    .catch(error);
+}
+
+export function postForm<T>(
+  req: RequestInfo,
+  body: FormData,
+  headers = {}
+): Promise<T> {
+  return fetch(
+    new Request(req, {
+      method: "POST",
+      body: body,
+      headers: new Headers({
+        accept: "application/json",
         ...headers,
       }),
     })
