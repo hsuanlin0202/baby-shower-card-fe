@@ -2,12 +2,8 @@ import { VendorInformationTypes } from 'types';
 import { put, BABY_API, ErrorResponse } from '../../base';
 
 interface PartnerResponse {
-  id: number;
-  attributes: {
+  data: {
     name: string;
-    createdAt: string;
-    updatedAt: string;
-    publishedAt: string;
     contact: string;
     contactPhone: string;
     contactEmail: string;
@@ -17,28 +13,15 @@ interface PartnerResponse {
   };
 }
 
-interface PartnerTemplatesResponse {
-  id: number;
-  attributes: {
-    name: string;
-    textColor: string;
-    createdAt: string;
-    updatedAt: string;
-    publishedAt: string;
-    background: string;
-  };
-}
-
 function toPartner(data: PartnerResponse): VendorInformationTypes {
   return {
-    id: data.id,
-    name: data.attributes.name,
-    contact: data.attributes.contact,
-    contactPhone: data.attributes.contactPhone,
-    contactEmail: data.attributes.contactEmail,
-    contactAddress: data.attributes.contactAddress,
-    openHour: data.attributes.openHour,
-    information: data.attributes.information,
+    name: data.data.name,
+    contact: data.data.contact,
+    contactPhone: data.data.contactPhone,
+    contactEmail: data.data.contactEmail,
+    contactAddress: data.data.contactAddress,
+    openHour: data.data.openHour,
+    information: data.data.information,
   };
 }
 
@@ -47,11 +30,15 @@ function toPartner(data: PartnerResponse): VendorInformationTypes {
  *
  * put partner
  */
-export function putPartner(data: VendorInformationTypes, id: number, token: string) {
-  return put<PartnerResponse & ErrorResponse>(BABY_API(`partners/${id}`), data, {
-    Authorization: `Bearer ${token}`,
-  })
-    .then((result) => toPartner(result))
+export function putPartner(data: VendorInformationTypes, id: string, token: string) {
+  return put<PartnerResponse & ErrorResponse>(
+    BABY_API(`partners/${id}`),
+    { data: data },
+    {
+      Authorization: `Bearer ${token}`,
+    }
+  )
+    .then((result) => result.data)
     .catch(() => {
       return '';
     });
