@@ -11,3 +11,13 @@ export const toLocalDateTimeString = (date: Date): string => {
 
   return temp;
 };
+
+export const DateStringFormat = (date: string): string => {
+  const tempDate = new Date(date);
+
+  return `${tempDate.getFullYear()}-${
+    tempDate.getMonth() < 9
+      ? `0${tempDate.getMonth() + 1}`
+      : tempDate.getMonth() + 1
+  }-${tempDate.getDate()}`;
+};

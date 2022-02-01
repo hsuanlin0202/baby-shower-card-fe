@@ -1,5 +1,32 @@
 import { ReactNode } from "react";
 
+export interface OrderFormType {
+  "order-token"?: string;
+  "order-no": string;
+  "order-author": string;
+  "order-contact": string;
+  "order-contact-gender": string;
+  "order-mobile": string;
+  "order-active": boolean;
+  "order-expired-at": string;
+  "order-created-at"?: string;
+  "order-users-email"?: string[];
+  "card-title": string;
+  "card-description": string;
+  "card-photo": string;
+  "card-template": string;
+  "card-public-at"?: string;
+  "card-close-at"?: string;
+  "card-comment-active": boolean;
+  "card-father-name": string;
+  "card-mother-name": string;
+  "card-baby-name": string;
+  "card-baby-birthday": string;
+  "card-public": boolean;
+  "email-1"?: string;
+  "email-2"?: string;
+}
+
 export interface OrderTypes {
   createdAt: string;
   updatedAt: string;
@@ -37,21 +64,9 @@ export interface OrderListTypes {
   orderNo: string;
   contact: string;
   mobile: string;
-  active: number;
-  createdAt: Date;
-}
-
-export interface VendorTypes {
-  vendor: string;
-  gender: string;
-  contact: string;
-  tel: string;
-  email: string;
-  country: string;
-  district: string;
-  address: string;
-  time: string;
-  description: string;
+  active: boolean;
+  createdAt: string;
+  orderId?: number;
 }
 
 export interface InputLayoutProps {

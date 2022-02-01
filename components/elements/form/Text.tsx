@@ -36,7 +36,7 @@ export const Text = <T,>({
           label={label ? label : undefined}
           className={clsx("w-full", className)}
           variant="outlined"
-          value={value}
+          value={value || ""}
           InputProps={{
             startAdornment: icon && <span className="w-4 mr-2">{icon}</span>,
             ...props,

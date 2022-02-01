@@ -2,93 +2,126 @@
 import { useForm } from "react-hook-form";
 import Form from "components/elements/form";
 import { Button } from "components/elements";
-import { CardTypes, OrderTypes } from "types";
+import { OrderFormType } from "types";
 import { toLocalDateTimeString } from "functions";
 import { FormGroup } from "./FormGroup";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useInitData } from "hooks";
 import { NextRouter } from "next/router";
+import { getOrder, postOrder } from "api/order";
+import { AuthStore } from "store/auth";
 
-const defaultValues = {
-  createdAt: new Date().toISOString(),
-  author: "author",
-  orderNo: "Porter-001",
-  contact: "波特媽",
-  contactGender: "male",
-  mobile: "0987789999",
-  active: true,
-  expiredAt: "2022-05-01",
-  title: "??",
-  description: "description",
-  commentActive: true,
-  fatherName: "father",
-  motherName: "mother",
-  babyName: "baby",
-  babyBirthday: "2022-03-18",
-  photo: "",
-  template: 0,
-  parentEmail1: "test1@baby.com",
-  parentEmail2: "test2@baby.com",
-};
+const setValueList = [
+  "order-author",
+  "order-contact",
+  "order-contact-gender",
+  "order-mobile",
+  "order-active",
+  "order-expired-at",
+  "card-title",
+  "card-description",
+  "card-template",
+  "card-comment-active",
+  "card-father-name",
+  "card-mother-name",
+  "card-baby-name",
+  "card-baby-birthday",
+  "card-public",
+  "email-1",
+  "email-2",
+];
 
 type Props = {
-  orderNo: string;
+  orderId: string;
   router: NextRouter;
 };
 
-export const OrderDetail = ({ orderNo, router }: Props): JSX.Element => {
+export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
   const { showNotify, openLoader } = useInitData();
 
-  const { control, setValue, handleSubmit } = useForm<OrderTypes & CardTypes>();
+  const { control, setValue, handleSubmit, register } =
+    useForm<OrderFormType>();
 
   const today = new Date();
 
-  const createdAt = toLocalDateTimeString(today);
+  const [order, setOrder] = useState<OrderFormType>(null);
 
-  const onSubmit = (data: OrderTypes & CardTypes) => {
+  const [createdAt, setCreatedAt] = useState<string>(
+    toLocalDateTimeString(today)
+  );
+
+  const [photo, setPhoto] = useState<string>("");
+
+  const { token } = AuthStore((state) => ({
+    token: state.token,
+  }));
+
+  const onSubmit = (data: OrderFormType) => {
     const organizedData = {
-      order: {
-        orderNo: data.orderNo,
-        author: data.author,
-        contact: data.contact,
-        contactGender: data.contactGender,
-        mobile: data.mobile,
-        active: true,
-        expiredAt: new Date(data.expiredAt).toJSON(),
-        createdAt: data.createdAt
-          ? new Date(data.createdAt).toJSON()
-          : today.toJSON(),
-      },
-      card: {
-        title: `${data.babyName}_彌月卡片`,
-        description: data.description,
-        commentActive: data.commentActive,
-        fatherName: data.fatherName,
-        motherName: data.motherName,
-        babyName: data.babyName,
-        babyBirthday: new Date(data.babyBirthday).toJSON(),
-        createdAt: data.createdAt
-          ? new Date(data.createdAt).toJSON()
-          : today.toJSON(),
-        updatedAt: new Date().toJSON(),
-        closeAt: new Date(data.expiredAt).toJSON(),
-      },
+      ...data,
+      "card-public": true,
+      "order-token": "porterma-2",
+      "card-title": `${data["card-baby-name"]}-彌月卡`,
+      "order-expired-at": new Date(data["order-expired-at"]).toJSON(),
+      "card-baby-birthday": new Date(data["card-baby-birthday"]).toJSON(),
+      "order-users-email": [data["email-1"] || "", data["email-2"] || ""],
     };
-    console.log(organizedData);
+    delete organizedData["email-1"];
+    delete organizedData["email-2"];
+
+    const formData = new FormData();
+
+    for (const name in organizedData) {
+      if (name !== "card-photo") formData.append(name, organizedData[name]);
+
+      if (name === "card-photo") {
+        const file = organizedData["card-photo"][0];
+        formData.append(`card-photo`, file, file["name"]);
+      }
+    }
+    openLoader(true);
+    postOrder(token, formData).then((result) => {
+      openLoader(false);
+      if (!result.id) {
+        console.log(result.message);
+        return;
+      }
+      router.replace(`/vendor/order/${result.id}`);
+    });
   };
 
   useEffect(() => {
-    if (!orderNo) return;
+    if (!orderId) return;
 
-    Object.keys(defaultValues).forEach((val, _) =>
-      setValue(val, defaultValues[val])
-    );
-  }, [orderNo]);
+    openLoader(true);
+    getOrder(token, orderId).then((result) => {
+      openLoader(false);
+      if (!result) {
+        showNotify("open", "找不到訂單", "請再試一次", () => {
+          showNotify("close", "", "");
+          router.replace("/vendor/order");
+        });
+        return;
+      }
+
+      setValueList.forEach((key) => {
+        setValue(key as any, result[key]);
+      });
+
+      setOrder(result);
+      setPhoto(result["card-photo"]);
+      setCreatedAt(toLocalDateTimeString(new Date(result["order-created-at"])));
+    });
+  }, [orderId]);
 
   return (
-    <form className="" onSubmit={handleSubmit(onSubmit)}>
+    <form
+      className=""
+      onSubmit={handleSubmit(onSubmit)}
+      encType="multipart/form-data"
+    >
       <h2 className="text-2xl font-bold">
-        {orderNo ? `訂單編號： ${orderNo}` : "建立訂單"}
+        {order ? `訂單編號： ${order["order-no"]}` : "建立訂單"}
       </h2>
 
       <div className="flex items-center my-4">
@@ -98,19 +131,19 @@ export const OrderDetail = ({ orderNo, router }: Props): JSX.Element => {
 
       <div className="border rounded-lg shadow-lg py-4">
         <FormGroup title="開放寶寶卡片">
-          <Form.Input type="switch" name="active" control={control} />
+          <Form.Input type="switch" name="order-active" control={control} />
         </FormGroup>
         <FormGroup title="到期時間">
           <Form.Input
             type="date"
-            name="expiredAt"
+            name="order-expired-at"
             control={control}
             size="small"
             required
           />
         </FormGroup>
 
-        {orderNo && (
+        {orderId && (
           <div className="flex space-x-4 mt-8 px-8 pt-8 border-t">
             <Button.Basic
               type="button"
@@ -130,19 +163,22 @@ export const OrderDetail = ({ orderNo, router }: Props): JSX.Element => {
 
         <hr className="my-8" />
 
-        <FormGroup title="訂單編號">
-          <Form.Input
-            type="text"
-            name="orderNo"
-            control={control}
-            size="small"
-            required
-          />
-        </FormGroup>
+        {!orderId && (
+          <FormGroup title="訂單編號">
+            <Form.Input
+              type="text"
+              name="order-no"
+              control={control}
+              size="small"
+              required
+            />
+          </FormGroup>
+        )}
+
         <FormGroup title="填單人">
           <Form.Input
             type="text"
-            name="author"
+            name="order-author"
             control={control}
             size="small"
             required
@@ -152,7 +188,7 @@ export const OrderDetail = ({ orderNo, router }: Props): JSX.Element => {
           <FormGroup title="聯絡人">
             <Form.Input
               type="text"
-              name="contact"
+              name="order-contact"
               control={control}
               size="small"
               required
@@ -162,7 +198,7 @@ export const OrderDetail = ({ orderNo, router }: Props): JSX.Element => {
             <Form.Input
               type="radio"
               label=""
-              name="contactGender"
+              name="order-contact-gender"
               control={control}
               options={[
                 { id: "female", value: "female", label: "女士" },
@@ -175,7 +211,7 @@ export const OrderDetail = ({ orderNo, router }: Props): JSX.Element => {
         <FormGroup title="聯絡人手機">
           <Form.Input
             type="text"
-            name="mobile"
+            name="order-mobile"
             control={control}
             size="small"
             required
@@ -187,7 +223,7 @@ export const OrderDetail = ({ orderNo, router }: Props): JSX.Element => {
         <FormGroup title="爸爸名">
           <Form.Input
             type="text"
-            name="fatherName"
+            name="card-father-name"
             control={control}
             size="small"
             required
@@ -196,7 +232,7 @@ export const OrderDetail = ({ orderNo, router }: Props): JSX.Element => {
         <FormGroup title="媽媽名">
           <Form.Input
             type="text"
-            name="motherName"
+            name="card-mother-name"
             control={control}
             size="small"
             required
@@ -205,7 +241,7 @@ export const OrderDetail = ({ orderNo, router }: Props): JSX.Element => {
         <FormGroup title="寶寶名">
           <Form.Input
             type="text"
-            name="babyName"
+            name="card-baby-name"
             control={control}
             size="small"
             required
@@ -214,7 +250,7 @@ export const OrderDetail = ({ orderNo, router }: Props): JSX.Element => {
         <FormGroup title="寶寶出生日">
           <Form.Input
             type="date"
-            name="babyBirthday"
+            name="card-baby-birthday"
             control={control}
             size="small"
             required
@@ -224,7 +260,7 @@ export const OrderDetail = ({ orderNo, router }: Props): JSX.Element => {
           <Form.Input
             className="w-full"
             type="text"
-            name="description"
+            name="card-description"
             control={control}
             size="small"
             rows={2}
@@ -232,27 +268,48 @@ export const OrderDetail = ({ orderNo, router }: Props): JSX.Element => {
           />
         </FormGroup>
         <FormGroup title="照片上傳">
-          <input
-            type="file"
-            className="my-2"
-            id="babyImg"
-            name="babyImg"
-            accept="image/png, image/jpeg"
-          />
+          {photo && (
+            <div className="flex">
+              <img src={photo} className="w-20" />
+              <button
+                className="mx-2"
+                type="button"
+                onClick={() => setPhoto("")}
+              >
+                移除圖片
+              </button>
+            </div>
+          )}
+          {!photo && (
+            <input
+              type="file"
+              className="my-2"
+              name="card-photo"
+              {...register("card-photo")}
+              accept="image/png, image/jpeg"
+            />
+          )}
         </FormGroup>
         <FormGroup title="選擇模板">
           <Form.Input
             className="w-1/2"
             type="select"
-            name="template"
-            options={[]}
+            name="card-template"
+            options={[
+              { id: "0", label: "預設模板", value: "0" },
+              { id: "1", label: "模板1", value: "1" },
+            ]}
             onChange={(e) => console.log(e)}
             control={control}
           />
         </FormGroup>
 
         <FormGroup title="開放前台留言">
-          <Form.Input type="switch" name="commentActive" control={control} />
+          <Form.Input
+            type="switch"
+            name="card-comment-active"
+            control={control}
+          />
         </FormGroup>
 
         <hr className="my-8" />
@@ -260,7 +317,7 @@ export const OrderDetail = ({ orderNo, router }: Props): JSX.Element => {
         <FormGroup title="家長帳號1">
           <Form.Input
             type="text"
-            name="parentEmail1"
+            name="email-1"
             control={control}
             size="small"
             required
@@ -269,7 +326,7 @@ export const OrderDetail = ({ orderNo, router }: Props): JSX.Element => {
         <FormGroup title="家長帳號2">
           <Form.Input
             type="text"
-            name="parentEmail2"
+            name="email-2"
             control={control}
             size="small"
           />
@@ -295,7 +352,7 @@ export const OrderDetail = ({ orderNo, router }: Props): JSX.Element => {
             type="submit"
             className="bg-blue-500 text-white active:bg-blue-600"
           >
-            <span>{orderNo ? `儲存` : `新增`}</span>
+            <span>{orderId ? `儲存` : `新增`}</span>
           </Button.Basic>
         </div>
       </div>

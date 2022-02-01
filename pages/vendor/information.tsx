@@ -4,20 +4,39 @@ import { useRouter } from "next/router";
 import Form from "components/elements/form";
 import { useForm } from "react-hook-form";
 import { Button } from "components/elements";
-import { VendorTypes } from "types";
+import { VendorInformationTypes } from "types";
 import { InputLayout } from "components/pages/vendor/information";
-import { locations } from "constant/locations";
+import { AuthStore } from "store/auth";
+import { useEffect } from "react";
+import { getPartner, putPartner } from "api";
 
 const Information = (): JSX.Element => {
   const router = useRouter();
 
-  const { control, handleSubmit } = useForm<VendorTypes>();
+  const { control, handleSubmit, setValue } = useForm<VendorInformationTypes>();
 
-  const country = locations.map((location) => location.country);
-
-  const onSubmit = (data: VendorTypes): void => {
+  const onSubmit = (data: VendorInformationTypes): void => {
     console.log(data);
+    putPartner(data, partners[0], token).then((res) => console.log(res));
   };
+  const pagePush = (path: string): void => {
+    router.push(path);
+  };
+
+  const { token, partners } = AuthStore((state) => ({
+    token: state.token,
+    partners: state.partners,
+  }));
+
+  useEffect(() => {
+    if (!partners) return;
+
+    getPartner(token, partners[0], []).then((res) => {
+      console.log(res);
+
+      Object.keys(res).forEach((val, _) => setValue(val as any, res[val]));
+    });
+  }, [partners]);
 
   return (
     <Layout.CMS
@@ -33,8 +52,7 @@ const Information = (): JSX.Element => {
         <InputLayout label="廠商名稱">
           <Form.Input
             type="text"
-            name="vendor"
-            label="廠商名稱"
+            name="name"
             control={control}
             required
             className="w-1/4"
@@ -45,7 +63,6 @@ const Information = (): JSX.Element => {
           <Form.Input
             type="text"
             name="contact"
-            label="聯絡人"
             control={control}
             required
             className="w-1/4"
@@ -55,8 +72,7 @@ const Information = (): JSX.Element => {
         <InputLayout label="聯絡電話">
           <Form.Input
             type="text"
-            name="tel"
-            label="聯絡電話"
+            name="contactPhone"
             control={control}
             required
             className="w-1/4"
@@ -66,8 +82,7 @@ const Information = (): JSX.Element => {
         <InputLayout label="電子信箱">
           <Form.Input
             type="text"
-            name="email"
-            label="電子信箱"
+            name="contactEmail"
             control={control}
             required
             className="w-full"
@@ -75,20 +90,9 @@ const Information = (): JSX.Element => {
         </InputLayout>
 
         <InputLayout label="聯絡地址">
-          <div className="flex space-x-4">
-            <Form.Input
-              type="select"
-              name="country"
-              options={country}
-              control={control}
-              required
-              className="w-1/6"
-            />
-          </div>
           <Form.Input
             type="text"
-            name="address"
-            label="詳細地址"
+            name="contactAddress"
             control={control}
             required
             className="w-full"
@@ -98,8 +102,7 @@ const Information = (): JSX.Element => {
         <InputLayout label="營業時間">
           <Form.Input
             type="text"
-            name="time"
-            label="營業時間"
+            name="openHour"
             control={control}
             required
             className="w-full"
@@ -109,8 +112,7 @@ const Information = (): JSX.Element => {
         <InputLayout label="廠商說明">
           <Form.Input
             type="text"
-            name="description"
-            label="廠商說明"
+            name="information"
             control={control}
             required
             className="w-full"
@@ -123,6 +125,7 @@ const Information = (): JSX.Element => {
           <Button.Basic
             type="button"
             className="border border-gray-800 text-gray-800 text-xl hover:bg-gray-600 hover:text-white "
+            onClick={() => pagePush("/vendor/order")}
           >
             返回
           </Button.Basic>
