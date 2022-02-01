@@ -6,26 +6,20 @@ import { useForm } from 'react-hook-form';
 import { Button } from 'components/elements';
 import { VendorTypes } from 'types';
 import { InputLayout } from 'components/pages/vendor/information';
-import { locations } from 'constant/locations';
-import { useState } from 'react';
+import { putPartner } from 'api/vendor';
 
 const Information = (): JSX.Element => {
   const router = useRouter();
 
   const { control, handleSubmit } = useForm<VendorTypes>();
 
-  const country = locations.map((location) => location.country);
-
-  const [district, setDistrict] = useState(locations[0].districts);
-
   const onSubmit = (data: VendorTypes): void => {
     console.log(data);
+    putPartner(data, 1).then((result) => console.log(result));
   };
-
-  const onChangeCountry = (target: string): void => {
-    console.log(target);
+  const pagePush = (path: string): void => {
+    router.push(path);
   };
-
   return (
     <Layout.CMS
       pathList={vendorPath}
@@ -33,11 +27,11 @@ const Information = (): JSX.Element => {
       breadcrumbs={[{ title: '廠商資料維護', link: '' }]}
     >
       廠商資料維護
-      <form className="w-full my-6 flex flex-col space-y-4">
+      <form className="w-full my-6 flex flex-col space-y-4" onSubmit={handleSubmit(onSubmit)}>
         <InputLayout label="廠商名稱">
           <Form.Input
             type="text"
-            name="vendor"
+            name="name"
             label="廠商名稱"
             control={control}
             required
@@ -59,7 +53,7 @@ const Information = (): JSX.Element => {
         <InputLayout label="聯絡電話">
           <Form.Input
             type="text"
-            name="tel"
+            name="contactPhone"
             label="聯絡電話"
             control={control}
             required
@@ -70,7 +64,7 @@ const Information = (): JSX.Element => {
         <InputLayout label="電子信箱">
           <Form.Input
             type="text"
-            name="email"
+            name="contactEmail"
             label="電子信箱"
             control={control}
             required
@@ -79,29 +73,9 @@ const Information = (): JSX.Element => {
         </InputLayout>
 
         <InputLayout label="聯絡地址">
-          <div className="flex space-x-4">
-            <Form.Input
-              type="select"
-              name="country"
-              options={country}
-              control={control}
-              onChange={() => console.log('change')}
-              required
-              className="w-1/6"
-            />
-
-            <Form.Input
-              type="select"
-              name="district"
-              options={district}
-              control={control}
-              required
-              className="w-1/6"
-            />
-          </div>
           <Form.Input
             type="text"
-            name="address"
+            name="contactAddress"
             label="詳細地址"
             control={control}
             required
@@ -112,7 +86,7 @@ const Information = (): JSX.Element => {
         <InputLayout label="營業時間">
           <Form.Input
             type="text"
-            name="time"
+            name="openHour"
             label="營業時間"
             control={control}
             required
@@ -123,7 +97,7 @@ const Information = (): JSX.Element => {
         <InputLayout label="廠商說明">
           <Form.Input
             type="text"
-            name="description"
+            name="information"
             label="廠商說明"
             control={control}
             required
@@ -137,6 +111,7 @@ const Information = (): JSX.Element => {
           <Button.Basic
             type="button"
             className="border border-gray-800 text-gray-800 text-xl hover:bg-gray-600 hover:text-white "
+            onClick={() => pagePush('/vendor/order')}
           >
             返回
           </Button.Basic>
@@ -153,3 +128,6 @@ const Information = (): JSX.Element => {
 };
 
 export default Information;
+// function useHistory<T>() {
+//   throw new Error('Function not implemented.');
+// }

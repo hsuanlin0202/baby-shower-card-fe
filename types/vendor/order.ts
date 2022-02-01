@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 
 export interface OrderTypes {
   createdAt: string;
@@ -42,16 +42,13 @@ export interface OrderListTypes {
 }
 
 export interface VendorTypes {
-  vendor: string;
-  gender: string;
+  name: string;
   contact: string;
-  tel: string;
-  email: string;
-  country: string;
-  district: string;
-  address: string;
-  time: string;
-  description: string;
+  contactPhone: string;
+  contactEmail: string;
+  contactAddress: string;
+  openHour: string;
+  information: string;
 }
 
 export interface InputLayoutProps {
