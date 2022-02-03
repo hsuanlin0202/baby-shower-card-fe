@@ -5,6 +5,7 @@ export const organizeFormData = (data: OrderFormType, image: Blob) => {
     ...data,
     "card-public": true,
     // "order-token": "porterma-2",
+    "order-no": `${data["order-no"]}?${new Date().getTime()}`,
     "card-title": `${data["card-baby-name"]}-彌月卡`,
     "order-expired-at": new Date(data["order-expired-at"]).toJSON(),
     "card-baby-birthday": new Date(data["card-baby-birthday"]).toJSON(),

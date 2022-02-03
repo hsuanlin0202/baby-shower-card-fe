@@ -7,7 +7,7 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import SettingsIcon from "@mui/icons-material/Settings";
-import Switch from "@mui/material/Switch";
+// import Switch from "@mui/material/Switch";
 import { OrderListTypes } from "types";
 
 interface Column {
@@ -61,12 +61,17 @@ const createData = (index: number, data: OrderListTypes) => {
   return {
     index: index,
     orderId: data.orderId,
-    orderNo: data.orderNo,
+    orderNo: data.orderNo.substring(
+      0,
+      data.orderNo.includes("?")
+        ? data.orderNo.indexOf("?")
+        : data.orderNo.length
+    ),
     contact: data.contact,
     mobile: data.mobile,
     createdAt: new Date(data.createdAt).toLocaleDateString(),
     active: data.active,
-    edit: data.orderNo,
+    edit: data.orderId,
   };
 };
 
@@ -123,12 +128,18 @@ export const StickyHeadTable = ({ orders, pushPage }: Props): JSX.Element => {
                       if (column.id === "active")
                         return (
                           <TableCell key={column.id} align="center">
-                            <button
+                            {/* <button
                               type="button"
                               onClick={() => console.log(row.orderNo)}
                             >
                               <Switch defaultChecked={row.active} />
-                            </button>
+                            </button> */}
+                            {row.active && (
+                              <span className="text-green-400">啟用中</span>
+                            )}
+                            {!row.active && (
+                              <span className="text-red-400">已關閉</span>
+                            )}
                           </TableCell>
                         );
 

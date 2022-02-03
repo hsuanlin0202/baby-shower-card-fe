@@ -1,4 +1,4 @@
-// @ts-nocheck0
+// @ts-nocheck
 import { useForm } from "react-hook-form";
 import Form from "components/elements/form";
 import { Button, ImageUpload } from "components/elements";
@@ -152,7 +152,12 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
 
       <div className="flex">
         <h2 className="text-2xl font-bold">
-          {order ? `訂單編號： ${order["order-no"]}` : "建立訂單"}
+          {order
+            ? `訂單編號： ${order["order-no"].substring(
+                0,
+                order["order-no"].indexOf("?")
+              )}`
+            : "建立訂單"}
         </h2>
         {!orderId && (
           <div className="max-w-36 ml-4">
