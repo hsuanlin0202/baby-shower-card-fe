@@ -1,5 +1,5 @@
-import { join } from 'path';
-import getConfig from 'next/config';
+import { join } from "path";
+import getConfig from "next/config";
 
 export interface ErrorResponse {
   error?: {
@@ -13,7 +13,7 @@ type Query = Record<string, string | number | boolean | undefined>;
 export function BABY_API(path: string, query?: Query) {
   const { publicRuntimeConfig } = getConfig();
 
-  const url = new URL('./' + join(path), publicRuntimeConfig.STRAPI_API);
+  const url = new URL("./" + join(path), publicRuntimeConfig.STRAPI_API);
 
   query &&
     Object.entries(query)
@@ -57,14 +57,18 @@ export function get<T>(req: RequestInfo, headers = {}): Promise<T> {
     .catch(error);
 }
 
-export function put<T>(req: RequestInfo, body: object, headers = {}): Promise<T> {
+export function put<T>(
+  req: RequestInfo,
+  body: object,
+  headers = {}
+): Promise<T> {
   return fetch(
     new Request(req, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(body),
       headers: new Headers({
-        accept: 'text/plain',
-        'Content-Type': 'application/json-patch+json',
+        accept: "text/plain",
+        "Content-Type": "application/json-patch+json",
         ...headers,
       }),
     })
@@ -74,30 +78,58 @@ export function put<T>(req: RequestInfo, body: object, headers = {}): Promise<T>
     .catch(error);
 }
 
-export function post<T>(req: RequestInfo, body: object, headers = {}): Promise<T> {
+export function putForm<T>(
+  req: RequestInfo,
+  body: FormData,
+  headers = {}
+): Promise<T> {
   return fetch(
     new Request(req, {
-      method: 'POST',
-      body: JSON.stringify(body),
-      headers: new Headers({
-        accept: 'text/plain',
-        'Content-Type': 'application/json-patch+json',
-        ...headers,
-      }),
-    })
-  )
-    .then(status)
-    .then(json)
-    .catch(error);
-}
-
-export function postForm<T>(req: RequestInfo, body: FormData, headers = {}): Promise<T> {
-  return fetch(
-    new Request(req, {
-      method: 'POST',
+      method: "PUT",
       body: body,
       headers: new Headers({
-        accept: 'application/json',
+        accept: "application/json",
+        ...headers,
+      }),
+    })
+  )
+    .then(status)
+    .then(json)
+    .catch(error);
+}
+
+export function post<T>(
+  req: RequestInfo,
+  body: object,
+  headers = {}
+): Promise<T> {
+  return fetch(
+    new Request(req, {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: new Headers({
+        accept: "text/plain",
+        "Content-Type": "application/json-patch+json",
+        ...headers,
+      }),
+    })
+  )
+    .then(status)
+    .then(json)
+    .catch(error);
+}
+
+export function postForm<T>(
+  req: RequestInfo,
+  body: FormData,
+  headers = {}
+): Promise<T> {
+  return fetch(
+    new Request(req, {
+      method: "POST",
+      body: body,
+      headers: new Headers({
+        accept: "application/json",
         ...headers,
       }),
     })

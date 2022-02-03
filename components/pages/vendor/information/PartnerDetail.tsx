@@ -1,46 +1,69 @@
 // @ts-nocheck
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import Form from "components/elements/form";
 import { Button } from "components/elements";
 import { FormGroup } from "./FormGroup";
-import { useEffect } from "react";
 import { AuthStore } from "store/auth";
-import { getPartner, putPartner } from "api";
+import { putPartner } from "api";
+import { useInitData } from "hooks";
+import { VendorInformationTypes } from "types";
+import Form from "components/elements/form";
 
 type PartnerProps = {
-  mode: string;
-  updateMode: (mode: string) => void;
+  information: VendorInformationTypes;
+  updateMode: (mode: "view" | "edit") => void;
+  updateDate: () => void;
 };
 
-export const PartnerDetail = ({ updateMode }: PartnerProps): JSX.Element => {
-  const { control, handleSubmit, setValue } = useForm<VendorInformationTypes>();
-  const onSubmit = (data: VendorInformationTypes): void => {
-    console.log(data);
-    putPartner(data, partners[0], token).then((res) => {
-      console.log(res);
-      updateMode("view");
-    });
-  };
+export const PartnerDetail = ({
+  updateMode,
+  information,
+  updateDate,
+}: PartnerProps): JSX.Element => {
+  const { showNotify, openLoader } = useInitData();
+
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { isDirty },
+  } = useForm<VendorInformationTypes>();
+
   const { token, partners } = AuthStore((state) => ({
     token: state.token,
     partners: state.partners,
   }));
 
-  useEffect(() => {
-    if (!partners) return;
+  const onSubmit = (data: VendorInformationTypes): void => {
+    if (!isDirty) {
+      updateMode("view");
+      return;
+    }
 
-    getPartner(token, partners[0], []).then((res) => {
-      console.log(res);
-
-      Object.keys(res).forEach((val, _) => setValue(val as any, res[val]));
+    // console.log(data);
+    openLoader(true);
+    putPartner(data, partners[0], token).then((res) => {
+      openLoader(false);
+      // console.log(res);
+      updateMode("view");
+      updateDate();
     });
-  }, [partners]);
+  };
+
+  useEffect(() => {
+    if (!information) return;
+
+    Object.keys(information).forEach((val, _) =>
+      setValue(val as any, information[val])
+    );
+  }, [information]);
+
   return (
     <form
-      className="w-full mb-6 flex flex-col space-y-4"
+      className="w-full mb-6 flex flex-col border rounded-lg shadow-lg py-4"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <FormGroup title="廠商名稱">
+      <FormGroup title="廠商名稱" contentSpace="w-1/2">
         <Form.Input
           type="text"
           name="name"
@@ -50,7 +73,7 @@ export const PartnerDetail = ({ updateMode }: PartnerProps): JSX.Element => {
         />
       </FormGroup>
 
-      <FormGroup title="聯絡人">
+      {/* <FormGroup title="聯絡人" contentSpace="w-1/2">
         <Form.Input
           type="text"
           name="contact"
@@ -58,9 +81,9 @@ export const PartnerDetail = ({ updateMode }: PartnerProps): JSX.Element => {
           required
           size="small"
         />
-      </FormGroup>
+      </FormGroup> */}
 
-      <FormGroup title="聯絡電話">
+      <FormGroup title="聯絡電話" contentSpace="w-1/2">
         <Form.Input
           type="text"
           name="contactPhone"
@@ -70,17 +93,7 @@ export const PartnerDetail = ({ updateMode }: PartnerProps): JSX.Element => {
         />
       </FormGroup>
 
-      <FormGroup title="電子信箱">
-        <Form.Input
-          type="text"
-          name="contactEmail"
-          control={control}
-          required
-          size="small"
-        />
-      </FormGroup>
-
-      <FormGroup title="聯絡地址">
+      <FormGroup title="聯絡地址" contentSpace="w-1/2">
         <Form.Input
           type="text"
           name="contactAddress"
@@ -90,7 +103,17 @@ export const PartnerDetail = ({ updateMode }: PartnerProps): JSX.Element => {
         />
       </FormGroup>
 
-      <FormGroup title="營業時間">
+      <FormGroup title="聯絡信箱" contentSpace="w-1/2">
+        <Form.Input
+          type="text"
+          name="contactEmail"
+          control={control}
+          required
+          size="small"
+        />
+      </FormGroup>
+
+      <FormGroup title="營業時間" contentSpace="w-1/2">
         <Form.Input
           type="text"
           name="openHour"
@@ -100,33 +123,43 @@ export const PartnerDetail = ({ updateMode }: PartnerProps): JSX.Element => {
         />
       </FormGroup>
 
-      <FormGroup title="廠商說明">
+      <FormGroup title="其他說明" contentSpace="w-full">
         <Form.Input
           type="text"
           name="information"
           control={control}
-          contentSpace="w-96"
           required
-          rows={3}
+          rows={10}
           size="small"
         />
       </FormGroup>
 
-      <div className="w-full h-1 bg-black"></div>
+      <hr className="my-8" />
 
-      <div className="flex space-x-4">
+      <div className="flex justify-end items-center space-x-4 px-4">
         <Button.Basic
           type="button"
-          className="border border-gray-800 text-gray-800 text-xl hover:bg-gray-600 hover:text-white "
-          onClick={() => updateMode("view")}
+          className="text-blue-500 bg-white"
+          onClick={() => {
+            if (!isDirty) {
+              updateMode("view");
+              return;
+            }
+
+            showNotify("open", "尚未儲存資料", "確定要返回？", () => {
+              showNotify("close", "", "");
+              updateMode("view");
+            });
+          }}
         >
-          返回
+          <span>返回</span>
         </Button.Basic>
+
         <Button.Basic
           type="submit"
-          className="bg-gray-600 text-white text-xl transition-all duration-500 hover:bg-gray-800"
+          className="bg-blue-500 text-white active:bg-blue-600"
         >
-          確認
+          <span>確認修改</span>
         </Button.Basic>
       </div>
     </form>

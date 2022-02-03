@@ -51,6 +51,12 @@ module.exports = {
       lineHeight: {
         16: "4rem",
       },
+      height: {
+        "20v": "20vh",
+        "40v": "40vh",
+        "60v": "60vh",
+        "80v": "80vh",
+      },
       minWidth: {
         0: "0rem",
         20: "5rem",
@@ -84,7 +90,12 @@ module.exports = {
         128: "32rem",
         160: "40rem",
         228: "57rem",
+        "20p": "20%",
+        "40p": "40%",
+        "60p": "60%",
+        "80p": "80%",
       },
+      maxHeight: { "20v": "20vh", "40v": "40vh", "60v": "60vh", "80v": "80vh" },
       fontSize: {
         xs: ".75rem",
         sm: ".875rem",
