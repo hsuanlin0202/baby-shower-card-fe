@@ -1,4 +1,5 @@
 import Modal from "@mui/material/Modal";
+import { Button } from "./Button";
 
 export type NotifyProps = {
   isOpen: boolean;
@@ -34,10 +35,20 @@ export const Notify = ({
             <div className="p-4">{message}</div>
           </div>
 
-          <div className="w-full p-4 flex justify-end">
-            <button
+          <div className="w-full p-4 flex justify-end space-x-2">
+            <Button.Basic
               type="button"
-              className=" px-4 py-2 bg-blue-500 text-white rounded"
+              className=" text-blue-500"
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
+              <span>取消</span>
+            </Button.Basic>
+
+            <Button.Basic
+              type="button"
+              className="bg-blue-500 text-white active:bg-blue-600"
               onClick={() => {
                 if (!action) {
                   setOpen(false);
@@ -48,7 +59,7 @@ export const Notify = ({
               }}
             >
               <span>確定</span>
-            </button>
+            </Button.Basic>
           </div>
         </div>
       </div>

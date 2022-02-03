@@ -21,7 +21,8 @@
     "react-hook-form": "^7.9.0",
     "react-share": "^4.4.0",
     "zustand": "^3.5.5",
-    "date-fns": "^2.22.1"
+    "date-fns": "^2.22.1",
+    "react-image-crop": "9.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.14.3",
