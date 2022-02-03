@@ -4,20 +4,18 @@ import { get, BABY_API, ErrorResponse } from '../../base';
 
 interface PartnerResponse {
   id: number;
-  attributes: {
-    name: string;
-    createdAt: string;
-    updatedAt: string;
-    publishedAt: string;
-    contact: string;
-    contactPhone: string;
-    contactEmail: string;
-    contactAddress: string;
-    openHour: string;
-    information: string;
-    templates: {
-      data: PartnerTemplatesResponse[];
-    };
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  contact: string;
+  contactPhone: string;
+  contactEmail: string;
+  contactAddress: string;
+  openHour: string;
+  information: string;
+  templates: {
+    data: PartnerTemplatesResponse[];
   };
 }
 
@@ -45,23 +43,21 @@ function toTemplate(list: PartnerTemplatesResponse): VendorTemplateTypes {
 function toPartner(data: PartnerResponse): VendorInformationTypes {
   return {
     id: data.id,
-    name: data.attributes.name,
-    contact: data.attributes.contact,
-    contactPhone: data.attributes.contactPhone,
-    contactEmail: data.attributes.contactEmail,
-    contactAddress: data.attributes.contactAddress,
-    openHour: data.attributes.openHour,
-    information: data.attributes.information,
-    templates: !data.attributes.templates
-      ? []
-      : data.attributes.templates.data.map((template) => toTemplate(template)),
+    name: data.name,
+    contact: data.contact,
+    contactPhone: data.contactPhone,
+    contactEmail: data.contactEmail,
+    contactAddress: data.contactAddress,
+    openHour: data.openHour,
+    information: data.information,
+    templates: !data.templates ? [] : data.templates.data.map((template) => toTemplate(template)),
   };
 }
 
-interface GetPartnerResponse {
-  data: PartnerResponse;
-  meta: {};
-}
+// interface GetPartnerResponse {
+//   data: PartnerResponse;
+//   meta: {};
+// }
 
 /**
  * [GET partners/[id]]
@@ -77,14 +73,14 @@ export function getPartner(
     return `populate=${item}`;
   });
   const populateString = populateList.join().replaceAll(',', '&');
-  return get<GetPartnerResponse>(
+  return get<PartnerResponse>(
     BABY_API(`partners/${id}${populateString ? `?${populateString}` : ``}`),
 
     {
       Authorization: `Bearer ${token}`,
     }
   )
-    .then((result) => toPartner(result.data))
+    .then((result) => toPartner(result))
     .catch(() => {
       return null;
     });

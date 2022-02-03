@@ -8,6 +8,9 @@ export interface VendorInformationTypes {
   openHour: string;
   information: string;
   templates?: VendorTemplateTypes[];
+  createAt?: string;
+  publishedAt?: string;
+  updatedAt?: string;
 }
 
 export interface VendorTemplateTypes {
