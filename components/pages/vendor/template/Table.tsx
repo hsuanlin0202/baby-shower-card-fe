@@ -8,39 +8,17 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import SettingsIcon from "@mui/icons-material/Settings";
 // import Switch from "@mui/material/Switch";
-import { OrderListTypes } from "types";
+import { TemplateTypes } from "types";
 
 interface Column {
-  id:
-    | "index"
-    | "createdAt"
-    | "orderNo"
-    | "contact"
-    | "mobile"
-    | "active"
-    | "edit";
+  id: "index" | "name" | "active" | "edit";
   label: string | JSX.Element;
   minWidth: number;
 }
 
 const columns: readonly Column[] = [
   { id: "index", label: "序號", minWidth: 1 },
-  { id: "orderNo", label: "訂單編號", minWidth: 3 },
-  {
-    id: "contact",
-    label: "聯絡人",
-    minWidth: 2,
-  },
-  {
-    id: "mobile",
-    label: "聯絡人手機",
-    minWidth: 3,
-  },
-  {
-    id: "createdAt",
-    label: "創建日期",
-    minWidth: 3,
-  },
+  { id: "name", label: "模板名稱", minWidth: 5 },
   {
     id: "active",
     label: "啟用狀態",
@@ -57,36 +35,30 @@ const columns: readonly Column[] = [
   },
 ];
 
-const createData = (index: number, data: OrderListTypes) => {
+const createData = (index: number, data: TemplateTypes) => {
   return {
     index: index,
-    orderId: data.orderId,
-    orderNo: data.orderNo.substring(
-      0,
-      data.orderNo.includes("?")
-        ? data.orderNo.indexOf("?")
-        : data.orderNo.length
-    ),
-    contact: data.contact,
-    mobile: data.mobile,
-    createdAt: new Date(data.createdAt).toLocaleDateString(),
+    name: data.name,
     active: data.active,
-    edit: data.orderId,
+    id: data.id,
   };
 };
 
 type Props = {
-  orders: OrderListTypes[];
+  templates: TemplateTypes[];
   pushPage: (id: string | number) => void;
 };
-export const StickyHeadTable = ({ orders, pushPage }: Props): JSX.Element => {
-  if (!orders) return <></>;
+export const StickyHeadTable = ({
+  templates,
+  pushPage,
+}: Props): JSX.Element => {
+  if (!templates) return <></>;
 
   const [page, setPage] = React.useState(0);
 
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const rows = orders.map((item, index) => createData(index + 1, item));
+  const rows = templates.map((item, index) => createData(index + 1, item));
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -149,7 +121,7 @@ export const StickyHeadTable = ({ orders, pushPage }: Props): JSX.Element => {
                             <button
                               type="button"
                               className="underline"
-                              onClick={() => pushPage(row.orderId)}
+                              onClick={() => pushPage(row.id)}
                             >
                               編輯
                             </button>

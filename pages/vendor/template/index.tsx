@@ -1,4 +1,5 @@
 import Layout from "components/layout";
+import { TemplateList } from "components/pages/vendor";
 import { vendorPath } from "constant/router";
 import { useRouter } from "next/router";
 
@@ -10,7 +11,7 @@ const Template = (): JSX.Element => {
       router={router}
       breadcrumbs={[{ title: "模板列表", link: "" }]}
     >
-      模板列表
+      <TemplateList router={router} />
     </Layout.CMS>
   );
 };

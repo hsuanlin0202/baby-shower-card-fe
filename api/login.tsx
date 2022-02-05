@@ -24,8 +24,13 @@ function toToken(data: LoginResponse): string {
  *
  * post Login
  */
-export function postLogin(data: LoginTypes): Promise<string> {
-  return post<LoginResponse & ErrorResponse>(BABY_API("auth/local"), data)
+export function postLogin(data: LoginTypes, timeout?: number): Promise<string> {
+  return post<LoginResponse & ErrorResponse>(
+    BABY_API("auth/local"),
+    data,
+    {},
+    timeout
+  )
     .then((result) => toToken(result))
     .catch(() => {
       return "";

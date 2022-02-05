@@ -1,6 +1,7 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+@import url("https://fonts.google.com/specimen/Noto+Serif+TC?subset=chinese-traditional");
 
 html,
 body {
@@ -15,4 +16,8 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+.baby-main-font {
+  font-family: "STSong", fantasy;
 }

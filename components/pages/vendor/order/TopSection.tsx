@@ -1,6 +1,7 @@
 import { Button } from "components/elements";
 import Form from "components/elements/form";
 import { useForm } from "react-hook-form";
+import AddIcon from "@mui/icons-material/Add";
 
 type Props = {
   pushPage: (path: string) => void;
@@ -10,10 +11,11 @@ export const TopSection = ({ pushPage, onSubmit }: Props): JSX.Element => {
   const { control, handleSubmit } = useForm<{ keyword: string }>();
 
   return (
-    <div className="pb-4 flex justify-between items-center border-b border-gray-400">
+    <div className="pb-4 flex justify-between items-center border-b border-gray-300">
       <Button.Basic
         type="button"
-        className="bg-red-500 text-white active:bg-red-600"
+        className="bg-red-500 text-white active:bg-red-600 leading-4 pl-2"
+        icon={<AddIcon fontSize="small" />}
         onClick={() => pushPage("new")}
       >
         <span>新增</span>

@@ -7,6 +7,8 @@ type FormGroupProps = {
   icon?: ReactNode;
   titleSpace?: string;
   contentSpace?: string;
+  note?: ReactNode;
+  required?: boolean;
 };
 export const FormGroup = ({
   title,
@@ -14,16 +16,22 @@ export const FormGroup = ({
   icon,
   titleSpace = "min-w-40",
   contentSpace = "w-56",
+  note,
+  required = false,
 }: FormGroupProps): JSX.Element => {
   return (
-    <div className="flex items-center mx-8 my-4">
-      {!!title && (
-        <div className={clsx("flex items-center", titleSpace)}>
-          {icon && icon}
-          <span>{title}</span>
-        </div>
-      )}
-      <div className={contentSpace}>{children}</div>
+    <div className="mx-8 my-4">
+      <div className="flex items-center">
+        {!!title && (
+          <div className={clsx("flex items-center", titleSpace)}>
+            {icon && icon}
+            <span>{title}</span>
+            {required && <span className="ml-1 text-red-500">*</span>}
+          </div>
+        )}
+        <div className={contentSpace}>{children}</div>
+      </div>
+      {note}
     </div>
   );
 };

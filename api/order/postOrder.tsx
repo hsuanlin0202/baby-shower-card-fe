@@ -27,14 +27,16 @@ interface PostOrderResponseTypes {
  */
 export function postOrder(
   token: string,
-  order: FormData
+  order: FormData,
+  timeout?: number
 ): Promise<{ id: number; message: string }> {
   return postForm<PostOrderResponseTypes & ErrorResponse>(
     BABY_API("orders"),
     order,
     {
       Authorization: `Bearer ${token}`,
-    }
+    },
+    timeout
   ).then((result) => {
     if (!result.data) {
       return { id: 0, message: result.error.message };

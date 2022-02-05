@@ -1,17 +1,17 @@
-// @ts-nocheck0
+// @ts-nocheck
+import { useEffect, useState } from "react";
+import { NextRouter } from "next/router";
 import { useForm } from "react-hook-form";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { Modal } from "@mui/material";
 import Form from "components/elements/form";
 import { Button, ImageUpload } from "components/elements";
 import { OrderFormType } from "types";
 import { organizeFormData, toLocalDateTimeString } from "functions";
 import { FormGroup } from "./FormGroup";
-import { useEffect, useState } from "react";
 import { useInitData } from "hooks";
-import { NextRouter } from "next/router";
 import { getOrder, postOrder, putOrder } from "api/order";
 import { AuthStore } from "store/auth";
-import { Modal } from "@mui/material";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 const setValueList = [
   "order-author",
@@ -152,7 +152,12 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
 
       <div className="flex">
         <h2 className="text-2xl font-bold">
-          {order ? `訂單編號： ${order["order-no"]}` : "建立訂單"}
+          {order
+            ? `訂單編號： ${order["order-no"].substring(
+                0,
+                order["order-no"].indexOf("?")
+              )}`
+            : "建立訂單"}
         </h2>
         {!orderId && (
           <div className="max-w-36 ml-4">

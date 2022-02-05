@@ -1,6 +1,5 @@
 // @ts-nocheck
 import { NextRouter } from "next/router";
-import { mockData } from "api";
 import Form from "components/elements/form";
 import { TopSection } from "./TopSection";
 import { StickyHeadTable } from "./table";
@@ -45,7 +44,7 @@ export const VendorOrderPage = ({ router }: Props): JSX.Element => {
     <div>
       <TopSection onSubmit={postSearch} pushPage={pushPage} />
 
-      <div className="mt-4 flex flex-col items-end ">
+      <div className="mt-4 flex flex-col items-end">
         <div className="w-1/3">
           <Form.Input
             type="select"
