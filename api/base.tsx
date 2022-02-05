@@ -1,6 +1,8 @@
 import { join } from "path";
 import getConfig from "next/config";
 
+const DefaultTimeout = 5000;
+
 export interface ErrorResponse {
   error?: {
     status: number;
@@ -46,9 +48,16 @@ function error(err: Error) {
   throw err;
 }
 
-export function get<T>(req: RequestInfo, headers = {}): Promise<T> {
+export function get<T>(
+  req: RequestInfo,
+  headers = {},
+  timeout?: number
+): Promise<T> {
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), timeout || DefaultTimeout);
   return fetch(
     new Request(req, {
+      signal: controller.signal,
       headers: new Headers(headers),
     })
   )
@@ -60,10 +69,15 @@ export function get<T>(req: RequestInfo, headers = {}): Promise<T> {
 export function put<T>(
   req: RequestInfo,
   body: object,
-  headers = {}
+  headers = {},
+  timeout?: number
 ): Promise<T> {
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), timeout || DefaultTimeout);
+
   return fetch(
     new Request(req, {
+      signal: controller.signal,
       method: "PUT",
       body: JSON.stringify(body),
       headers: new Headers({
@@ -81,10 +95,14 @@ export function put<T>(
 export function putForm<T>(
   req: RequestInfo,
   body: FormData,
-  headers = {}
+  headers = {},
+  timeout?: number
 ): Promise<T> {
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), timeout || DefaultTimeout);
   return fetch(
     new Request(req, {
+      signal: controller.signal,
       method: "PUT",
       body: body,
       headers: new Headers({
@@ -101,10 +119,14 @@ export function putForm<T>(
 export function post<T>(
   req: RequestInfo,
   body: object,
-  headers = {}
+  headers = {},
+  timeout?: number
 ): Promise<T> {
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), timeout || DefaultTimeout);
   return fetch(
     new Request(req, {
+      signal: controller.signal,
       method: "POST",
       body: JSON.stringify(body),
       headers: new Headers({
@@ -122,10 +144,14 @@ export function post<T>(
 export function postForm<T>(
   req: RequestInfo,
   body: FormData,
-  headers = {}
+  headers = {},
+  timeout?: number
 ): Promise<T> {
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), timeout || DefaultTimeout);
   return fetch(
     new Request(req, {
+      signal: controller.signal,
       method: "POST",
       body: body,
       headers: new Headers({
