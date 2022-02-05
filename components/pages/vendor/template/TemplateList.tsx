@@ -49,7 +49,7 @@ export const TemplateList = ({ router }: Props): JSX.Element => {
       <hr className="my-4 border-gray-300" />
 
       <div className="mt-4 w-full overflow-x-scroll rounded-t-md">
-        <div className="w-full min-w-228">
+        <div className="w-full">
           <StickyHeadTable templates={mock} pushPage={pushPage} />
         </div>
       </div>

@@ -9,3 +9,8 @@ export interface TemplateTypes {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface ImageUploadTypes {
+  blob: Blob;
+  string: string | ArrayBuffer;
+}
