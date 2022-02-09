@@ -20,8 +20,11 @@ module.exports = {
       gray: colors.gray,
       emerald: colors.emerald,
       indigo: colors.indigo,
-      yellow: {
-        50: '#E9DCD2'
+      brown: {
+        50: '#FBF2EB',
+        100: '#E9DCD2',
+        200: '#DEC59F',
+        500: '#714300'
       },
       green: colors.green,
       blue: {
@@ -47,7 +50,6 @@ module.exports = {
         700: "#d32f2f",
         800: "#c62828",
         900: "#7f1d1d",
-        1000: "#714300",
       },
     },
     extend: {
