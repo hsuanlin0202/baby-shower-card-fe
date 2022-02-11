@@ -1,4 +1,4 @@
-// @ts-noch-eck
+// @ts-nocheck
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "components/elements";
