@@ -1,3 +1,7 @@
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
+import { SocialButton } from "components/pages/baby";
 import { getContrastColorByLightness } from "functions";
 
 type Props = {
@@ -24,15 +28,15 @@ export const BabyCardPreview = ({
         color: color,
       }}
     >
-      <div className="my-6 flex flex-col items-center justify-evenly space-y-4">
-        <div className="text-center text-xl font-bold" style={{ width: 156 }}>
+      <div className="my-6 flex flex-col items-center justify-evenly space-y-4 baby-main-font">
+        <div className="text-center text-base font-bold" style={{ width: 156 }}>
           {logo && <img className="max-h-14" src={logo} />}
           {partner && <p>{partner}</p>}
         </div>
 
         <img src="https://i.imgur.com/YGE2dgR.jpeg" className="w-4/5" />
 
-        <div className="text-center text-xl font-bold flex flex-col space-y-1 baby-main-font">
+        <div className="text-center text-2xl font-bold flex flex-col space-y-1">
           <p>寶寶滿月囉！</p>
           <p className="text-base font-normal">
             謝謝各位
@@ -44,19 +48,31 @@ export const BabyCardPreview = ({
 
           <p>爸爸：小明 ＆ 媽媽：小花</p>
 
-          <p>2022/03</p>
+          <p className="baby-date-font text-3xl">2022/03</p>
         </div>
         <div
-          className="px-4 py-2 rounded "
+          className="px-4 py-2 rounded"
           style={{ background: color, color: contrastColor }}
         >
           保存回憶
         </div>
 
         <div className="w-4/5 flex justify-evenly">
-          <p>Like</p>
-          <p>Comment</p>
-          <p>Share</p>
+          <SocialButton
+            icon={<FavoriteBorderIcon />}
+            title="Like"
+            onClick={() => {}}
+          />
+          <SocialButton
+            icon={<ChatBubbleOutlineIcon />}
+            title="Comment"
+            onClick={() => {}}
+          />
+          <SocialButton
+            icon={<ShareOutlinedIcon />}
+            title="Share"
+            onClick={() => {}}
+          />
         </div>
       </div>
     </div>
