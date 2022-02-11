@@ -1,5 +1,7 @@
-import { join } from 'path';
-import getConfig from 'next/config';
+import { join } from "path";
+import getConfig from "next/config";
+
+const DefaultTimeout = 5000;
 
 export interface ErrorResponse {
   error?: {
@@ -13,7 +15,7 @@ type Query = Record<string, string | number | boolean | undefined>;
 export function BABY_API(path: string, query?: Query) {
   const { publicRuntimeConfig } = getConfig();
 
-  const url = new URL('./' + join(path), publicRuntimeConfig.STRAPI_API);
+  const url = new URL("./" + join(path), publicRuntimeConfig.STRAPI_API);
 
   query &&
     Object.entries(query)
@@ -46,9 +48,16 @@ function error(err: Error) {
   throw err;
 }
 
-export function get<T>(req: RequestInfo, headers = {}): Promise<T> {
+export function get<T>(
+  req: RequestInfo,
+  headers = {},
+  timeout?: number
+): Promise<T> {
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), timeout || DefaultTimeout);
   return fetch(
     new Request(req, {
+      signal: controller.signal,
       headers: new Headers(headers),
     })
   )
@@ -57,14 +66,23 @@ export function get<T>(req: RequestInfo, headers = {}): Promise<T> {
     .catch(error);
 }
 
-export function put<T>(req: RequestInfo, body: object, headers = {}): Promise<T> {
+export function put<T>(
+  req: RequestInfo,
+  body: object,
+  headers = {},
+  timeout?: number
+): Promise<T> {
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), timeout || DefaultTimeout);
+
   return fetch(
     new Request(req, {
-      method: 'PUT',
+      signal: controller.signal,
+      method: "PUT",
       body: JSON.stringify(body),
       headers: new Headers({
-        accept: 'text/plain',
-        'Content-Type': 'application/json-patch+json',
+        accept: "text/plain",
+        "Content-Type": "application/json-patch+json",
         ...headers,
       }),
     })
@@ -74,30 +92,70 @@ export function put<T>(req: RequestInfo, body: object, headers = {}): Promise<T>
     .catch(error);
 }
 
-export function post<T>(req: RequestInfo, body: object, headers = {}): Promise<T> {
+export function putForm<T>(
+  req: RequestInfo,
+  body: FormData,
+  headers = {},
+  timeout?: number
+): Promise<T> {
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), timeout || DefaultTimeout);
   return fetch(
     new Request(req, {
-      method: 'POST',
-      body: JSON.stringify(body),
-      headers: new Headers({
-        accept: 'text/plain',
-        'Content-Type': 'application/json-patch+json',
-        ...headers,
-      }),
-    })
-  )
-    .then(status)
-    .then(json)
-    .catch(error);
-}
-
-export function postForm<T>(req: RequestInfo, body: FormData, headers = {}): Promise<T> {
-  return fetch(
-    new Request(req, {
-      method: 'POST',
+      signal: controller.signal,
+      method: "PUT",
       body: body,
       headers: new Headers({
-        accept: 'application/json',
+        accept: "application/json",
+        ...headers,
+      }),
+    })
+  )
+    .then(status)
+    .then(json)
+    .catch(error);
+}
+
+export function post<T>(
+  req: RequestInfo,
+  body: object,
+  headers = {},
+  timeout?: number
+): Promise<T> {
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), timeout || DefaultTimeout);
+  return fetch(
+    new Request(req, {
+      signal: controller.signal,
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: new Headers({
+        accept: "text/plain",
+        "Content-Type": "application/json-patch+json",
+        ...headers,
+      }),
+    })
+  )
+    .then(status)
+    .then(json)
+    .catch(error);
+}
+
+export function postForm<T>(
+  req: RequestInfo,
+  body: FormData,
+  headers = {},
+  timeout?: number
+): Promise<T> {
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), timeout || DefaultTimeout);
+  return fetch(
+    new Request(req, {
+      signal: controller.signal,
+      method: "POST",
+      body: body,
+      headers: new Headers({
+        accept: "application/json",
         ...headers,
       }),
     })

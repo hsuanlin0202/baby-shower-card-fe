@@ -1,27 +1,24 @@
 import Layout from "components/layout";
 import { vendorPath } from "constant/router";
 import { useRouter } from "next/router";
-import Form from "components/elements/form";
-import { useForm } from "react-hook-form";
-import { Button } from "components/elements";
+import {
+  PartnerDetail,
+  PartnerView,
+} from "components/pages/vendor/information";
+import { useEffect, useState } from "react";
 import { VendorInformationTypes } from "types";
-import { InputLayout } from "components/pages/vendor/information";
+import { useInitData } from "hooks";
 import { AuthStore } from "store/auth";
-import { useEffect } from "react";
-import { getPartner, putPartner } from "api";
+import { getPartner } from "api";
 
 const Information = (): JSX.Element => {
+  const { openLoader } = useInitData();
+
   const router = useRouter();
 
-  const { control, handleSubmit, setValue } = useForm<VendorInformationTypes>();
+  const [mode, setMode] = useState<"view" | "edit">("view");
 
-  const onSubmit = (data: VendorInformationTypes): void => {
-    console.log(data);
-    putPartner(data, partners[0], token).then((res) => console.log(res));
-  };
-  const pagePush = (path: string): void => {
-    router.push(path);
-  };
+  const [information, setInformation] = useState<VendorInformationTypes>();
 
   const { token, partners } = AuthStore((state) => ({
     token: state.token,
@@ -29,14 +26,20 @@ const Information = (): JSX.Element => {
   }));
 
   useEffect(() => {
-    if (!partners) return;
+    if (!partners || !!information) return;
+
+    getPartnerInformation();
+  }, [partners]);
+
+  const getPartnerInformation = (): void => {
+    openLoader(true);
 
     getPartner(token, partners[0], []).then((res) => {
-      console.log(res);
+      openLoader(false);
 
-      Object.keys(res).forEach((val, _) => setValue(val as any, res[val]));
+      setInformation(res);
     });
-  }, [partners]);
+  };
 
   return (
     <Layout.CMS
@@ -44,99 +47,17 @@ const Information = (): JSX.Element => {
       router={router}
       breadcrumbs={[{ title: "廠商資料維護", link: "" }]}
     >
-      廠商資料維護
-      <form
-        className="w-full my-6 flex flex-col space-y-4"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <InputLayout label="廠商名稱">
-          <Form.Input
-            type="text"
-            name="name"
-            control={control}
-            required
-            className="w-1/4"
-          />
-        </InputLayout>
+      {mode === "view" && (
+        <PartnerView information={information} updateMode={setMode} />
+      )}
 
-        <InputLayout label="聯絡人">
-          <Form.Input
-            type="text"
-            name="contact"
-            control={control}
-            required
-            className="w-1/4"
-          />
-        </InputLayout>
-
-        <InputLayout label="聯絡電話">
-          <Form.Input
-            type="text"
-            name="contactPhone"
-            control={control}
-            required
-            className="w-1/4"
-          />
-        </InputLayout>
-
-        <InputLayout label="電子信箱">
-          <Form.Input
-            type="text"
-            name="contactEmail"
-            control={control}
-            required
-            className="w-full"
-          />
-        </InputLayout>
-
-        <InputLayout label="聯絡地址">
-          <Form.Input
-            type="text"
-            name="contactAddress"
-            control={control}
-            required
-            className="w-full"
-          />
-        </InputLayout>
-
-        <InputLayout label="營業時間">
-          <Form.Input
-            type="text"
-            name="openHour"
-            control={control}
-            required
-            className="w-full"
-          />
-        </InputLayout>
-
-        <InputLayout label="廠商說明">
-          <Form.Input
-            type="text"
-            name="information"
-            control={control}
-            required
-            className="w-full"
-          />
-        </InputLayout>
-
-        <div className="w-full h-1 bg-black"></div>
-
-        <div className="flex space-x-4">
-          <Button.Basic
-            type="button"
-            className="border border-gray-800 text-gray-800 text-xl hover:bg-gray-600 hover:text-white "
-            onClick={() => pagePush("/vendor/order")}
-          >
-            返回
-          </Button.Basic>
-          <Button.Basic
-            type="submit"
-            className="bg-gray-600 text-white text-xl transition-all duration-500 hover:bg-gray-800"
-          >
-            變更資料
-          </Button.Basic>
-        </div>
-      </form>
+      {mode === "edit" && (
+        <PartnerDetail
+          information={information}
+          updateMode={setMode}
+          updateDate={() => getPartnerInformation()}
+        />
+      )}
     </Layout.CMS>
   );
 };

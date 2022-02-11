@@ -105,7 +105,11 @@ export function getOrders(token: string): Promise<OrderListTypes[]> {
     }
   )
     .then((result) => {
-      return result.data.map((item) => toOrder(item));
+      const temp = result.data.map((item) => toOrder(item));
+      const sort = temp.sort((a, b) => {
+        return a.orderId - b.orderId;
+      });
+      return sort;
     })
     .catch(() => {
       return null;

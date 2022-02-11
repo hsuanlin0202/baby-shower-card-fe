@@ -1,4 +1,4 @@
-import { postForm } from "api";
+import { putForm } from "api";
 import { BABY_API, ErrorResponse } from "../base";
 
 interface PostOrderResponseTypes {
@@ -21,22 +21,22 @@ interface PostOrderResponseTypes {
 }
 
 /**
- * [POST orders]
+ * [PUT orders]
  *
- * post a new order
+ * edit order detail by id
  */
-export function postOrder(
+export function putOrder(
   token: string,
-  order: FormData,
-  timeout?: number
+  id: number,
+  order: FormData
 ): Promise<{ id: number; message: string }> {
-  return postForm<PostOrderResponseTypes & ErrorResponse>(
-    BABY_API("orders"),
+  return putForm<PostOrderResponseTypes & ErrorResponse>(
+    BABY_API(`orders/${id}`),
     order,
     {
       Authorization: `Bearer ${token}`,
     },
-    timeout
+    100000
   ).then((result) => {
     if (!result.data) {
       return { id: 0, message: result.error.message };

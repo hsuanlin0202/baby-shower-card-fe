@@ -64,7 +64,7 @@ const Login = () => {
 
   const onSubmit = (data: LoginTypes): void => {
     openLoader(true);
-    postLogin(data).then((result) => {
+    postLogin(data, 10000).then((result) => {
       if (!result) {
         openLoader(false);
         showNotify("open", "帳號密碼錯誤", "請再次確認您的資料。");
@@ -83,8 +83,8 @@ const Login = () => {
     <Layout.Base title="登入">
       <div className="w-screen h-screen p-4 md:p-0 flex flex-col justify-center items-center">
         <div className="flex-1 flex flex-col justify-center items-center space-y-8">
-          <h1 className="text-5xl font-bold">Baby Shower</h1>
-          <p>這裡可能有一句話？</p>
+          <h1 className="text-5xl font-bold">卡寶之心</h1>
+          <p>Joy Baby Card</p>
         </div>
 
         {/* {state.type === "loading" && <></>} */}

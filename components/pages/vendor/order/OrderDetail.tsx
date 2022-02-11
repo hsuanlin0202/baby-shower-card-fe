@@ -1,17 +1,24 @@
-// @ts-nocheck
-import { useForm } from "react-hook-form";
-import Form from "components/elements/form";
-import { Button } from "components/elements";
-import { OrderFormType } from "types";
-import { toLocalDateTimeString } from "functions";
-import { FormGroup } from "./FormGroup";
+// @ts-noch-eck
 import { useEffect, useState } from "react";
-import { useInitData } from "hooks";
 import { NextRouter } from "next/router";
-import { getOrder, postOrder } from "api/order";
+import { useForm } from "react-hook-form";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { Modal } from "@mui/material";
+import Form from "components/elements/form";
+import { Button, ImageUpload } from "components/elements";
+import { OrderFormType } from "types";
+import {
+  organizeFormData,
+  postErrorCode,
+  Rule,
+  toLocalDateTimeString,
+} from "functions";
+import { FormGroup } from "./FormGroup";
+import { useInitData } from "hooks";
+import { getOrder, postOrder, putOrder } from "api/order";
 import { AuthStore } from "store/auth";
 
-const setValueList = [
+const setValueList: Array<keyof OrderFormType> = [
   "order-author",
   "order-contact",
   "order-contact-gender",
@@ -39,8 +46,7 @@ type Props = {
 export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
   const { showNotify, openLoader } = useInitData();
 
-  const { control, setValue, handleSubmit, register } =
-    useForm<OrderFormType>();
+  const { control, setValue, handleSubmit } = useForm<OrderFormType>();
 
   const today = new Date();
 
@@ -50,48 +56,72 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
     toLocalDateTimeString(today)
   );
 
-  const [photo, setPhoto] = useState<string>("");
+  const [photo, setPhoto] = useState<string | ArrayBuffer>("");
+
+  const [photoError, setPhotoError] = useState<boolean>(false);
+
+  const [openImgModal, setImgModal] = useState<boolean>(false);
+
+  const [uploadImg, setUploadImg] = useState<Blob>(null);
 
   const { token } = AuthStore((state) => ({
     token: state.token,
   }));
-
   const onSubmit = (data: OrderFormType) => {
-    const organizedData = {
-      ...data,
-      "card-public": true,
-      "order-token": "porterma-2",
-      "card-title": `${data["card-baby-name"]}-彌月卡`,
-      "order-expired-at": new Date(data["order-expired-at"]).toJSON(),
-      "card-baby-birthday": new Date(data["card-baby-birthday"]).toJSON(),
-      "order-users-email": [data["email-1"] || "", data["email-2"] || ""],
-    };
-    delete organizedData["email-1"];
-    delete organizedData["email-2"];
-
-    const formData = new FormData();
-
-    for (const name in organizedData) {
-      if (name !== "card-photo") formData.append(name, organizedData[name]);
-
-      if (name === "card-photo") {
-        const file = organizedData["card-photo"][0];
-        formData.append(`card-photo`, file, file["name"]);
-      }
+    if (!orderId) {
+      postNewOrder(data);
+      return;
     }
+
+    editOrder({ ...data, "order-no": order["order-no"] }, parseInt(orderId));
+  };
+
+  const editOrder = (data: OrderFormType, id: number) => {
+    const formData = organizeFormData("edit", data, uploadImg);
     openLoader(true);
-    postOrder(token, formData).then((result) => {
-      openLoader(false);
-      if (!result.id) {
-        console.log(result.message);
-        return;
-      }
-      router.replace(`/vendor/order/${result.id}`);
-    });
+
+    putOrder(token, id, formData)
+      .then((result) => {
+        openLoader(false);
+        if (!result.id) {
+          showNotify("open", "無法更新訂單", "請稍後再試。");
+          return;
+        }
+
+        showNotify("open", "", "訂單更新成功");
+      })
+      .catch(() => {
+        openLoader(false);
+        showNotify("open", "連線逾時", "請稍候再試一次。");
+      });
+  };
+
+  const postNewOrder = (data: OrderFormType) => {
+    if (!order && !uploadImg) {
+      setPhotoError(true);
+      return;
+    }
+    const formData = organizeFormData("add", data, uploadImg);
+
+    openLoader(true);
+    postOrder(token, formData)
+      .then((result) => {
+        openLoader(false);
+        if (!result.id) {
+          const message = postErrorCode(result.message);
+          showNotify("open", "無法新增訂單", message);
+          return;
+        }
+        router.replace(`/vendor/order/${result.id}`);
+      })
+      .catch(() => {
+        openLoader(false);
+        showNotify("open", "連線逾時", "請稍候再試一次。");
+      });
   };
 
   useEffect(() => {
-    if (!orderId) return;
+    if (!orderId || !!order) return;
 
     openLoader(true);
     getOrder(token, orderId).then((result) => {
@@ -105,7 +135,7 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
       }
 
       setValueList.forEach((key) => {
-        setValue(key as any, result[key]);
+        setValue(key, result[key]);
       });
 
       setOrder(result);
@@ -114,25 +144,75 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
     });
   }, [orderId]);
 
+  useEffect(() => {
+    if (!uploadImg) return;
+    setPhotoError(false);
+    const image = new FileReader();
+    image.onload = (e) => {
+      setPhoto(e.target.result);
+    };
+    image.readAsDataURL(uploadImg);
+  }, [uploadImg]);
+
   return (
     <form
       className=""
       onSubmit={handleSubmit(onSubmit)}
       encType="multipart/form-data"
     >
-      <h2 className="text-2xl font-bold">
-        {order ? `訂單編號： ${order["order-no"]}` : "建立訂單"}
-      </h2>
+      <Modal open={openImgModal} onClose={setImgModal}>
+        <div className="w-screen h-screen flex justify-center items-center p-4">
+          <div className="bg-white w-full max-w-60p rounded-lg">
+            <ImageUpload
+              setOpen={(open) => setImgModal(open)}
+              setFile={(file) => {
+                setUploadImg(file);
+                setImgModal(false);
+              }}
+            />
+          </div>
+        </div>
+      </Modal>
 
-      <div className="flex items-center my-4">
-        <span className=" text-gray-500">訂單建立日期</span>
-        <span className="mx-2">{createdAt}</span>
+      <div className="flex mb-4">
+        <h2 className="text-2xl font-bold">
+          {!!order
+            ? `訂單編號： ${
+                order["order-no"].indexOf("?") === -1
+                  ? order["order-no"]
+                  : order["order-no"].substring(
+                      0,
+                      order["order-no"].indexOf("?")
+                    )
+              }`
+            : "建立訂單"}
+        </h2>
+        {!orderId && (
+          <div className="max-w-36 ml-4">
+            <Form.Input
+              type="text"
+              label="Token"
+              name="order-token"
+              control={control}
+              size="small"
+              required
+            />
+          </div>
+        )}
       </div>
+
+      {!!order && (
+        <div className="flex items-center mb-4">
+          <span className=" text-gray-500">訂單建立日期</span>
+          <span className="mx-2">{createdAt}</span>
+        </div>
+      )}
 
       <div className="border rounded-lg shadow-lg py-4">
         <FormGroup title="開放寶寶卡片">
           <Form.Input type="switch" name="order-active" control={control} />
         </FormGroup>
+
         <FormGroup title="到期時間">
           <Form.Input
             type="date"
@@ -140,6 +220,7 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
             control={control}
             size="small"
             required
+            min={new Date()}
           />
         </FormGroup>
 
@@ -215,6 +296,7 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
             control={control}
             size="small"
             required
+            pattern={Rule.Phone}
           />
         </FormGroup>
 
@@ -270,24 +352,32 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
         <FormGroup title="照片上傳">
           {photo && (
             <div className="flex">
-              <img src={photo} className="w-20" />
+              <img
+                src={photo as string}
+                className="w-20 border border-gray-300 mr-2"
+              />
               <button
-                className="mx-2"
+                className="mx-2 text-gray-400 hover:text-black"
                 type="button"
-                onClick={() => setPhoto("")}
+                onClick={() => setImgModal(true)}
               >
-                移除圖片
+                更換照片
               </button>
             </div>
           )}
+
           {!photo && (
-            <input
-              type="file"
-              className="my-2"
-              name="card-photo"
-              {...register("card-photo")}
-              accept="image/png, image/jpeg"
-            />
+            <Button.Basic
+              type="button"
+              className="border border-gray-400 hover:border-black text-gray-400 hover:text-black"
+              icon={<AddCircleOutlineIcon />}
+              onClick={() => setImgModal(true)}
+            >
+              <span>上傳照片</span>
+            </Button.Basic>
+          )}
+          {photoError && (
+            <span className="text-xs text-red-600">請選擇照片</span>
           )}
         </FormGroup>
         <FormGroup title="選擇模板">
@@ -296,8 +386,8 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
             type="select"
             name="card-template"
             options={[
-              { id: "0", label: "預設模板", value: "0" },
-              { id: "1", label: "模板1", value: "1" },
+              { id: "1", label: "藍色東京", value: "1" },
+              { id: "2", label: "粉色巴黎", value: "2" },
             ]}
             onChange={(e) => console.log(e)}
             control={control}
@@ -314,21 +404,25 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
 
         <hr className="my-8" />
 
-        <FormGroup title="家長帳號1">
+        <FormGroup title="家長Email - 1">
           <Form.Input
             type="text"
             name="email-1"
             control={control}
             size="small"
             required
+            pattern={Rule.Email}
+            errorMsg="請確認Email格式"
           />
         </FormGroup>
-        <FormGroup title="家長帳號2">
+        <FormGroup title="家長Email - 2">
           <Form.Input
             type="text"
             name="email-2"
             control={control}
             size="small"
+            pattern={Rule.Email}
+            errorMsg="請確認Email格式"
           />
         </FormGroup>
 

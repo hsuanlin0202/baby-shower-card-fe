@@ -1,6 +1,8 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+@import url("https://fonts.google.com/specimen/Noto+Serif+TC?subset=chinese-traditional");
+@import url("https://fonts.googleapis.com/css2?family=Amatic+SC&display=swap");
 
 html,
 body {
@@ -15,4 +17,12 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+.baby-main-font {
+  font-family: "STSong", "fantasy", "Amatica SC";
+}
+
+.baby-date-font {
+  font-family: "Amatic SC", cursive;
 }

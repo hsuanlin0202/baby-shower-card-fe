@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import * as React from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -7,40 +7,18 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import SettingsIcon from "@mui/icons-material/Settings";
-import Switch from "@mui/material/Switch";
-import { OrderListTypes } from "types";
+// import Switch from "@mui/material/Switch";
+import { TemplateTypes } from "types";
 
 interface Column {
-  id:
-    | "index"
-    | "createdAt"
-    | "orderNo"
-    | "contact"
-    | "mobile"
-    | "active"
-    | "edit";
+  id: "index" | "name" | "active" | "edit";
   label: string | JSX.Element;
   minWidth: number;
 }
 
 const columns: readonly Column[] = [
   { id: "index", label: "序號", minWidth: 1 },
-  { id: "orderNo", label: "訂單編號", minWidth: 3 },
-  {
-    id: "contact",
-    label: "聯絡人",
-    minWidth: 2,
-  },
-  {
-    id: "mobile",
-    label: "聯絡人手機",
-    minWidth: 3,
-  },
-  {
-    id: "createdAt",
-    label: "創建日期",
-    minWidth: 3,
-  },
+  { id: "name", label: "模板名稱", minWidth: 5 },
   {
     id: "active",
     label: "啟用狀態",
@@ -57,57 +35,30 @@ const columns: readonly Column[] = [
   },
 ];
 
-type DataType = {
-  index: number;
-  orderId: number;
-  orderNo: string;
-  contact: string;
-  mobile: string;
-  createdAt: string;
-  active: boolean;
-  edit: number;
-};
-const createData = (index: number, data: OrderListTypes): DataType => {
+const createData = (index: number, data: TemplateTypes) => {
   return {
     index: index,
-    orderId: data.orderId,
-    orderNo: data.orderNo.substring(
-      0,
-      data.orderNo.includes("?")
-        ? data.orderNo.indexOf("?")
-        : data.orderNo.length
-    ),
-    contact: data.contact,
-    mobile: data.mobile,
-    createdAt: new Date(data.createdAt).toLocaleDateString(),
+    name: data.name,
     active: data.active,
-    edit: data.orderId,
+    id: data.id,
   };
 };
 
 type Props = {
-  orders: OrderListTypes[];
+  templates: TemplateTypes[];
   pushPage: (id: string | number) => void;
-  changeStatus: (id: number, isOpen: boolean, orderNo: string) => void;
 };
 export const StickyHeadTable = ({
-  orders,
+  templates,
   pushPage,
-  changeStatus,
 }: Props): JSX.Element => {
-  if (!orders) return <></>;
+  if (!templates) return <></>;
 
-  const [page, setPage] = useState(0);
+  const [page, setPage] = React.useState(0);
 
-  const [rows, setRows] = useState<DataType[]>(
-    orders.map((item, index) => createData(index + 1, item))
-  );
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  useEffect(() => {
-    setRows(orders.map((item, index) => createData(index + 1, item)));
-  }, [orders]);
-
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const rows = templates.map((item, index) => createData(index + 1, item));
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -149,18 +100,18 @@ export const StickyHeadTable = ({
                       if (column.id === "active")
                         return (
                           <TableCell key={column.id} align="center">
-                            <button
+                            {/* <button
                               type="button"
-                              onClick={() =>
-                                changeStatus(
-                                  row.orderId,
-                                  !row.active,
-                                  row.orderNo
-                                )
-                              }
+                              onClick={() => console.log(row.orderNo)}
                             >
-                              <Switch checked={row.active} />
-                            </button>
+                              <Switch defaultChecked={row.active} />
+                            </button> */}
+                            {row.active && (
+                              <span className="text-green-400">啟用中</span>
+                            )}
+                            {!row.active && (
+                              <span className="text-red-400">已關閉</span>
+                            )}
                           </TableCell>
                         );
 
@@ -170,7 +121,7 @@ export const StickyHeadTable = ({
                             <button
                               type="button"
                               className="underline"
-                              onClick={() => pushPage(row.orderId)}
+                              onClick={() => pushPage(row.id)}
                             >
                               編輯
                             </button>

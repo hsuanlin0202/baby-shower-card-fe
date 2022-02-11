@@ -46,18 +46,19 @@ interface getUserQuery {}
  */
 export function getUser(
   token: string,
-  populate: string[]
+  populate: string[],
+  timeout?: number
 ): Promise<UserTypes | null> {
   const populateList = populate.map((item) => {
     return `populate=${item}`;
   });
   const populateString = populateList.join().replaceAll(",", "&");
   return get<GetRoleResponse & ErrorResponse>(
-    BABY_API(`users/me${populateString ? `?${populateString}` : ``}`),
-
+    BABY_API(populateString ? `users/me?${populateString}` : `users/me`),
     {
       Authorization: `Bearer ${token}`,
-    }
+    },
+    timeout
   )
     .then((result) => toUser(result))
     .catch(() => {
