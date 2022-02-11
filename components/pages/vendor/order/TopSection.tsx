@@ -21,7 +21,10 @@ export const TopSection = ({ pushPage, onSubmit }: Props): JSX.Element => {
         <span>新增</span>
       </Button.Basic>
 
-      <form className="w-1/2 flex space-x-4" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className="w-1/2 flex justify-end space-x-4"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <Form.Input
           type="text"
           name="keyword"

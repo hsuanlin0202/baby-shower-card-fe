@@ -36,3 +36,9 @@ export const organizeFormData = (
 
   return formData;
 };
+
+export const postErrorCode = (message: string): string => {
+  if (message.includes("token")) return "Token不存在。";
+
+  return "未知錯誤，請稍後再試。";
+};
