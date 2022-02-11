@@ -3,28 +3,7 @@ import { BabyCardTypes } from "types";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
-
-type SocialButtonProps = {
-  title: string;
-  icon: JSX.Element;
-  onClick: () => void;
-};
-const SocialButton = ({
-  title,
-  icon,
-  onClick,
-}: SocialButtonProps): JSX.Element => {
-  return (
-    <button
-      type="button"
-      className="p-2 text-sm flex items-center space-x-1"
-      onClick={onClick}
-    >
-      <span>{icon}</span>
-      <span>{title}</span>
-    </button>
-  );
-};
+import { SocialButton } from ".";
 
 type Props = {
   card: BabyCardTypes;
@@ -49,7 +28,9 @@ export const BabyCardPage = ({ card }: Props): JSX.Element => {
           )}
 
           {card.template.partner && (
-            <h2 className="text-center">{card.template.partner}</h2>
+            <h2 className="text-center baby-main-font">
+              {card.template.partner}
+            </h2>
           )}
         </div>
 
