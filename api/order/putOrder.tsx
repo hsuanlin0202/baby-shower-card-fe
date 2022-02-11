@@ -27,7 +27,7 @@ interface PostOrderResponseTypes {
  */
 export function putOrder(
   token: string,
-  id: string,
+  id: number,
   order: FormData
 ): Promise<{ id: number; message: string }> {
   return putForm<PostOrderResponseTypes & ErrorResponse>(
@@ -35,7 +35,8 @@ export function putOrder(
     order,
     {
       Authorization: `Bearer ${token}`,
-    }
+    },
+    100000
   ).then((result) => {
     if (!result.data) {
       return { id: 0, message: result.error.message };

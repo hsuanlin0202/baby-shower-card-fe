@@ -20,7 +20,12 @@ module.exports = {
       gray: colors.gray,
       emerald: colors.emerald,
       indigo: colors.indigo,
-      yellow: colors.yellow,
+      brown: {
+        50: "#FBF2EB",
+        100: "#E9DCD2",
+        200: "#DEC59F",
+        500: "#714300",
+      },
       green: colors.green,
       blue: {
         50: "#e3f2fd",
@@ -44,7 +49,7 @@ module.exports = {
         600: "#e53935",
         700: "#d32f2f",
         800: "#c62828",
-        900: "#b71c1c",
+        900: "#7f1d1d",
       },
     },
     extend: {
@@ -52,15 +57,7 @@ module.exports = {
       lineHeight: {
         16: "4rem",
       },
-      height: {
-        128: "32rem",
-        160: "40rem",
-        228: "57rem",
-        "20v": "20vh",
-        "40v": "40vh",
-        "60v": "60vh",
-        "80v": "80vh",
-      },
+      width: { phone: "414px" },
       minWidth: {
         0: "0rem",
         20: "5rem",
@@ -98,6 +95,16 @@ module.exports = {
         "40p": "40%",
         "60p": "60%",
         "80p": "80%",
+      },
+      height: {
+        128: "32rem",
+        160: "40rem",
+        228: "57rem",
+        "20v": "20vh",
+        "40v": "40vh",
+        "60v": "60vh",
+        "80v": "80vh",
+        phone: "896px",
       },
       minHeight: { "20v": "20vh", "40v": "40vh", "60v": "60vh", "80v": "80vh" },
       maxHeight: { "20v": "20vh", "40v": "40vh", "60v": "60vh", "80v": "80vh" },

@@ -1,4 +1,4 @@
-// @ts-nocheck
+// @ts-noch-eck
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "components/elements";
@@ -53,8 +53,8 @@ export const PartnerDetail = ({
   useEffect(() => {
     if (!information) return;
 
-    Object.keys(information).forEach((val, _) =>
-      setValue(val as any, information[val])
+    Object.keys(information).forEach((val: keyof VendorInformationTypes, _) =>
+      setValue(val, information[val])
     );
   }, [information]);
 

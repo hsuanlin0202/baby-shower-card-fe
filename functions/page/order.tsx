@@ -1,11 +1,17 @@
 import { OrderFormType } from "types";
 
-export const organizeFormData = (data: OrderFormType, image: Blob) => {
+export const organizeFormData = (
+  type: "add" | "edit",
+  data: OrderFormType,
+  image: Blob | null
+) => {
   const organizedData = {
     ...data,
     "card-public": true,
-    // "order-token": "porterma-2",
-    "order-no": `${data["order-no"]}?${new Date().getTime()}`,
+    "order-no":
+      type === "add"
+        ? `${data["order-no"]}?${new Date().getTime()}`
+        : data["order-no"],
     "card-title": `${data["card-baby-name"]}-彌月卡`,
     "order-expired-at": new Date(data["order-expired-at"]).toJSON(),
     "card-baby-birthday": new Date(data["card-baby-birthday"]).toJSON(),
@@ -19,12 +25,14 @@ export const organizeFormData = (data: OrderFormType, image: Blob) => {
   for (const name in organizedData) {
     if (name !== "card-photo") formData.append(name, organizedData[name]);
   }
+  if (!!image)
+    formData.append(
+      "card-photo",
+      image,
+      `${data["card-baby-name"] + new Date().getTime()}.png`
+    );
 
-  formData.append(
-    "card-photo",
-    image,
-    `${data["card-baby-name"] + new Date().getTime()}.png`
-  );
+  if (!image) formData.append("card-photo", "");
 
   return formData;
 };
