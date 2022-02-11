@@ -1,4 +1,4 @@
-// @ts-noch-eck
+// @ts-nocheck
 import { useEffect, useState } from "react";
 import { NextRouter } from "next/router";
 import { useForm } from "react-hook-form";
