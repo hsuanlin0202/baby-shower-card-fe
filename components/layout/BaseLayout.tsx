@@ -1,12 +1,12 @@
 import Head from "next/head";
 import { ReactNode } from "react";
 
-type Props = { children: ReactNode; title: string };
-export const Base = ({ children, title }: Props): JSX.Element => {
+type Props = { children: ReactNode; title: string; className?: string };
+export const Base = ({ children, title, className }: Props): JSX.Element => {
   return (
-    <div>
+    <div className={className}>
       <Head>
-        <title>{`彌月卡片 ${!!title && `| ${title}`}`}</title>
+        <title>{`彌月卡 ${!!title && `| ${title}`}`}</title>
       </Head>
 
       {children}

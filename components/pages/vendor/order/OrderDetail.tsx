@@ -1,4 +1,4 @@
-// @ts-nocheck
+// @ts-noch-eck
 import { useEffect, useState } from "react";
 import { NextRouter } from "next/router";
 import { useForm } from "react-hook-form";
@@ -13,7 +13,7 @@ import { useInitData } from "hooks";
 import { getOrder, postOrder, putOrder } from "api/order";
 import { AuthStore } from "store/auth";
 
-const setValueList = [
+const setValueList: Array<keyof OrderFormType> = [
   "order-author",
   "order-contact",
   "order-contact-gender",
@@ -66,14 +66,15 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
       return;
     }
 
-    editOrder(data, orderId);
+    editOrder({ ...data, "order-no": order["order-no"] }, parseInt(orderId));
   };
 
-  const editOrder = (data: OrderFormType, id: string) => {
-    console.log(order);
+  const editOrder = (data: OrderFormType, id: number) => {
+    // console.log(order);
     console.log(data);
+    console.log(uploadImg);
 
-    const formData = organizeFormData(data, uploadImg);
+    const formData = organizeFormData("edit", data, uploadImg);
     openLoader(true);
     putOrder(token, id, formData).then((result) => {
       openLoader(false);
@@ -83,7 +84,7 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
   };
 
   const postNewOrder = (data: OrderFormType) => {
-    const formData = organizeFormData(data, uploadImg);
+    const formData = organizeFormData("add", data, uploadImg);
 
     openLoader(true);
     postOrder(token, formData).then((result) => {
@@ -111,7 +112,7 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
       }
 
       setValueList.forEach((key) => {
-        setValue(key as any, result[key]);
+        setValue(key, result[key]);
       });
 
       setOrder(result);
@@ -152,11 +153,15 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
 
       <div className="flex">
         <h2 className="text-2xl font-bold">
-          {order
-            ? `訂單編號： ${order["order-no"].substring(
-                0,
-                order["order-no"].indexOf("?")
-              )}`
+          {!!order
+            ? `訂單編號： ${
+                order["order-no"].indexOf("?") === -1
+                  ? order["order-no"]
+                  : order["order-no"].substring(
+                      0,
+                      order["order-no"].indexOf("?")
+                    )
+              }`
             : "建立訂單"}
         </h2>
         {!orderId && (

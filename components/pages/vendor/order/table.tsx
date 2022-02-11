@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -7,7 +7,7 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import SettingsIcon from "@mui/icons-material/Settings";
-// import Switch from "@mui/material/Switch";
+import Switch from "@mui/material/Switch";
 import { OrderListTypes } from "types";
 
 interface Column {
@@ -57,7 +57,17 @@ const columns: readonly Column[] = [
   },
 ];
 
-const createData = (index: number, data: OrderListTypes) => {
+type DataType = {
+  index: number;
+  orderId: number;
+  orderNo: string;
+  contact: string;
+  mobile: string;
+  createdAt: string;
+  active: boolean;
+  edit: number;
+};
+const createData = (index: number, data: OrderListTypes): DataType => {
   return {
     index: index,
     orderId: data.orderId,
@@ -78,15 +88,26 @@ const createData = (index: number, data: OrderListTypes) => {
 type Props = {
   orders: OrderListTypes[];
   pushPage: (id: string | number) => void;
+  changeStatus: (id: number, isOpen: boolean, orderNo: string) => void;
 };
-export const StickyHeadTable = ({ orders, pushPage }: Props): JSX.Element => {
+export const StickyHeadTable = ({
+  orders,
+  pushPage,
+  changeStatus,
+}: Props): JSX.Element => {
   if (!orders) return <></>;
 
-  const [page, setPage] = React.useState(0);
+  const [page, setPage] = useState(0);
 
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rows, setRows] = useState<DataType[]>(
+    orders.map((item, index) => createData(index + 1, item))
+  );
 
-  const rows = orders.map((item, index) => createData(index + 1, item));
+  useEffect(() => {
+    setRows(orders.map((item, index) => createData(index + 1, item)));
+  }, [orders]);
+
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -128,18 +149,18 @@ export const StickyHeadTable = ({ orders, pushPage }: Props): JSX.Element => {
                       if (column.id === "active")
                         return (
                           <TableCell key={column.id} align="center">
-                            {/* <button
+                            <button
                               type="button"
-                              onClick={() => console.log(row.orderNo)}
+                              onClick={() =>
+                                changeStatus(
+                                  row.orderId,
+                                  !row.active,
+                                  row.orderNo
+                                )
+                              }
                             >
-                              <Switch defaultChecked={row.active} />
-                            </button> */}
-                            {row.active && (
-                              <span className="text-green-400">啟用中</span>
-                            )}
-                            {!row.active && (
-                              <span className="text-red-400">已關閉</span>
-                            )}
+                              <Switch checked={row.active} />
+                            </button>
                           </TableCell>
                         );
 
