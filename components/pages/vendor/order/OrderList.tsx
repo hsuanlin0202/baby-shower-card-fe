@@ -1,4 +1,4 @@
-// @ts-noche-ck
+// @ts-nocheck
 import { NextRouter } from "next/router";
 import Form from "components/elements/form";
 import { TopSection } from "./TopSection";
