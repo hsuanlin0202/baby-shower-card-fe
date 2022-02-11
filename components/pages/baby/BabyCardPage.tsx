@@ -30,7 +30,7 @@ type Props = {
   card: BabyCardTypes;
 };
 export const BabyCardPage = ({ card }: Props): JSX.Element => {
-  if (!card) return <div className="bg-gray-700"></div>;
+  if (!card) return <></>;
 
   return (
     <div
@@ -56,11 +56,16 @@ export const BabyCardPage = ({ card }: Props): JSX.Element => {
         <img className="w-5/6" src={card.photo} alt="babyPhoto330x330" />
 
         <section className="flex flex-col items-center space-y-2 baby-main-font">
-          <h1 className="text-2xl font-semibold">{card.babyName}，滿月囉！</h1>
+          <h1 className="text-2xl font-semibold">
+            {`${card.babyName}，滿月囉！`}
+          </h1>
 
-          <p className="max-w-60p text-base leading-relaxed text-center">
-            {card.description}
-          </p>
+          <p
+            className="max-w-80p text-base leading-relaxed text-center"
+            dangerouslySetInnerHTML={{
+              __html: card.description.replaceAll("\n", "<br/>"),
+            }}
+          />
 
           <p className="text-2xl font-semibold">
             {`爸爸 ${card.fatherName}  &  媽媽 ${card.motherName}`}
@@ -102,7 +107,7 @@ export const BabyCardPage = ({ card }: Props): JSX.Element => {
         </div>
 
         <a href="#">
-          <p className="mt-4 text-xs underline">彌月禮盒滿意度調查</p>
+          <p className="mb-4 text-xs underline">彌月禮盒滿意度調查</p>
         </a>
       </div>
 

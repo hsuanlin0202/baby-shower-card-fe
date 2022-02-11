@@ -36,15 +36,17 @@ export const Notify = ({
           </div>
 
           <div className="w-full p-4 flex justify-end space-x-2">
-            <Button.Basic
-              type="button"
-              className=" text-blue-500"
-              onClick={() => {
-                setOpen(false);
-              }}
-            >
-              <span>取消</span>
-            </Button.Basic>
+            {!!action && (
+              <Button.Basic
+                type="button"
+                className=" text-blue-500"
+                onClick={() => {
+                  setOpen(false);
+                }}
+              >
+                <span>取消</span>
+              </Button.Basic>
+            )}
 
             <Button.Basic
               type="button"

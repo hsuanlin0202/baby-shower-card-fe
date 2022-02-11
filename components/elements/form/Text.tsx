@@ -8,6 +8,7 @@ export type TextProps<T> = CommonProps<T> & {
   type: "text";
   size?: "small" | "medium";
   rows?: number;
+  errorMsg?: string;
 };
 export const Text = <T,>({
   className,
@@ -20,36 +21,45 @@ export const Text = <T,>({
   disabled,
   size = "medium",
   rows = 1,
+  pattern,
+  errorMsg,
   ...props
 }: TextProps<T>): JSX.Element => {
   return (
     <Controller
       name={name}
       control={control}
-      rules={{ required }}
+      rules={{ required: required, pattern: pattern || undefined }}
       render={({
         field: { value, onChange, name, ref },
         fieldState: { error },
       }) => (
-        <TextField
-          id={name}
-          label={label ? label : undefined}
-          className={clsx("w-full", className)}
-          variant="outlined"
-          value={value || ""}
-          InputProps={{
-            startAdornment: icon && <span className="w-4 mr-2">{icon}</span>,
-            ...props,
-          }}
-          error={Boolean(error)}
-          inputRef={ref}
-          onChange={onChange}
-          required={required}
-          disabled={disabled}
-          size={size}
-          rows={rows}
-          multiline={rows > 1}
-        />
+        <div>
+          <TextField
+            id={name}
+            label={label ? label : undefined}
+            className={clsx("w-full", className)}
+            variant="outlined"
+            value={value || ""}
+            InputProps={{
+              startAdornment: icon && <span className="w-4 mr-2">{icon}</span>,
+              ...props,
+            }}
+            error={Boolean(error)}
+            inputRef={ref}
+            onChange={onChange}
+            required={required}
+            disabled={disabled}
+            size={size}
+            rows={rows}
+            multiline={rows > 1}
+          />
+          {Boolean(error) && (
+            <p className="text-xs text-red-600">
+              {required && !value ? "此欄位為必填" : errorMsg}
+            </p>
+          )}
+        </div>
       )}
     />
   );

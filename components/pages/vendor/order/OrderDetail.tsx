@@ -7,7 +7,12 @@ import { Modal } from "@mui/material";
 import Form from "components/elements/form";
 import { Button, ImageUpload } from "components/elements";
 import { OrderFormType } from "types";
-import { organizeFormData, toLocalDateTimeString } from "functions";
+import {
+  organizeFormData,
+  postErrorCode,
+  Rule,
+  toLocalDateTimeString,
+} from "functions";
 import { FormGroup } from "./FormGroup";
 import { useInitData } from "hooks";
 import { getOrder, postOrder, putOrder } from "api/order";
@@ -53,6 +58,8 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
 
   const [photo, setPhoto] = useState<string | ArrayBuffer>("");
 
+  const [photoError, setPhotoError] = useState<boolean>(false);
+
   const [openImgModal, setImgModal] = useState<boolean>(false);
 
   const [uploadImg, setUploadImg] = useState<Blob>(null);
@@ -70,31 +77,47 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
   };
 
   const editOrder = (data: OrderFormType, id: number) => {
-    // console.log(order);
-    console.log(data);
-    console.log(uploadImg);
-
     const formData = organizeFormData("edit", data, uploadImg);
     openLoader(true);
-    putOrder(token, id, formData).then((result) => {
-      openLoader(false);
 
-      console.log(result);
-    });
+    putOrder(token, id, formData)
+      .then((result) => {
+        openLoader(false);
+        if (!result.id) {
+          showNotify("open", "無法更新訂單", "請稍後再試。");
+          return;
+        }
+
+        showNotify("open", "", "訂單更新成功");
+      })
+      .catch(() => {
+        openLoader(false);
+        showNotify("open", "連線逾時", "請稍候再試一次。");
+      });
   };
 
   const postNewOrder = (data: OrderFormType) => {
+    if (!order && !uploadImg) {
+      setPhotoError(true);
+      return;
+    }
     const formData = organizeFormData("add", data, uploadImg);
 
     openLoader(true);
-    postOrder(token, formData).then((result) => {
-      openLoader(false);
-      if (!result.id) {
-        console.log(result.message);
-        return;
-      }
-      router.replace(`/vendor/order/${result.id}`);
-    });
+    postOrder(token, formData)
+      .then((result) => {
+        openLoader(false);
+        if (!result.id) {
+          const message = postErrorCode(result.message);
+          showNotify("open", "無法新增訂單", message);
+          return;
+        }
+        router.replace(`/vendor/order/${result.id}`);
+      })
+      .catch(() => {
+        openLoader(false);
+        showNotify("open", "連線逾時", "請稍候再試一次。");
+      });
   };
 
   useEffect(() => {
@@ -123,7 +146,7 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
 
   useEffect(() => {
     if (!uploadImg) return;
-
+    setPhotoError(false);
     const image = new FileReader();
     image.onload = (e) => {
       setPhoto(e.target.result);
@@ -151,7 +174,7 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
         </div>
       </Modal>
 
-      <div className="flex">
+      <div className="flex mb-4">
         <h2 className="text-2xl font-bold">
           {!!order
             ? `訂單編號： ${
@@ -178,10 +201,12 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
         )}
       </div>
 
-      <div className="flex items-center my-4">
-        <span className=" text-gray-500">訂單建立日期</span>
-        <span className="mx-2">{createdAt}</span>
-      </div>
+      {!!order && (
+        <div className="flex items-center mb-4">
+          <span className=" text-gray-500">訂單建立日期</span>
+          <span className="mx-2">{createdAt}</span>
+        </div>
+      )}
 
       <div className="border rounded-lg shadow-lg py-4">
         <FormGroup title="開放寶寶卡片">
@@ -271,6 +296,7 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
             control={control}
             size="small"
             required
+            pattern={Rule.Phone}
           />
         </FormGroup>
 
@@ -339,6 +365,7 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
               </button>
             </div>
           )}
+
           {!photo && (
             <Button.Basic
               type="button"
@@ -348,6 +375,9 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
             >
               <span>上傳照片</span>
             </Button.Basic>
+          )}
+          {photoError && (
+            <span className="text-xs text-red-600">請選擇照片</span>
           )}
         </FormGroup>
         <FormGroup title="選擇模板">
@@ -374,21 +404,25 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
 
         <hr className="my-8" />
 
-        <FormGroup title="家長帳號1">
+        <FormGroup title="家長Email - 1">
           <Form.Input
             type="text"
             name="email-1"
             control={control}
             size="small"
             required
+            pattern={Rule.Email}
+            errorMsg="請確認Email格式"
           />
         </FormGroup>
-        <FormGroup title="家長帳號2">
+        <FormGroup title="家長Email - 2">
           <Form.Input
             type="text"
             name="email-2"
             control={control}
             size="small"
+            pattern={Rule.Email}
+            errorMsg="請確認Email格式"
           />
         </FormGroup>
 

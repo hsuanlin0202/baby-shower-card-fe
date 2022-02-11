@@ -39,7 +39,7 @@ export default function BabyCard() {
   }, []);
 
   return (
-    <Layout.Base title={card?.babyName || ""}>
+    <Layout.Base title={card?.babyName}>
       <BabyCardPage card={card} />
     </Layout.Base>
   );

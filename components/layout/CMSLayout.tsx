@@ -33,8 +33,6 @@ export const CMS = ({
     }
   }, [username, role]);
 
-  const title = `${username || ""}`;
-
   const pagePush = (path: string): void => {
     router.push(path);
   };
@@ -42,12 +40,12 @@ export const CMS = ({
   return (
     <div>
       <Head>
-        <title>{title}</title>
+        <title>卡寶之心</title>
       </Head>
 
       <div className="flex min-h-screen -mt-10 pt-10">
         <SideMenu
-          title={title}
+          title="卡寶之心"
           list={pathList}
           pushPage={(path: string) => pagePush(path)}
         />
