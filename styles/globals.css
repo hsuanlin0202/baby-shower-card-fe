@@ -1,7 +1,7 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
-@import url("https://fonts.google.com/specimen/Noto+Serif+TC?subset=chinese-traditional");
+@import url("https://fonts.googleapis.com/css2?family=Amatic+SC&family=Noto+Serif+TC&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Amatic+SC&display=swap");
 
 html,
@@ -20,7 +20,8 @@ a {
 }
 
 .baby-main-font {
-  font-family: "STSong", "fantasy", "Amatica SC";
+  font-family: "Amatic SC", cursive;
+  font-family: "Noto Serif TC", serif;
 }
 
 .baby-date-font {

@@ -85,7 +85,7 @@ function toCard(data: CardResponse): BabyCardTypes {
     template: {
       textColor: data.attributes.template.data.attributes.textColor,
       background: data.attributes.template.data.attributes.background,
-      logo: "https://fakeimg.pl/110x60/", // 待補
+      logo: "https://i.imgur.com/iMKRjyf.png", // 待補
       partner: "Joy Baby", // 待補
     },
     active: data.attributes.order.data.attributes.active, // from order
