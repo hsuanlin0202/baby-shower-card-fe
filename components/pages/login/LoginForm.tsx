@@ -25,7 +25,7 @@ export const LoginForm = ({
 
   return (
     <form
-      className="w-full md:w-2/5 md:max-w-lg p-8 border rounded-md shadow-lg space-y-8"
+      className="w-full md:w-2/5 md:max-w-lg p-8 bg-white border rounded-md shadow-lg space-y-8"
       onSubmit={handleSubmit(onSubmit)}
     >
       <Form.Input
@@ -46,7 +46,7 @@ export const LoginForm = ({
 
       <Button.Basic
         type="submit"
-        className="w-full p-4 bg-blue-500 text-white text-lg rounded"
+        className="w-full p-4 bg-brown-cis text-white text-lg rounded"
       >
         登入
       </Button.Basic>

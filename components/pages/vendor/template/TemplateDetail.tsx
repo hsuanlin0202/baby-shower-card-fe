@@ -58,6 +58,9 @@ export const TemplateDetail = ({ id, router }: Props): JSX.Element => {
       <h2 className="text-2xl font-bold">{id ? `編輯模板` : "新增模板"}</h2>
 
       <div className="border rounded-lg shadow-lg py-4 my-4">
+        <FormGroup title="開放模板">
+          <Form.Input type="switch" name="template-active" control={control} />
+        </FormGroup>
         <FormGroup title="模板名稱" required>
           <Form.Input
             type="text"

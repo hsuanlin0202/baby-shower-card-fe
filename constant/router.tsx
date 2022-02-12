@@ -6,8 +6,8 @@ export const vendorPath = [
   { title: "登出", path: "/logout" },
 ];
 
-export const parentPath = [
-  { title: "編輯", path: "edit" },
+export const familyPath = [
+  { title: "編輯寶寶卡片", path: "edit" },
   { title: "留言管理", path: "comment" },
   { title: "聯絡廠商", path: "information" },
   { title: "登出", path: "logout" },
