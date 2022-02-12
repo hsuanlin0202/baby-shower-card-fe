@@ -52,12 +52,13 @@ const Login = () => {
           stateAction("auth-null");
           return;
         }
+        console.log(result);
 
         setUser(result);
 
         if (result.role === 3) router.push("/vendor/order");
 
-        if (result.role === 4) console.log("家長後台");
+        if (result.role === 4) router.push("/family");
       }
     );
   };
@@ -81,11 +82,19 @@ const Login = () => {
 
   return (
     <Layout.Base title="登入">
-      <div className="w-screen h-screen p-4 md:p-0 flex flex-col justify-center items-center">
-        <div className="flex-1 flex flex-col justify-center items-center space-y-8">
+      <style>{`
+      .background-main-image {
+        background-image: url('/bg.png');
+      }
+      
+      `}</style>
+      <div className="background-main-image bg-contain text-brown-cis w-screen h-screen p-4 md:p-0 flex flex-col justify-center items-center">
+        <div className="flex-1 flex flex-col justify-center items-center">
           <h1 className="text-5xl font-bold">卡寶之心</h1>
-          <p>Joy Baby Card</p>
+          <p className="text-2xl">Joy Baby Card</p>
         </div>
+
+        <p className="text-base mb-6">請登入管理您的卡片</p>
 
         {/* {state.type === "loading" && <></>} */}
 

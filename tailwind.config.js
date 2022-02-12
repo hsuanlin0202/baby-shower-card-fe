@@ -25,6 +25,7 @@ module.exports = {
         100: "#E9DCD2",
         200: "#DEC59F",
         500: "#714300",
+        cis: "#714300",
       },
       green: colors.green,
       blue: {

@@ -17,6 +17,7 @@ const initUser = {
   email: "",
   expiresIn: 0,
   token: "",
+  orders: [],
 };
 
 export const AuthStore = create<AuthState>(
