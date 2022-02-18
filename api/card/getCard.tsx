@@ -1,3 +1,4 @@
+import { DateStringFormat } from "functions";
 import { BabyCardTypes } from "types";
 import { get, BABY_API, ErrorResponse } from "../base";
 
@@ -68,6 +69,8 @@ interface TemplateAttributes {
   updatedAt: string;
   publishedAt: string;
   background: string;
+  partnerLogo: string;
+  partnerName: string;
 }
 
 function toCard(data: CardResponse): BabyCardTypes {
@@ -79,16 +82,19 @@ function toCard(data: CardResponse): BabyCardTypes {
     fatherName: data.attributes.fatherName,
     motherName: data.attributes.motherName,
     babyName: data.attributes.babyName,
-    babyBirthday: data.attributes.babyBirthday,
+    babyBirthday: DateStringFormat(data.attributes.babyBirthday),
     public: data.attributes.public,
     photo: data.attributes.photo,
     template: {
       textColor: data.attributes.template.data.attributes.textColor,
       background: data.attributes.template.data.attributes.background,
-      logo: "https://i.imgur.com/iMKRjyf.png", // 待補
-      partner: "Joy Baby", // 待補
+      logo: data.attributes.template.data.attributes.partnerLogo,
+      partner: data.attributes.template.data.attributes.partnerName,
     },
     active: data.attributes.order.data.attributes.active, // from order
+    expiredAt: DateStringFormat(
+      data.attributes.order.data.attributes.expiredAt
+    ),
   };
 }
 

@@ -13,6 +13,7 @@ export interface BabyCardTypes {
   // messages: BabyCardMessagesTypes;
   template: BabyCardTemplateTypes;
   active: boolean; // from order
+  expiredAt: string;
 }
 
 export interface BabyCardMessagesTypes {}

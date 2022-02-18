@@ -127,10 +127,16 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
     getOrder(token, orderId).then((result) => {
       openLoader(false);
       if (!result) {
-        showNotify("open", "找不到訂單", "請再試一次", () => {
-          showNotify("close", "", "");
-          router.replace("/vendor/order");
-        });
+        showNotify(
+          "open",
+          "找不到訂單",
+          "請再試一次",
+          () => {
+            showNotify("close");
+            router.replace("/vendor/order");
+          },
+          true
+        );
         return;
       }
 
@@ -164,6 +170,7 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
         <div className="w-screen h-screen flex justify-center items-center p-4">
           <div className="bg-white w-full max-w-60p rounded-lg">
             <ImageUpload
+              isOpen={openImgModal}
               setOpen={(open) => setImgModal(open)}
               setFile={(file) => {
                 setUploadImg(file);
@@ -226,17 +233,11 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
 
         {orderId && (
           <div className="flex space-x-4 mt-8 px-8 pt-8 border-t">
-            <Button.Basic
-              type="button"
-              className="bg-blue-500 text-white active:bg-blue-600"
-            >
+            <Button.Basic type="button" className="bg-orange-cis text-white">
               <span>複製卡片連結</span>
             </Button.Basic>
 
-            <Button.Basic
-              type="button"
-              className="bg-blue-500 text-white active:bg-blue-600"
-            >
+            <Button.Basic type="button" className="bg-orange-cis text-white">
               <span>下載完整卡片</span>
             </Button.Basic>
           </div>
@@ -265,7 +266,7 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
             required
           />
         </FormGroup>
-        <div className="flex -my-4">
+        <div className="flex flex-col md:flex-row -my-4">
           <FormGroup title="聯絡人">
             <Form.Input
               type="text"
@@ -431,10 +432,10 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
         <div className="px-8 pb-4 flex justify-end space-x-4">
           <Button.Basic
             type="button"
-            className="text-blue-500 bg-white"
+            className="text-blue-cis border border-blue-cis bg-white"
             onClick={() =>
               showNotify("open", "尚未儲存訂單", "確定要返回列表頁？", () => {
-                showNotify("close", "", "");
+                showNotify("close");
                 router.back();
               })
             }
@@ -442,10 +443,7 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
             <span>返回</span>
           </Button.Basic>
 
-          <Button.Basic
-            type="submit"
-            className="bg-blue-500 text-white active:bg-blue-600"
-          >
+          <Button.Basic type="submit" className="bg-blue-cis text-white">
             <span>{orderId ? `儲存` : `新增`}</span>
           </Button.Basic>
         </div>

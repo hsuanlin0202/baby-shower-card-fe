@@ -12,8 +12,8 @@ export const FormGroup = ({
   title,
   children,
   icon,
-  titleSpace = "min-w-40",
-  contentSpace = "w-56",
+  titleSpace = "min-w-32 md:min-w-40",
+  contentSpace = "w-full md:w-56",
 }: FormGroupProps): JSX.Element => {
   return (
     <div className="flex items-center mx-8 my-4">
