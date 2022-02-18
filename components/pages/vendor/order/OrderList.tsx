@@ -103,8 +103,8 @@ export const VendorOrderPage = ({ router }: Props): JSX.Element => {
     <div>
       <TopSection onSubmit={postSearch} pushPage={pushPage} />
 
-      <div className="mt-4 flex flex-col items-end">
-        <div className="w-1/3">
+      <div className="px-4 md:p-0 mt-4 flex flex-col items-end">
+        <div className="w-2/3 md:w-1/3">
           <Form.Input
             type="select"
             name="sort"

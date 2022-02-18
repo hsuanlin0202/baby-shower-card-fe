@@ -12,9 +12,10 @@ type InitDataProps = {
   openLoader: (isOpen: boolean) => void;
   showNotify: (
     type: "open" | "close",
-    title: string,
-    message: string,
-    action?: () => void
+    title?: string,
+    message?: string,
+    action?: () => void,
+    force?: boolean
   ) => void;
 };
 
@@ -45,6 +46,7 @@ export function InitDataProvider({ children }: ProviderProps): JSX.Element {
     isOpen: false,
     title: "",
     message: "",
+    force: false,
     setOpen: (isOpen: boolean) => {
       setNotify({ ...notify, isOpen: isOpen });
     },
@@ -52,9 +54,10 @@ export function InitDataProvider({ children }: ProviderProps): JSX.Element {
 
   const showNotify = (
     type: "open" | "close",
-    title: string,
-    message: string,
-    action?: () => void
+    title?: string,
+    message?: string,
+    action?: () => void,
+    force?: boolean
   ): void => {
     if (type === "close") {
       setNotify({
@@ -63,6 +66,7 @@ export function InitDataProvider({ children }: ProviderProps): JSX.Element {
         title: "",
         message: "",
         action: undefined,
+        force: false,
       });
       return;
     }
@@ -70,9 +74,10 @@ export function InitDataProvider({ children }: ProviderProps): JSX.Element {
     setNotify({
       ...notify,
       isOpen: true,
-      title: title,
-      message: message,
+      title: title || "",
+      message: message || "",
       action: action,
+      force: force || false,
     });
   };
 
@@ -93,6 +98,7 @@ export function InitDataProvider({ children }: ProviderProps): JSX.Element {
         isOpen={notify.isOpen}
         setOpen={(isOpen) => setNotify({ ...notify, isOpen: isOpen })}
         action={notify.action}
+        force={notify.force}
       />
     </InitContext.Provider>
   );

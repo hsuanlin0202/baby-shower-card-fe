@@ -1,7 +1,7 @@
 import { Base } from "./BaseLayout";
 import { CMS } from "./CMSLayout";
-import { SideMenu } from "./SideMenu";
+import { Family } from "./FamilyLayout";
 
-const Layout = { Base, CMS, SideMenu };
+const Layout = { Base, CMS, Family };
 
 export default Layout;
