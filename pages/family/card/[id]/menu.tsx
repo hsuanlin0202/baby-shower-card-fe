@@ -23,12 +23,16 @@ const CardMenu = ({}: Props): JSX.Element => {
   }, []);
 
   return (
-    <Layout.Base>
-      <div className="grid grid-cols-1">
+    <Layout.Base className="background-main-image h-screen">
+      <nav className="p-4 bg-white bg-opacity-25">
+        <div className="w-11 h-11 bg-gray-900"></div>
+      </nav>
+      <div className="grid grid-cols-1 px-24 space-y-8 pt-10">
         {familyPath.map((path, index) => (
           <button
             key={`path-button-${index}`}
             type="button"
+            className="bg-brown-cis rounded-lg py-3 text-white"
             onClick={() => pushPage(path.path)}
           >
             {path.title}

@@ -27,3 +27,7 @@ a {
 .baby-date-font {
   font-family: "Amatic SC", cursive;
 }
+
+.background-main-image {
+  background-image: url("/bg.png");
+}
