@@ -70,7 +70,7 @@ type DataType = {
 const createData = (index: number, data: OrderListTypes): DataType => {
   return {
     index: index,
-    orderId: data.orderId,
+    orderId: data.id,
     orderNo: data.orderNo.substring(
       0,
       data.orderNo.includes("?")
@@ -81,7 +81,7 @@ const createData = (index: number, data: OrderListTypes): DataType => {
     mobile: data.mobile,
     createdAt: new Date(data.createdAt).toLocaleDateString(),
     active: data.active,
-    edit: data.orderId,
+    edit: data.id,
   };
 };
 

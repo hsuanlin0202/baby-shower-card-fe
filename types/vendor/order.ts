@@ -66,7 +66,7 @@ export interface OrderListTypes {
   mobile: string;
   active: boolean;
   createdAt: string;
-  orderId?: number;
+  id: number;
 }
 
 export interface InputLayoutProps {

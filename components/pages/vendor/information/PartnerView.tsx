@@ -27,45 +27,43 @@ export const PartnerView = ({
   if (!information) return <></>;
 
   return (
-    <>
-      <section className="flex flex-col space-y-4">
-        <h3 className="text-3xl">{information.name}</h3>
+    <section className="p-4 md:p-0 flex flex-col space-y-4">
+      <h3 className="text-3xl">{information.name}</h3>
 
-        <InfoSet title="聯絡電話">
-          <p>{information.contactPhone}</p>
-        </InfoSet>
+      <InfoSet title="聯絡電話">
+        <p>{information.contactPhone}</p>
+      </InfoSet>
 
-        <InfoSet title="聯絡地址">
-          <p>{information.contactAddress}</p>
-        </InfoSet>
+      <InfoSet title="聯絡地址">
+        <p>{information.contactAddress}</p>
+      </InfoSet>
 
-        <InfoSet title="聯絡信箱">
-          <p>{information.contactEmail}</p>
-        </InfoSet>
+      <InfoSet title="聯絡信箱">
+        <p>{information.contactEmail}</p>
+      </InfoSet>
 
-        <InfoSet title="營業時間">
-          <p>{information.openHour}</p>
-        </InfoSet>
+      <InfoSet title="營業時間">
+        <p>{information.openHour}</p>
+      </InfoSet>
 
-        <hr />
+      <hr />
 
-        <p
-          className="text-base"
-          dangerouslySetInnerHTML={{
-            __html: information.information.replaceAll("\n", "<br/>"),
-          }}
-        />
+      <p
+        className="text-base"
+        dangerouslySetInnerHTML={{
+          __html: information.information.replaceAll("\n", "<br/>"),
+        }}
+      />
 
-        <div className="mt-6">
-          <Button.Basic
-            type="submit"
-            className="bg-blue-500 text-white active:bg-blue-600"
-            onClick={() => updateMode("edit")}
-          >
-            <span>編輯</span>
-          </Button.Basic>
-        </div>
-      </section>
-    </>
+      <div className="mt-6">
+        <Button.Basic
+          type="submit"
+          className="bg-blue-500 text-white active:bg-blue-600"
+          onClick={() => updateMode("edit")}
+        >
+          <span>編輯</span>
+        </Button.Basic>
+      </div>
+    </section>
   );
 };

@@ -7,6 +7,7 @@ export type NotifyProps = {
   title: string;
   message: string;
   action?: () => void;
+  force: boolean;
   ariaTitle?: string;
   ariaDescription?: string;
 };
@@ -16,6 +17,7 @@ export const Notify = ({
   title,
   message,
   action,
+  force,
   ariaTitle = "modal-title",
   ariaDescription = "model-description",
 }: NotifyProps): JSX.Element => {
@@ -36,10 +38,10 @@ export const Notify = ({
           </div>
 
           <div className="w-full p-4 flex justify-end space-x-2">
-            {!!action && (
+            {!!action && !force && (
               <Button.Basic
                 type="button"
-                className=" text-blue-500"
+                className=" text-blue-cis border border-blue-cis"
                 onClick={() => {
                   setOpen(false);
                 }}
@@ -50,7 +52,7 @@ export const Notify = ({
 
             <Button.Basic
               type="button"
-              className="bg-blue-500 text-white active:bg-blue-600"
+              className="bg-blue-cis text-white"
               onClick={() => {
                 if (!action) {
                   setOpen(false);

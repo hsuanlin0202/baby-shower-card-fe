@@ -11,10 +11,10 @@ export const TopSection = ({ pushPage, onSubmit }: Props): JSX.Element => {
   const { control, handleSubmit } = useForm<{ keyword: string }>();
 
   return (
-    <div className="pb-4 flex justify-between items-center border-b border-gray-300">
+    <div className="p-4 md:px-0 md:pt-0 flex justify-between items-center border-b border-gray-300">
       <Button.Basic
         type="button"
-        className="bg-red-500 text-white active:bg-red-600 leading-4 pl-2"
+        className="bg-red-cis text-white leading-4 pl-2"
         icon={<AddIcon fontSize="small" />}
         onClick={() => pushPage("new")}
       >
@@ -22,7 +22,7 @@ export const TopSection = ({ pushPage, onSubmit }: Props): JSX.Element => {
       </Button.Basic>
 
       <form
-        className="w-1/2 flex justify-end space-x-4"
+        className="w-2/3 md:w-1/2 flex justify-end space-x-4"
         onSubmit={handleSubmit(onSubmit)}
       >
         <Form.Input

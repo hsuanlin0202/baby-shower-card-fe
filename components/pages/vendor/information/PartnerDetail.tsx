@@ -60,10 +60,10 @@ export const PartnerDetail = ({
 
   return (
     <form
-      className="w-full mb-6 flex flex-col border rounded-lg shadow-lg py-4"
+      className="w-full mb-6 flex flex-col border-none md:border rounded-none md:rounded-lg shadow-none md:shadow-lg py-4"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <FormGroup title="廠商名稱" contentSpace="w-1/2">
+      <FormGroup title="廠商名稱" contentSpace="w-full md:w-1/2">
         <Form.Input
           type="text"
           name="name"
@@ -83,7 +83,7 @@ export const PartnerDetail = ({
         />
       </FormGroup> */}
 
-      <FormGroup title="聯絡電話" contentSpace="w-1/2">
+      <FormGroup title="聯絡電話" contentSpace="w-full md:w-1/2">
         <Form.Input
           type="text"
           name="contactPhone"
@@ -93,7 +93,7 @@ export const PartnerDetail = ({
         />
       </FormGroup>
 
-      <FormGroup title="聯絡地址" contentSpace="w-1/2">
+      <FormGroup title="聯絡地址" contentSpace="w-full md:w-1/2">
         <Form.Input
           type="text"
           name="contactAddress"
@@ -103,7 +103,7 @@ export const PartnerDetail = ({
         />
       </FormGroup>
 
-      <FormGroup title="聯絡信箱" contentSpace="w-1/2">
+      <FormGroup title="聯絡信箱" contentSpace="w-full md:w-1/2">
         <Form.Input
           type="text"
           name="contactEmail"
@@ -113,7 +113,7 @@ export const PartnerDetail = ({
         />
       </FormGroup>
 
-      <FormGroup title="營業時間" contentSpace="w-1/2">
+      <FormGroup title="營業時間" contentSpace="w-full md:w-1/2">
         <Form.Input
           type="text"
           name="openHour"
