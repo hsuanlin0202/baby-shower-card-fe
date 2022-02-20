@@ -10,8 +10,8 @@ export interface UserTypes {
   username: string;
   email: string;
   role?: number;
-  partners?: VendorInformationTypes[];
-  orders?: string[];
-  templates?: string[];
-  company?: string;
+  partners?: { id: number; name: string }[];
+  blocked: boolean;
+  orders?: number[];
+  // templates?: string[];
 }

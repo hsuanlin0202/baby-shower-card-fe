@@ -1,47 +1,86 @@
+import { getPartner } from "api";
 import Layout from "components/layout";
+import { familyPath } from "constant/router";
+import { useInitData } from "hooks";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { AuthStore } from "store/auth";
 import { VendorInformationTypes } from "types";
 
 const CardInformation = (): JSX.Element => {
+  const { showNotify, openLoader } = useInitData();
+
   const router = useRouter();
 
-  const cardId = router.query.id;
+  // const cardId = router.query.id;
 
-  const { partners } = AuthStore((state) => ({
+  const [information, setInformation] = useState<VendorInformationTypes>();
+
+  const { partners, token } = AuthStore((state) => ({
     partners: state.partners,
+    token: state.token,
   }));
 
   const partner = partners[0];
 
+  const errorNotify = (): void =>
+    showNotify(
+      "open",
+      "Oops!",
+      "找不到廠商資料，請再試一次。",
+      () => {
+        showNotify("close");
+        router.back();
+      },
+      true
+    );
+
   useEffect(() => {
-    console.log(partner);
-  }, []);
+    if (!partner) {
+      errorNotify();
+      return;
+    }
+
+    openLoader(true);
+
+    getPartner(token, partners[0].id, []).then((res) => {
+      openLoader(false);
+
+      if (!res) {
+        errorNotify();
+        return;
+      }
+
+      setInformation(res);
+    });
+  }, [partner]);
+
+  if (!information) return <></>;
 
   return (
-    <Layout.Base className="card-background-image h-screen flex flex-col">
-      <nav className="p-4 bg-white bg-opacity-25">
-        <div className="w-11 h-11 bg-gray-900"></div>
-      </nav>
-      <div className="flex flex-col mt-8 items-center px-4 justify-between flex-1">
-        <form className="flex flex-col items-center text-brown-cis">
-          <h2 className="text-2xl font-bold pb-5">{partner.name}</h2>
-          <p>客服時段 {partner.openHour} </p>
-          <p>客服專線 {partner.contactPhone} </p>
-          <p>地址 {partner.contactAddress} </p>
-          <p>Email {partner.contactEmail} </p>
-        </form>
-
-        <button
-          className="px-16 bg-brown-cis rounded-lg py-3 text-white my-4"
-          type="button"
-          onClick={() => router.push("/family")}
-        >
-          返回
-        </button>
-      </div>
-    </Layout.Base>
+    <Layout.Family
+      title=""
+      pathList={familyPath}
+      router={router}
+      backAction={() => router.back()}
+      pagePush={() => {}}
+    >
+      <section className="flex flex-col space-y-4 text-brown-cis">
+        <h2 className="text-2xl font-bold w-full text-center mb-2">
+          {information.name}
+        </h2>
+        <p>客服時段： {information.openHour} </p>
+        <p>客服專線： {information.contactPhone} </p>
+        <p>地址： {information.contactAddress} </p>
+        <p>Email： {information.contactEmail} </p>
+        <p
+          className="text-base"
+          dangerouslySetInnerHTML={{
+            __html: information.information.replaceAll("\n", "<br/>"),
+          }}
+        />
+      </section>
+    </Layout.Family>
   );
 };
 

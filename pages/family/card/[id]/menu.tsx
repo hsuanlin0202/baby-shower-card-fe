@@ -1,14 +1,22 @@
+import { getCard } from "api";
+import { Button } from "components/elements";
 import Layout from "components/layout";
 import { familyPath } from "constant/router";
+import { useInitData } from "hooks";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { BabyCardTypes } from "types";
 
 type Props = {};
 
 const CardMenu = ({}: Props): JSX.Element => {
+  const { showNotify, openLoader } = useInitData();
+
   const router = useRouter();
 
   const cardId = router.query.id;
+
+  const [card, setCard] = useState<BabyCardTypes>();
 
   const pushPage = (page: string) => {
     if (page === "logout") {
@@ -16,30 +24,59 @@ const CardMenu = ({}: Props): JSX.Element => {
       return;
     }
 
-    router.push(`/family/card/${cardId}/${page}`);
+    router.push(page.replace("[id]", cardId.toString()));
   };
+
+  const errorNotify = (): void =>
+    showNotify(
+      "open",
+      "Oops!",
+      "找不到卡片資料，請再試一次。",
+      () => {
+        showNotify("close");
+        router.back();
+      },
+      true
+    );
 
   useEffect(() => {
     if (window.innerWidth > 640) pushPage("edit");
   }, []);
 
+  useEffect(() => {
+    if (!!card) return;
+    openLoader(true);
+
+    if (!cardId) {
+      errorNotify();
+      return;
+    }
+
+    getCard(cardId as string).then((result) => {
+      openLoader(false);
+
+      setCard(result);
+    });
+  }, [cardId]);
+
+  if (!card) return <></>;
+
   return (
-    <Layout.Base className="card-background-image h-screen">
-      <nav className="p-4 bg-white bg-opacity-25">
-        <div className="w-11 h-11 bg-gray-900"></div>
-      </nav>
-      <div className="grid grid-cols-1 px-24 space-y-8 pt-10">
-        {familyPath.map((path, index) => (
-          <button
-            key={`path-button-${index}`}
-            type="button"
-            className="bg-brown-cis rounded-lg py-3 text-white"
-            onClick={() => pushPage(path.path)}
-          >
-            {path.title}
-          </button>
-        ))}
-      </div>
+    <Layout.Base className="card-background-image h-screen pt-12 flex flex-col items-center space-y-8">
+      <p className="text-xl text-brown-cis">{`${card.template.partner}`}</p>
+
+      <h1 className="text-2xl font-bold text-brown-cis">{`${card.babyName} 彌月卡片`}</h1>
+
+      {familyPath.map((path, index) => (
+        <Button.Basic
+          key={`path-button-${index}`}
+          type="button"
+          className="py-4 w-3/5 text-lg bg-brown-cis text-white"
+          onClick={() => pushPage(path.path)}
+        >
+          <span>{path.title}</span>
+        </Button.Basic>
+      ))}
     </Layout.Base>
   );
 };

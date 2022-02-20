@@ -47,7 +47,7 @@ export const Family = ({
         </div>
 
         <main className="rounded-t-3xl bg-white p-8">
-          <h1 className="text-2xl mb-6">{title}</h1>
+          {title && <h1 className="text-2xl mb-6">{title}</h1>}
           {children}
         </main>
       </div>

@@ -1,6 +1,6 @@
-import { RemoveUndefinedFromObj } from 'functions/converters';
-import { UserTypes, VendorInformationTypes, VendorTemplateTypes } from 'types';
-import { get, BABY_API, ErrorResponse } from '../../base';
+import { RemoveUndefinedFromObj } from "functions/converters";
+import { UserTypes, VendorInformationTypes, VendorTemplateTypes } from "types";
+import { get, BABY_API, ErrorResponse } from "../../base";
 
 interface PartnerResponse {
   id: number;
@@ -50,14 +50,11 @@ function toPartner(data: PartnerResponse): VendorInformationTypes {
     contactAddress: data.contactAddress,
     openHour: data.openHour,
     information: data.information,
-    templates: !data.templates ? [] : data.templates.data.map((template) => toTemplate(template)),
+    templates: !data.templates
+      ? []
+      : data.templates.data.map((template) => toTemplate(template)),
   };
 }
-
-// interface GetPartnerResponse {
-//   data: PartnerResponse;
-//   meta: {};
-// }
 
 /**
  * [GET partners/[id]]
@@ -66,13 +63,13 @@ function toPartner(data: PartnerResponse): VendorInformationTypes {
  */
 export function getPartner(
   token: string,
-  id: string,
+  id: number,
   populate?: string[]
 ): Promise<VendorInformationTypes> {
   const populateList = populate.map((item) => {
     return `populate=${item}`;
   });
-  const populateString = populateList.join().replaceAll(',', '&');
+  const populateString = populateList.join().replaceAll(",", "&");
   return get<PartnerResponse>(
     BABY_API(`partners/${id}${populateString ? `?${populateString}` : ``}`),
 
