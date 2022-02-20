@@ -1,3 +1,5 @@
+import { VendorInformationTypes } from "types";
+
 export interface LoginTypes {
   identifier: string;
   password: string;
@@ -8,7 +10,7 @@ export interface UserTypes {
   username: string;
   email: string;
   role?: number;
-  partners?: string[];
+  partners?: VendorInformationTypes[];
   orders?: string[];
   templates?: string[];
   company?: string;

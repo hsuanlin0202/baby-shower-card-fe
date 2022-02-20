@@ -1,4 +1,4 @@
-import { UserTypes } from "types";
+import { UserTypes, VendorInformationTypes } from "types";
 import create from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -18,6 +18,7 @@ const initUser = {
   expiresIn: 0,
   token: "",
   orders: [],
+  partners: [],
 };
 
 export const AuthStore = create<AuthState>(

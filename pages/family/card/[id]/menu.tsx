@@ -2,6 +2,7 @@ import Layout from "components/layout";
 import { familyPath } from "constant/router";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+
 type Props = {};
 
 const CardMenu = ({}: Props): JSX.Element => {
@@ -23,7 +24,7 @@ const CardMenu = ({}: Props): JSX.Element => {
   }, []);
 
   return (
-    <Layout.Base className="background-main-image h-screen">
+    <Layout.Base className="card-background-image h-screen">
       <nav className="p-4 bg-white bg-opacity-25">
         <div className="w-11 h-11 bg-gray-900"></div>
       </nav>
