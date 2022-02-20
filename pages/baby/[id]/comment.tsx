@@ -1,4 +1,4 @@
-import ArrowIcon from "../../../assets/svg/arrow.svg";
+import ArrowIcon from "assets/svg/arrow.svg";
 
 function Navbar() {
   return (
@@ -8,7 +8,8 @@ function Navbar() {
           console.log("a");
         }}
       >
-        <ArrowIcon /> Back
+        <ArrowIcon />
+        Back
       </button>
     </nav>
   );
