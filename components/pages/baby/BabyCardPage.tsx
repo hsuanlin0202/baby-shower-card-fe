@@ -95,7 +95,9 @@ export const BabyCardPage = ({ card }: Props): JSX.Element => {
             <SocialButton
               icon={<ChatBubbleOutlineIcon />}
               title="Comment"
-              onClick={() => {}}
+              onClick={() => {
+                console.log("hello");
+              }}
             />
             <SocialButton
               icon={<ShareOutlinedIcon />}
