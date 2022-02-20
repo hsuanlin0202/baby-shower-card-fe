@@ -1,4 +1,4 @@
-import { UserTypes } from "types";
+import { UserTypes, VendorInformationTypes } from "types";
 import create from "zustand";
 import { persist } from "zustand/middleware";
 

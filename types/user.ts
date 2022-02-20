@@ -1,3 +1,5 @@
+import { VendorInformationTypes } from "types";
+
 export interface LoginTypes {
   identifier: string;
   password: string;
