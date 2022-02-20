@@ -8,8 +8,8 @@ export interface UserTypes {
   username: string;
   email: string;
   role?: number;
-  partners?: string[];
-  orders?: string[];
-  templates?: string[];
-  company?: string;
+  partners?: { id: number; name: string }[];
+  blocked: boolean;
+  orders?: number[];
+  // templates?: string[];
 }

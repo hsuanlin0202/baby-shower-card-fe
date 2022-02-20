@@ -18,6 +18,8 @@ const initUser = {
   expiresIn: 0,
   token: "",
   orders: [],
+  partners: [],
+  blocked: false,
 };
 
 export const AuthStore = create<AuthState>(
@@ -27,7 +29,10 @@ export const AuthStore = create<AuthState>(
       setUser: (user) => set(user),
       setToken: (token, expiresIn) =>
         set({ token: token, expiresIn: expiresIn }),
-      logout: () => set(initUser),
+      logout: () =>
+        set({
+          ...initUser,
+        }),
     }),
     {
       name: "auth-storage",
