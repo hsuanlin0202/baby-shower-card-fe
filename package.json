@@ -13,6 +13,7 @@
     "@mui/icons-material": "^5.2.5",
     "@mui/lab": "^5.0.0-alpha.66",
     "@mui/material": "^5.2.8",
+    "@svgr/webpack": "^6.2.1",
     "clsx": "^1.1.1",
     "date-fns": "^2.22.1",
     "jwt-decode": "^3.1.2",
