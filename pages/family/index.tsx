@@ -32,7 +32,7 @@ export default function FamilyCardList() {
     // 要去get卡片資料
   }, [userId, orders]);
 
-  const pushBabyCardPage = (orderId: string): void => {
+  const pushBabyCardPage = (orderId: string|number): void => {
     router.push(`/family/card/${orderId}/menu`);
   };
 

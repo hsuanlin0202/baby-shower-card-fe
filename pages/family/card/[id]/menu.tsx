@@ -45,12 +45,13 @@ const CardMenu = ({}: Props): JSX.Element => {
 
   useEffect(() => {
     if (!!card) return;
-    openLoader(true);
 
     if (!cardId) {
       errorNotify();
       return;
     }
+
+    openLoader(true);
 
     getCard(cardId as string).then((result) => {
       openLoader(false);
