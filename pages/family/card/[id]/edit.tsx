@@ -30,7 +30,7 @@ const CardEdit = (): JSX.Element => {
       backAction={backAction}
       pagePush={pagePush}
     >
-      <CardEditDetail id={cardId as string} />
+      <CardEditDetail id={cardId as string} router={router} />
     </Layout.Family>
   );
 };

@@ -1,21 +1,38 @@
-import { getCard } from "api";
+import { getCard, putCard } from "api";
+import { Modal } from "@mui/material";
 import { useInitData } from "hooks";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { BabyCardTypes } from "types";
+import { BabyCardTypes, CardFormType } from "types";
 import SwitchAccountIcon from "@mui/icons-material/SwitchAccount";
 import Form from "components/elements/form";
 import { Button, ImageUpload } from "components/elements";
 import clsx from "clsx";
+import { organizeCardFormData } from "functions";
+import { AuthStore } from "store/auth";
+import { NextRouter } from "next/router";
+
+const setValueList: Array<{ get: string; put: keyof CardFormType }> = [
+  { get: "babyName", put: "card-baby-name" },
+  { get: "motherName", put: "card-mother-name" },
+  { get: "fatherName", put: "card-father-name" },
+  { get: "babyBirthday", put: "card-baby-birthday" },
+  { get: "description", put: "card-description" },
+];
 
 type Props = {
   id: string;
+  router: NextRouter;
 };
 
-export const CardEditDetail = ({ id }: Props): JSX.Element => {
+export const CardEditDetail = ({ id, router }: Props): JSX.Element => {
   const { showNotify, openLoader } = useInitData();
 
-  const { control, setValue, handleSubmit } = useForm();
+  const { token } = AuthStore((state) => ({
+    token: state.token,
+  }));
+
+  const { control, setValue, handleSubmit } = useForm<CardFormType>();
 
   const [card, setCard] = useState<BabyCardTypes>();
 
@@ -25,35 +42,47 @@ export const CardEditDetail = ({ id }: Props): JSX.Element => {
 
   const [uploadImg, setUploadImg] = useState<Blob>(null);
 
-  const setValueList = [
-    "babyName",
-    "motherName",
-    "fatherName",
-    "babyBirthday",
-    "description",
-  ];
   useEffect(() => {
-    if (!id || !!card) {
+    if (!id) {
+      getCardFailNotify();
       return;
     }
+
+    if (!!card) return;
+
     openLoader(true);
     getCard(id).then((result) => {
+      if (!result) {
+        getCardFailNotify();
+        return;
+      }
+
       openLoader(false);
 
       setCard(result);
 
       setValueList.forEach((key) => {
-        setValue(key, result[key]);
+        setValue(key.put, result[key.get]);
       });
 
       setPhoto(result.photo);
     });
   }, [id]);
 
+  const getCardFailNotify = () =>
+    showNotify(
+      "open",
+      "找不到卡片",
+      "請再試一次",
+      () => {
+        showNotify("close");
+        router.replace(`/family/card/${id}/menu`);
+      },
+      true
+    );
+
   useEffect(() => {
     if (!uploadImg) return;
-
-    // setPhotoError(false);
 
     const image = new FileReader();
     image.onload = (e) => {
@@ -62,31 +91,44 @@ export const CardEditDetail = ({ id }: Props): JSX.Element => {
     image.readAsDataURL(uploadImg);
   }, [uploadImg]);
 
-  const onSubmit = (data): void => {
-    console.log(data);
+  const onSubmit = (data: CardFormType): void => {
+    const formData = organizeCardFormData(data, uploadImg);
+
+    openLoader(true);
+    putCard(token, id, formData)
+      .then((result) => {
+        openLoader(false);
+        if (!result.id) {
+          showNotify("open", "無法卡片訂單", "請稍後再試。");
+          return;
+        }
+
+        showNotify("open", "", "卡片更新成功");
+      })
+      .catch(() => {
+        openLoader(false);
+        showNotify("open", "連線逾時", "請稍候再試一次。");
+      });
   };
 
   if (!card) return <></>;
 
   return (
     <div>
-      <div
-        className={clsx(
-          "fixed top-0 left-0 w-screen h-screen p-4 bg-white rounded-t-3xl z-100 ",
-          openImgModal ? "top-20" : "top-full"
-        )}
-        style={{ transition: "0.3s" }}
-      >
-        <ImageUpload
-          isOpen={openImgModal}
-          setOpen={(open) => setImgModal(open)}
-          setFile={(file) => {
-            setUploadImg(file);
-            setImgModal(false);
-          }}
-          cancelIcon={<span className=" text-brown-cis text-sm">放棄上傳</span>}
-        />
-      </div>
+      <Modal open={openImgModal} onClose={setImgModal}>
+        <div className="w-screen h-screen flex justify-center items-center p-2 md:p-4">
+          <div className="bg-white w-full max-w-none md:max-w-60p rounded-lg">
+            <ImageUpload
+              isOpen={openImgModal}
+              setOpen={(open) => setImgModal(open)}
+              setFile={(file) => {
+                setUploadImg(file);
+                setImgModal(false);
+              }}
+            />
+          </div>
+        </div>
+      </Modal>
 
       <form
         className="w-full p-0 md:p-8 flex flex-col justify-center space-y-8 text-brown-cis border-0 md:border border-brown-cis bg-white rounded-lg md:shadow-lg"
@@ -108,7 +150,7 @@ export const CardEditDetail = ({ id }: Props): JSX.Element => {
             <Form.Input
               label="寶寶叫什麼"
               type="text"
-              name="babyName"
+              name="card-baby-name"
               control={control}
               required
             />
@@ -116,7 +158,7 @@ export const CardEditDetail = ({ id }: Props): JSX.Element => {
             <Form.Input
               label="媽媽叫什麼"
               type="text"
-              name="motherName"
+              name="card-mother-name"
               control={control}
               required
             />
@@ -124,7 +166,7 @@ export const CardEditDetail = ({ id }: Props): JSX.Element => {
             <Form.Input
               label="爸爸叫什麼"
               type="text"
-              name="fatherName"
+              name="card-father-name"
               control={control}
               required
             />
@@ -132,7 +174,7 @@ export const CardEditDetail = ({ id }: Props): JSX.Element => {
             <Form.Input
               label="寶寶出生日"
               type="date"
-              name="babyBirthday"
+              name="card-baby-birthday"
               control={control}
               required
             />
@@ -143,29 +185,16 @@ export const CardEditDetail = ({ id }: Props): JSX.Element => {
           label="給親友的話"
           className="w-full"
           type="text"
-          name="description"
+          name="card-description"
           control={control}
           rows={3}
           required
         />
 
-        <div className="pb-2 flex justify-end space-x-0 md:space-x-4">
-          <Button.Basic
-            type="button"
-            className="hidden md:flex text-brown-cis bg-white border border-brown-cis"
-            onClick={() =>
-              showNotify("open", "尚未儲存訂單", "確定要返回列表頁？", () => {
-                showNotify("close", "", "");
-                // router.back();
-              })
-            }
-          >
-            <span>返回</span>
-          </Button.Basic>
-
+        <div className="pb-2 md:pb-0 flex justify-end">
           <Button.Basic
             type="submit"
-            className="w-full md:w-auto py-3 md:p-0 bg-brown-cis text-white"
+            className="w-full md:w-auto py-3 md:py-2 md:p-0 bg-brown-cis text-white"
           >
             <span>儲存</span>
           </Button.Basic>

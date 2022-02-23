@@ -25,6 +25,8 @@ export const Text = <T,>({
   errorMsg,
   ...props
 }: TextProps<T>): JSX.Element => {
+  const parseLines = (value): string => value.replace(/(\\n)/g, "\n");
+
   return (
     <Controller
       name={name}
@@ -40,7 +42,7 @@ export const Text = <T,>({
             label={label ? label : undefined}
             className={clsx("w-full", className)}
             variant="outlined"
-            value={value || ""}
+            value={parseLines(value || "")}
             InputProps={{
               startAdornment: icon && <span className="w-4 mr-2">{icon}</span>,
               ...props,
