@@ -142,7 +142,7 @@ export const ImageUpload = ({
         onChange={onSelectFile}
       />
 
-      {!isPreview && !!upImg && (
+      {upImg && !isPreview && (
         <div className="max-h-60v w-full overflow-hidden overflow-y-scroll">
           <ReactCrop
             src={upImg}

@@ -40,17 +40,18 @@ const CardMenu = ({}: Props): JSX.Element => {
     );
 
   useEffect(() => {
-    if (window.innerWidth > 640) pushPage("edit");
+    if (window.innerWidth > 640) pushPage(familyPath[0].path);
   }, []);
 
   useEffect(() => {
     if (!!card) return;
-    openLoader(true);
 
     if (!cardId) {
       errorNotify();
       return;
     }
+
+    openLoader(true);
 
     getCard(cardId as string).then((result) => {
       openLoader(false);

@@ -12,7 +12,7 @@ const CardInformation = (): JSX.Element => {
 
   const router = useRouter();
 
-  // const cardId = router.query.id;
+  const cardId = router.query.id;
 
   const [information, setInformation] = useState<VendorInformationTypes>();
 
@@ -22,6 +22,10 @@ const CardInformation = (): JSX.Element => {
   }));
 
   const partner = partners[0];
+
+  const pagePush = (path: string): void => {
+    router.push(path.replaceAll("[id]", cardId as string));
+  };
 
   const errorNotify = (): void =>
     showNotify(
@@ -55,31 +59,31 @@ const CardInformation = (): JSX.Element => {
     });
   }, [partner]);
 
-  if (!information) return <></>;
-
   return (
     <Layout.Family
       title=""
       pathList={familyPath}
       router={router}
       backAction={() => router.back()}
-      pagePush={() => {}}
+      pagePush={pagePush}
     >
-      <section className="flex flex-col space-y-4 text-brown-cis">
-        <h2 className="text-2xl font-bold w-full text-center mb-2">
-          {information.name}
-        </h2>
-        <p>客服時段： {information.openHour} </p>
-        <p>客服專線： {information.contactPhone} </p>
-        <p>地址： {information.contactAddress} </p>
-        <p>Email： {information.contactEmail} </p>
-        <p
-          className="text-base"
-          dangerouslySetInnerHTML={{
-            __html: information.information.replaceAll("\n", "<br/>"),
-          }}
-        />
-      </section>
+      {information && (
+        <section className="flex flex-col space-y-4 text-brown-cis">
+          <h2 className="text-2xl font-bold w-full text-center mb-2">
+            {information.name}
+          </h2>
+          <p>客服時段： {information.openHour} </p>
+          <p>客服專線： {information.contactPhone} </p>
+          <p>地址： {information.contactAddress} </p>
+          <p>Email： {information.contactEmail} </p>
+          <p
+            className="text-base"
+            dangerouslySetInnerHTML={{
+              __html: information.information.replaceAll("\n", "<br/>"),
+            }}
+          />
+        </section>
+      )}
     </Layout.Family>
   );
 };

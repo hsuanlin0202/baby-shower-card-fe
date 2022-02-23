@@ -15,7 +15,6 @@ module.exports = {
     colors: {
       transparent: "transparent",
       current: "currentColor",
-      black: colors.black,
       white: colors.white,
       gray: colors.gray,
       emerald: colors.emerald,
@@ -57,6 +56,18 @@ module.exports = {
         cis: "#c63618",
       },
       orange: { cis: "#f37720" },
+      black: {
+        10: "#000",
+        "1/10": "rgba(0,0,0,0.1)",
+        "2/10": "rgba(0,0,0,0.2)",
+        "3/10": "rgba(0,0,0,0.3)",
+        "4/10": "rgba(0,0,0,0.4)",
+        "5/10": "rgba(0,0,0,0.5)",
+        "6/10": "rgba(0,0,0,0.6)",
+        "7/10": "rgba(0,0,0,0.7)",
+        "8/10": "rgba(0,0,0,0.8)",
+        "9/10": "rgba(0,0,0,0.9)",
+      },
     },
     extend: {
       color: {},
