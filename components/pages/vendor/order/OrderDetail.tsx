@@ -1,4 +1,4 @@
-// @ts-nocheck
+// @ts-nocheckj
 import { useEffect, useState } from "react";
 import { NextRouter } from "next/router";
 import { useForm } from "react-hook-form";
@@ -7,7 +7,10 @@ import { Modal } from "@mui/material";
 import Form from "components/elements/form";
 import { Button, ImageUpload } from "components/elements";
 import { OrderFormType } from "types";
+import { Option } from "components/elements/form/types";
 import {
+  forceBackToOrderNotify,
+  getUsableTokens,
   organizeFormData,
   postErrorCode,
   Rule,
@@ -64,9 +67,16 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
 
   const [uploadImg, setUploadImg] = useState<Blob>(null);
 
-  const { token } = AuthStore((state) => ({
+  const [templates, setTemplates] = useState<Option[]>([]);
+
+  const [orderTokens, setOrderTokens] = useState<Option[]>([]);
+
+  const { token, orderTokenList, templateList } = AuthStore((state) => ({
     token: state.token,
+    orderTokenList: state.orderTokens,
+    templateList: state.templates,
   }));
+
   const onSubmit = (data: OrderFormType) => {
     if (!orderId) {
       postNewOrder(data);
@@ -121,22 +131,36 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
   };
 
   useEffect(() => {
-    if (!orderId || !!order) return;
+    if (!orderId) {
+      // get usable tokens
+      const usableTokens = getUsableTokens(orderTokenList);
+
+      if (usableTokens.length === 0) {
+        forceBackToOrderNotify(
+          showNotify,
+          "幸福密碼額度不足",
+          "請聯絡開發商加值額度",
+          router
+        );
+        return;
+      }
+
+      setOrderTokens(
+        usableTokens.map((token, index) => {
+          return { id: index.toString(), label: token, value: token };
+        })
+      );
+      return;
+    }
+
+    if (!!order) return;
 
     openLoader(true);
+
     getOrder(token, orderId).then((result) => {
       openLoader(false);
       if (!result) {
-        showNotify(
-          "open",
-          "找不到訂單",
-          "請再試一次",
-          () => {
-            showNotify("close");
-            router.replace("/vendor/order");
-          },
-          true
-        );
+        forceBackToOrderNotify(showNotify, "找不到訂單", "請再試一次", router);
         return;
       }
 
@@ -149,6 +173,16 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
       setCreatedAt(toLocalDateTimeString(new Date(result["order-created-at"])));
     });
   }, [orderId]);
+
+  useEffect(() => {
+    if (templateList.length === 0) return;
+
+    setTemplates(
+      templateList.map((template, index) => {
+        return { id: index, label: template.name, value: template.id };
+      })
+    );
+  }, [templateList]);
 
   useEffect(() => {
     if (!uploadImg) return;
@@ -195,13 +229,13 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
             : "建立訂單"}
         </h2>
         {!orderId && (
-          <div className="max-w-36 ml-4">
+          <div className="ml-4">
             <Form.Input
-              type="text"
-              label="Token"
+              type="select"
+              label="幸福密碼"
               name="order-token"
+              options={orderTokens}
               control={control}
-              size="small"
               required
             />
           </div>
@@ -386,10 +420,7 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
             className="w-1/2"
             type="select"
             name="card-template"
-            options={[
-              { id: "1", label: "藍色東京", value: "1" },
-              { id: "2", label: "粉色巴黎", value: "2" },
-            ]}
+            options={templates}
             onChange={(e) => console.log(e)}
             control={control}
           />

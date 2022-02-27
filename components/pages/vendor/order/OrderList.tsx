@@ -50,8 +50,9 @@ export const VendorOrderPage = ({ router }: Props): JSX.Element => {
 
   const { showNotify, openLoader } = useInitData();
 
-  const { token } = AuthStore((state) => ({
+  const { token, setOrderUsedTokens } = AuthStore((state) => ({
     token: state.token,
+    setOrderUsedTokens: state.setOrderUsedTokens,
   }));
 
   const postSearch = (data: { keyword: string }) => {
@@ -71,6 +72,9 @@ export const VendorOrderPage = ({ router }: Props): JSX.Element => {
     getOrders(token).then((result) => {
       openLoader(false);
       setOrders(result);
+
+      // set used token
+      setOrderUsedTokens(result.map((order) => order.token));
     });
   };
 

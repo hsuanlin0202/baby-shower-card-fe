@@ -1,5 +1,4 @@
-import { getUser, postLogin } from "api";
-import { Loader } from "components/elements";
+import { getPartner, getUser, postLogin } from "api";
 import Layout from "components/layout";
 import { LoginForm } from "components/pages/login";
 import { AuthReducer } from "functions/auth";
@@ -16,10 +15,11 @@ const Login = () => {
 
   const { showNotify, openLoader } = useInitData();
 
-  const { token, setToken, setUser } = AuthStore((state) => ({
+  const { token, setToken, setUser, setPartnerData } = AuthStore((state) => ({
     token: state.token,
     setToken: state.setToken,
     setUser: state.setUser,
+    setPartnerData: state.setPartnerData,
   }));
 
   const { control, handleSubmit } = useForm<LoginTypes>();
@@ -52,11 +52,22 @@ const Login = () => {
           stateAction("auth-null");
           return;
         }
-        console.log(result);
 
         setUser(result);
 
-        if (result.role === 3) router.push("/vendor/order");
+        if (result.role === 3) {
+          // get partner tokens, templates
+          getPartner(token, result.partners[0].id, [
+            "tokens",
+            "templates",
+          ]).then((partner) => {
+            setPartnerData({
+              tokens: partner.tokens,
+              templates: partner.templates,
+            });
+            router.push("/vendor/order");
+          });
+        }
 
         if (result.role === 4) router.push("/family");
       }

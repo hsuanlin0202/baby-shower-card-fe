@@ -1,10 +1,11 @@
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import Head from "next/head";
 import { PathTypes } from "types";
 import { SideMenu } from "./SideMenu";
 import { NextRouter } from "next/router";
 import clsx from "clsx";
+import { AuthStore } from "store/auth";
 
 type Props = {
   children: ReactNode;
@@ -24,6 +25,18 @@ export const Family = ({
   router,
   pagePush,
 }: Props): JSX.Element => {
+  const { username, role } = AuthStore((state) => ({
+    username: state.username,
+    role: state.role,
+  }));
+
+  useEffect(() => {
+    if (!username && !username) {
+      router.push("/");
+      return;
+    }
+  }, [username, role]);
+
   return (
     <div className={clsx("card-background-image", className)}>
       <Head>

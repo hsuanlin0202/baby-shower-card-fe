@@ -1,17 +1,13 @@
 import { DateStringFormat } from "functions";
 import { BabyCardTypes } from "types";
-import { get, BABY_API, ErrorResponse } from "../base";
+import { get, BABY_API } from "../base";
 
 interface CardResponse {
   id: number;
-  attributes: CardAttributes;
-}
-
-interface CardAttributes {
   title: string;
   description: string;
-  publicAt: string;
-  closeAt: string;
+  publicAt: null;
+  closeAt: null;
   createdAt: string;
   updatedAt: string;
   commentActive: boolean;
@@ -22,25 +18,15 @@ interface CardAttributes {
   babyBirthday: string;
   public: boolean;
   photo: string;
-  messages: Messages;
+  messages: any[];
   order: Order;
   template: Template;
-}
-
-interface Messages {
-  data: string[]; // 待定
+  createdBy: null;
+  updatedBy: UpdatedBy;
 }
 
 interface Order {
-  data: OrderData;
-}
-
-interface OrderData {
   id: number;
-  attributes: OrderAttributes;
-}
-
-interface OrderAttributes {
   author: string;
   orderNo: string;
   contact: string;
@@ -54,15 +40,7 @@ interface OrderAttributes {
 }
 
 interface Template {
-  data: TemplateData;
-}
-
-interface TemplateData {
   id: number;
-  attributes: TemplateAttributes;
-}
-
-interface TemplateAttributes {
   name: string;
   textColor: string;
   createdAt: string;
@@ -71,36 +49,46 @@ interface TemplateAttributes {
   background: string;
   partnerLogo: string;
   partnerName: string;
+  active: null;
+}
+
+interface UpdatedBy {
+  id: number;
+  firstname: string;
+  lastname: string;
+  username: null;
+  email: string;
+  password: string;
+  resetPasswordToken: null;
+  registrationToken: null;
+  isActive: boolean;
+  blocked: boolean;
+  preferedLanguage: null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 function toCard(data: CardResponse): BabyCardTypes {
   return {
     id: data.id,
-    description: data.attributes.description,
-    commentActive: data.attributes.commentActive,
-    like: data.attributes.like,
-    fatherName: data.attributes.fatherName,
-    motherName: data.attributes.motherName,
-    babyName: data.attributes.babyName,
-    babyBirthday: DateStringFormat(data.attributes.babyBirthday),
-    public: data.attributes.public,
-    photo: data.attributes.photo,
+    description: data.description,
+    commentActive: data.commentActive,
+    like: data.like,
+    fatherName: data.fatherName,
+    motherName: data.motherName,
+    babyName: data.babyName,
+    babyBirthday: DateStringFormat(data.babyBirthday),
+    public: data.public,
+    photo: data.photo,
     template: {
-      textColor: data.attributes.template.data.attributes.textColor,
-      background: data.attributes.template.data.attributes.background,
-      logo: data.attributes.template.data.attributes.partnerLogo,
-      partner: data.attributes.template.data.attributes.partnerName,
+      textColor: data.template.textColor,
+      background: data.template.background,
+      logo: data.template.partnerLogo,
+      partner: data.template.partnerName,
     },
-    active: data.attributes.order.data.attributes.active, // from order
-    expiredAt: DateStringFormat(
-      data.attributes.order.data.attributes.expiredAt
-    ),
+    active: data.order.active, // from order
+    expiredAt: DateStringFormat(data.order.expiredAt),
   };
-}
-
-interface GetCardResponse {
-  data: CardResponse;
-  meta: {};
 }
 
 /**
@@ -109,10 +97,8 @@ interface GetCardResponse {
  * get Card detail by id for Front Stage
  */
 export function getCard(id: string): Promise<BabyCardTypes> {
-  return get<GetCardResponse & ErrorResponse>(
-    BABY_API(`cards/${id}?populate=%2A`)
-  )
-    .then((result) => toCard(result.data))
+  return get<CardResponse>(BABY_API(`cards/${id}?populate=%2A`))
+    .then((result) => toCard(result))
     .catch(() => {
       return null;
     });

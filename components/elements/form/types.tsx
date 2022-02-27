@@ -15,7 +15,7 @@ export type CommonProps<T> = {
 };
 
 export type Option = {
-  id: string;
+  id: string | number;
   label: string;
-  value: string;
+  value: string | number;
 };
