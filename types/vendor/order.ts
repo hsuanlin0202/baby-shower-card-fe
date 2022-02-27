@@ -67,6 +67,7 @@ export interface OrderListTypes {
   active: boolean;
   createdAt: string;
   id: number;
+  token?:string;
 }
 
 export interface InputLayoutProps {

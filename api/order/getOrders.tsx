@@ -10,6 +10,7 @@ function toOrder(data: OrderData): OrderListTypes {
     mobile: data.mobile,
     active: data.active,
     createdAt: DateStringFormat(data.createdAt),
+    token:data.token.content
   };
 }
 

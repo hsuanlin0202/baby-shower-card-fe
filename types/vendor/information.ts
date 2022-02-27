@@ -11,6 +11,7 @@ export interface VendorInformationTypes {
   createAt?: string;
   publishedAt?: string;
   updatedAt?: string;
+  tokens?:string[]
 }
 
 export interface VendorTemplateTypes {

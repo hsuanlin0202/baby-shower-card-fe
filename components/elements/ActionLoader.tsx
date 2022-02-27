@@ -9,8 +9,8 @@ const Action = ({ isOpen }: Props): JSX.Element => {
   if (!isOpen) return <></>;
 
   return (
-    <div className="fixed w-screen h-screen flex justify-center items-center bg-black bg-opacity-20 shadow-2xl z-50">
-      <div className="bg-white p-4 rounded-lg">
+    <div className="fixed w-screen h-screen flex justify-center items-center bg-black bg-opacity-20 z-50">
+      <div className="bg-white p-4 rounded-lg shadow-2xl border border-gray-100">
         <CircularProgress />
       </div>
     </div>
