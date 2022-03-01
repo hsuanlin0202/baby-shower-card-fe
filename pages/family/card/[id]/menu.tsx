@@ -53,7 +53,7 @@ const CardMenu = ({}: Props): JSX.Element => {
 
     openLoader(true);
 
-    getCard("kim-1").then((result) => {
+    getCard(cardId as string).then((result) => {
       openLoader(false);
 
       setCard(result);

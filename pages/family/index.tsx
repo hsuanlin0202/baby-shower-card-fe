@@ -30,6 +30,13 @@ export default function FamilyCardList() {
     }
 
     // 要去get卡片資料
+    // openLoader(true);
+
+    // getCard("kim-1").then((result) => {
+    //   openLoader(false);
+
+    //   setCard(result);
+    // });
   }, [userId, orders]);
 
   const pushBabyCardPage = (orderId: string | number): void => {
