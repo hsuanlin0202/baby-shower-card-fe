@@ -62,25 +62,10 @@ const CardComment = (): JSX.Element => {
       backAction={() => router.back()}
       pagePush={pagePush}
     >
-      <style>{`
-      .cards{
-        columns:3;
-        column-gap: 16px;
-      }`}</style>
       <section className=" text-brown-cis">
         <StatusControl active={true} showNotify={showNotify} />
 
-        <div className="block md:hidden">
-          {messages?.map((message, index) => (
-            <CommentCard
-              key={`message-${index}`}
-              message={message}
-              showNotify={showNotify}
-            />
-          ))}
-        </div>
-
-        <div className="hidden md:block cards">
+        <div className="columns-lg md:columns-2">
           {messages?.map((message, index) => (
             <CommentCard
               key={`message-${index}`}

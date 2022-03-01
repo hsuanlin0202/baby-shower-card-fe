@@ -19,10 +19,7 @@ export const CommentCard = ({ message, showNotify }: Props): JSX.Element => {
   };
 
   return (
-    <div
-      className="rounded-lg shadow-md mb-8 md:mb-4"
-      style={{ breakInside: "avoid" }}
-    >
+    <div className="rounded-lg shadow-md mb-8 md:mb-4 break-after-avoid">
       <div className="px-4 py-2 flex items-center justify-between bg-brown-cis text-white rounded-t-lg">
         <span>{message.author}</span>
         <button type="button" onClick={() => PutStatus(message.public)}>
