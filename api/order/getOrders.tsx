@@ -10,7 +10,8 @@ function toOrder(data: OrderData): OrderListTypes {
     mobile: data.mobile,
     active: data.active,
     createdAt: DateStringFormat(data.createdAt),
-    token:data.token.content
+    token: data.token.content,
+    title: data.card.title,
   };
 }
 

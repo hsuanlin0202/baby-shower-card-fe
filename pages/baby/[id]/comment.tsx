@@ -1,84 +1,76 @@
-import { BackButton, Button } from "components/pages/baby/Buttons";
-
-function Card({ title, content }) {
-  return (
-    <div className="w-full bg-brown-600 rounded-lg p-4">
-      <h2 className="text-base font-bold pb-2">{title}</h2>
-      <p className="text-base">{content}</p>
-    </div>
-  );
-}
-
-function List({ children }) {
-  return (
-    <ul className="w-full flex flex-col gap-4 max-h-[73vh] overflow-auto">
-      {children}
-    </ul>
-  );
-}
+import { getCard } from "api";
+import { getMessages } from "api/messages";
+import Layout from "components/layout";
+import { BabyCommentPage } from "components/pages/baby";
+import { useInitData } from "hooks";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { AuthStore } from "store/auth";
+import { BabyCardTypes, MessageTypes } from "types";
 
 export default function CommentPage() {
-  return (
-    <>
-      <style jsx>
-        {`
-          .card-background-image {
-            background-image: url("/bg.png");
-            background-position: center;
-            background-size: contain;
+  const router = useRouter();
+
+  const { showNotify, openLoader } = useInitData();
+
+  const { id } = router.query;
+
+  const [messages, setMessages] = useState<MessageTypes[]>();
+
+  const [card, setCard] = useState<BabyCardTypes>();
+
+  const errorNotify = (content: string): void =>
+    showNotify(
+      "open",
+      "Oops!",
+      content,
+      () => {
+        showNotify("close");
+        router.back();
+      },
+      true
+    );
+
+  const getMessagesHandler = (id: number) => {
+    openLoader(true);
+    getMessages(id).then((result) => {
+      openLoader(false);
+
+      setMessages(result);
+    });
+  };
+
+  useEffect(() => {
+    if (!id) return;
+
+    getCard(id.toString()).then((card) => {
+      openLoader(false);
+      if (!card) {
+        showNotify(
+          "open",
+          "找不到寶寶彌月卡",
+          "請再次確認您的幸福密碼喔！",
+          () => {
+            showNotify("close", "", "");
+            router.push("/baby");
           }
-        `}
-      </style>
+        );
+        return;
+      }
 
-      <div className="w-screen h-screen card-background-image text-brown-500">
-        <nav className="p-5 pl-5">
-          <BackButton />
-        </nav>
+      setCard(card);
+      getMessagesHandler(card.id);
+    });
+  }, [id]);
 
-        <section className="flex flex-col px-4">
-          <header className="mb-4 px-4">
-            <h1 className="text-2xl">熊熊，祝福你...</h1>
-            <p className="text-sm">
-              來自親朋好友溫暖的祝福，希望熊熊能開心長大...
-            </p>
-          </header>
-
-          <List>
-            <Card
-              title="安安阿姨"
-              content="熊熊，很可愛喔！謝謝彌月禮盒！好吃！"
-            />
-            <Card
-              title="熊熊阿公"
-              content="熊熊，要聽爸爸媽媽的話喔！等過年阿公再給你好多紅包！"
-            />
-            <Card
-              title="志祥叔叔"
-              content="熊熊，要乖乖長大！希望你可以天天開心喔！"
-            />
-            <Card
-              title="Amy Chen"
-              content="謝謝禮盒～等疫情過後再帶熊熊一起出去走走吧！"
-            />
-            <Card
-              title="安安阿姨"
-              content="熊熊，很可愛喔！謝謝彌月禮盒！好吃！"
-            />
-            <Card
-              title="蝴蝶姊姊"
-              content="熊熊，要乖乖長大！希望你可以天天開心喔！"
-            />
-            <Card
-              title="熊熊阿嬤"
-              content="熊熊，要聽爸爸媽媽的話喔！等過年阿公再給你好多紅包！"
-            />
-          </List>
-
-          <footer className="mx-auto mt-5 mx-auto">
-            <Button value="送出祝福" className="" />
-          </footer>
-        </section>
-      </div>
-    </>
+  return (
+    <Layout.Baby title="留下祝福" textColor={card?.template.textColor}>
+      <BabyCommentPage
+        router={router}
+        card={card}
+        messages={messages}
+        showNotify={showNotify}
+      />
+    </Layout.Baby>
   );
 }
