@@ -7,7 +7,6 @@ import { BabyCardTypes, CardFormType } from "types";
 import SwitchAccountIcon from "@mui/icons-material/SwitchAccount";
 import Form from "components/elements/form";
 import { Button, ImageUpload } from "components/elements";
-import clsx from "clsx";
 import { organizeCardFormData } from "functions";
 import { AuthStore } from "store/auth";
 import { NextRouter } from "next/router";
@@ -51,13 +50,14 @@ export const CardEditDetail = ({ id, router }: Props): JSX.Element => {
     if (!!card) return;
 
     openLoader(true);
+
     getCard(id).then((result) => {
+      openLoader(false);
+
       if (!result) {
         getCardFailNotify();
         return;
       }
-
-      openLoader(false);
 
       setCard(result);
 

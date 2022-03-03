@@ -5,7 +5,7 @@ import { useInitData } from "hooks";
 import { useRouter } from "next/router";
 
 const CardEdit = (): JSX.Element => {
-  const { showNotify, openLoader } = useInitData();
+  const { showNotify } = useInitData();
 
   const router = useRouter();
 

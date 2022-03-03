@@ -8,6 +8,7 @@ function toMessages(data: Data): MessageTypes {
     author: data.attributes.author.data.attributes.name,
     content: data.attributes.content,
     public: data.attributes.public,
+    createdAt: data.attributes.createdAt,
   };
 }
 
