@@ -75,7 +75,7 @@ export default function CommentPage() {
           </List>
 
           <footer className="mx-auto mt-5 mx-auto">
-            <Button value="送出祝福" className="" />
+            <Button value="我想祝福" className="bg-brown-500 " />
           </footer>
         </section>
       </div>

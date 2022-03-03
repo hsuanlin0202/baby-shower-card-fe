@@ -16,9 +16,7 @@ export function BackButton() {
 
 export function Button({ className, value }) {
   return (
-    <button
-      className={clsx("bg-brown-500 rounded-lg p-2 px-8 text-white", className)}
-    >
+    <button className={clsx("rounded-lg p-2 px-8 text-white", className)}>
       {value}
     </button>
   );
