@@ -99,7 +99,7 @@ export const CardEditDetail = ({ id, router }: Props): JSX.Element => {
       .then((result) => {
         openLoader(false);
         if (!result.id) {
-          showNotify("open", "無法卡片訂單", "請稍後再試。");
+          showNotify("open", "無法更新卡片", "請稍後再試。");
           return;
         }
 

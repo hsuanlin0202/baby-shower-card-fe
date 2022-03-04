@@ -36,7 +36,7 @@ export default function CommentPage() {
     getMessages(id).then((result) => {
       openLoader(false);
 
-      setMessages(result);
+      setMessages(result.filter((message) => message.public === true));
     });
   };
 

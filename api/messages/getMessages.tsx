@@ -96,7 +96,10 @@ export function getMessages(cardId: number): Promise<MessageTypes[]> {
       const filtered = result.data.filter(
         (message) => message.attributes.card.data.id === cardId
       );
-      return filtered.map((item) => toMessages(item));
+      const sort = filtered.sort((a, b) => {
+        return a.id - b.id;
+      });
+      return sort.map((item) => toMessages(item));
     })
     .catch(() => {
       return null;

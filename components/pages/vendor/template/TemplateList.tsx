@@ -30,7 +30,7 @@ export const TemplateList = ({ router }: Props): JSX.Element => {
       return;
     }
     openLoader(true);
-    getTemplates(partner[0]).then((result) => {
+    getTemplates(partner[0].id.toString()).then((result) => {
       openLoader(false);
       setTemplates(result);
     });
