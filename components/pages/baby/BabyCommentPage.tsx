@@ -23,9 +23,9 @@ export const BabyCommentPage = ({
   card,
   showNotify,
 }: Props): JSX.Element => {
-  const [isOpen, setOpen] = useState<boolean>(false);
-
   if (!messages) return <></>;
+
+  const [isOpen, setOpen] = useState<boolean>(false);
 
   return (
     <div className="w-full h-full px-6 pb-4 flex flex-col justify-around items-center space-y-4 text-base">

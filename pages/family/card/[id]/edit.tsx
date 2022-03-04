@@ -12,7 +12,7 @@ const CardEdit = (): JSX.Element => {
   const cardId = router.query.id;
 
   const backAction = (): void => {
-    showNotify("open", "尚未儲存訂單", "確定要返回列表頁？", () => {
+    showNotify("open", "尚未儲存卡片", "確定要返回列表頁？", () => {
       showNotify("close", "", "");
       router.back();
     });

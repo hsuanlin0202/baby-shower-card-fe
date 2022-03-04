@@ -68,13 +68,15 @@ export const BabyCardPage = ({ card, router }: Props): JSX.Element => {
       </button>
 
       <div className="w-full flex justify-evenly">
-        <SocialButton
-          icon={<ChatBubbleOutlineIcon />}
-          title="留言"
-          onClick={() => {
-            router.push(`${router.asPath}/comment`);
-          }}
-        />
+        {card.commentActive && (
+          <SocialButton
+            icon={<ChatBubbleOutlineIcon />}
+            title="留言"
+            onClick={() => {
+              router.push(`${router.asPath}/comment`);
+            }}
+          />
+        )}
         <SocialButton
           icon={<ShareOutlinedIcon />}
           title="分享"
