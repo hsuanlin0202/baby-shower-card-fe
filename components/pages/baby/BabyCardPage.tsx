@@ -29,7 +29,6 @@ export const BabyCardPage = ({
   router,
   showNotify,
 }: Props): JSX.Element => {
-  console.log(router);
   const currentUrl = `https://www.joybabycard.com${router.asPath}`;
 
   const [isOpen, setOpen] = useState<boolean>(false);
