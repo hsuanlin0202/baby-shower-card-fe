@@ -83,7 +83,7 @@ export const CommentModal = ({
             type="text"
             name="content"
             control={control}
-            rows={3}
+            rows={2}
             required
             placeholder="請輸入祝福的話*"
           />

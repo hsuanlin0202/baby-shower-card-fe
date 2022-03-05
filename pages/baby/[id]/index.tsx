@@ -45,7 +45,11 @@ export default function BabyCard() {
   }, []);
 
   return (
-    <Layout.Baby title={card?.babyName} textColor={card?.template.textColor}>
+    <Layout.Baby
+      title={card?.babyName}
+      textColor={card?.template.textColor}
+      background={card?.template.background}
+    >
       <BabyCardPage card={card} router={router} showNotify={showNotify} />
     </Layout.Baby>
   );

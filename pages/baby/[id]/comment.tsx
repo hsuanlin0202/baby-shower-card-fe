@@ -64,7 +64,11 @@ export default function CommentPage() {
   }, [id]);
 
   return (
-    <Layout.Baby title="留下祝福" textColor={card?.template.textColor}>
+    <Layout.Baby
+      title="留下祝福"
+      textColor={card?.template.textColor}
+      background={card?.template.background}
+    >
       <BabyCommentPage
         router={router}
         card={card}

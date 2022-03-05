@@ -1,13 +1,12 @@
-import { BabyCardTypes } from "types";
-
 export const shareLinkMobile = async (
-  card: BabyCardTypes,
+  url: string,
+  title: string,
   errorHandler: () => void
 ): Promise<void> => {
   const shareData = {
-    title: `${card.babyName}滿月囉！`,
-    text: `${card.fatherName}爸爸和${card.motherName}媽媽的寶貝滿月了，來幫寶寶按個讚表達祝福吧！`,
-    url: window.location.href,
+    title: "寶寶滿月了！",
+    text: `${title}，快來看看可愛的寶寶吧！`,
+    url: url,
   };
 
   try {

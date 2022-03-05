@@ -121,6 +121,7 @@ module.exports = {
         128: "32rem",
         160: "40rem",
         228: "57rem",
+        "10v": "10vh",
         "20v": "20vh",
         "40v": "40vh",
         "60v": "60vh",
@@ -131,6 +132,7 @@ module.exports = {
       },
       minHeight: { "20v": "20vh", "40v": "40vh", "60v": "60vh", "80v": "80vh" },
       maxHeight: { "20v": "20vh", "40v": "40vh", "60v": "60vh", "80v": "80vh" },
+      margin: { "-20": "-5rem" },
       fontSize: {
         xs: ".75rem",
         sm: ".875rem",
