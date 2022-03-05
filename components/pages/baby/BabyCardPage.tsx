@@ -1,17 +1,47 @@
-import { DateStringFormat, getContrastColorByLightness } from "functions";
+import {
+  DateStringFormat,
+  getContrastColorByLightness,
+  shareLinkMobile,
+} from "functions";
 import { BabyCardTypes } from "types";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+// import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
-import { SocialButton } from ".";
+import { ShareModal, SocialButton } from ".";
 import { NextRouter } from "next/router";
+import { useState } from "react";
+
+import { Modal } from "components/elements";
 
 type Props = {
   card: BabyCardTypes;
   router: NextRouter;
+  showNotify: (
+    type: "open" | "close",
+    title?: string,
+    message?: string,
+    action?: () => void,
+    force?: boolean
+  ) => void;
 };
-export const BabyCardPage = ({ card, router }: Props): JSX.Element => {
+export const BabyCardPage = ({
+  card,
+  router,
+  showNotify,
+}: Props): JSX.Element => {
+  console.log(router);
+  const currentUrl = `https://www.joybabycard.com${router.asPath}`;
+
+  const [isOpen, setOpen] = useState<boolean>(false);
+
+  const shareLink = (): void => {
+    if (window.innerWidth <= 640) shareLinkMobile(card, () => setOpen(true));
+    if (window.innerWidth > 640) setOpen(true);
+  };
+
   if (!card) return <></>;
+
+  const shareTitle = `${card.fatherName}和${card.motherName}的寶寶滿月囉！`;
 
   return (
     <>
@@ -23,6 +53,10 @@ export const BabyCardPage = ({ card, router }: Props): JSX.Element => {
           }
         `}
       </style>
+
+      <Modal.ClearButton isOpen={isOpen} setOpen={setOpen}>
+        <ShareModal isInit={isOpen} url={currentUrl} title={shareTitle} />
+      </Modal.ClearButton>
 
       <div>
         {card.template.logo && (
@@ -80,7 +114,7 @@ export const BabyCardPage = ({ card, router }: Props): JSX.Element => {
         <SocialButton
           icon={<ShareOutlinedIcon />}
           title="分享"
-          onClick={() => {}}
+          onClick={() => shareLink()}
         />
       </div>
 

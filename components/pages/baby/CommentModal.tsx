@@ -1,4 +1,3 @@
-import { Modal } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import { BabyCardTypes } from "types";
 import Form from "components/elements/form";
@@ -6,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { getContrastColorByLightness } from "functions";
 import { postMessages } from "api/messages";
 import { NextRouter } from "next/router";
+import { Modal } from "components/elements";
 
 type Props = {
   isOpen: boolean;
@@ -56,8 +56,12 @@ export const CommentModal = ({
   };
 
   return (
-    <Modal open={isOpen} onClose={setOpen}>
-      <div className="w-screen h-screen flex justify-center items-center p-2 md:p-4">
+    <Modal.ClearButton
+      className="w-full max-w-none md:max-w-80 flex flex-col space-y-4"
+      isOpen={isOpen}
+      setOpen={setOpen}
+    >
+      <div>
         <style jsx>
           {`
             .textColor {
@@ -69,52 +73,43 @@ export const CommentModal = ({
             }
           `}
         </style>
-        <div className="w-full max-w-none md:max-w-80 p-2 flex flex-col bg-white rounded-lg space-y-4">
-          <div className="text-right">
-            <button type="button" onClick={() => setOpen(false)}>
-              <span>
-                <ClearIcon />
-              </span>
+
+        <h2 className="text-2xl textColor text-center mb-4">
+          {card.babyName}，祝福你...
+        </h2>
+        <form className="mx-4" onSubmit={handleSubmit(onSubmit)}>
+          <Form.Input
+            className="w-full mb-4"
+            type="text"
+            name="content"
+            control={control}
+            rows={3}
+            required
+            placeholder="請輸入祝福的話*"
+          />
+
+          <Form.Input
+            label=""
+            className="w-full"
+            type="text"
+            name="author"
+            control={control}
+            required
+            size="small"
+            placeholder="請輸入您的名字*"
+          />
+
+          <div className="w-full flex justify-center mt-8 mb-6">
+            <button
+              type="submit"
+              className="mx-auto px-10 py-2 text-sm rounded-md colored-background"
+              onClick={() => setOpen(true)}
+            >
+              <span>送出祝福</span>
             </button>
           </div>
-
-          <h2 className="text-2xl textColor text-center">
-            {card.babyName}，祝福你...
-          </h2>
-          <form className="mx-4" onSubmit={handleSubmit(onSubmit)}>
-            <Form.Input
-              className="w-full mb-4"
-              type="text"
-              name="content"
-              control={control}
-              rows={3}
-              required
-              placeholder="請輸入祝福的話*"
-            />
-
-            <Form.Input
-              label=""
-              className="w-full"
-              type="text"
-              name="author"
-              control={control}
-              required
-              size="small"
-              placeholder="請輸入您的名字*"
-            />
-
-            <div className="w-full flex justify-center mt-8 mb-6">
-              <button
-                type="submit"
-                className="mx-auto px-10 py-2 text-sm rounded-md colored-background"
-                onClick={() => setOpen(true)}
-              >
-                <span>送出祝福</span>
-              </button>
-            </div>
-          </form>
-        </div>
+        </form>
       </div>
-    </Modal>
+    </Modal.ClearButton>
   );
 };
