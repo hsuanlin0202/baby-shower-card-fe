@@ -1,12 +1,11 @@
 import { getCard, putCard } from "api";
-import { Modal } from "@mui/material";
 import { useInitData } from "hooks";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BabyCardTypes, CardFormType } from "types";
 import SwitchAccountIcon from "@mui/icons-material/SwitchAccount";
 import Form from "components/elements/form";
-import { Button, ImageUpload } from "components/elements";
+import { Button, ImageUpload, Modal } from "components/elements";
 import { organizeCardFormData } from "functions";
 import { AuthStore } from "store/auth";
 import { NextRouter } from "next/router";
@@ -115,20 +114,18 @@ export const CardEditDetail = ({ id, router }: Props): JSX.Element => {
 
   return (
     <div>
-      <Modal open={openImgModal} onClose={setImgModal}>
-        <div className="w-screen h-screen flex justify-center items-center p-2 md:p-4">
-          <div className="bg-white w-full max-w-none md:max-w-60p rounded-lg">
-            <ImageUpload
-              isOpen={openImgModal}
-              setOpen={(open) => setImgModal(open)}
-              setFile={(file) => {
-                setUploadImg(file);
-                setImgModal(false);
-              }}
-            />
-          </div>
+      <Modal.Base isOpen={openImgModal} setOpen={setImgModal}>
+        <div className="bg-white w-full max-w-none md:max-w-60p rounded-lg">
+          <ImageUpload
+            isOpen={openImgModal}
+            setOpen={(open) => setImgModal(open)}
+            setFile={(file) => {
+              setUploadImg(file);
+              setImgModal(false);
+            }}
+          />
         </div>
-      </Modal>
+      </Modal.Base>
 
       <form
         className="w-full p-0 md:p-8 flex flex-col justify-center space-y-8 text-brown-cis border-0 md:border border-brown-cis bg-white rounded-lg md:shadow-lg"
