@@ -1,13 +1,15 @@
-// @ts-nocheck
+// @ts-nocheckj
 import { useEffect, useState } from "react";
 import { NextRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { Modal } from "@mui/material";
 import Form from "components/elements/form";
-import { Button, ImageUpload } from "components/elements";
+import { Button, ImageUpload, Modal } from "components/elements";
 import { OrderFormType } from "types";
+import { Option } from "components/elements/form/types";
 import {
+  forceBackToOrderNotify,
+  getUsableTokens,
   organizeFormData,
   postErrorCode,
   Rule,
@@ -64,9 +66,16 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
 
   const [uploadImg, setUploadImg] = useState<Blob>(null);
 
-  const { token } = AuthStore((state) => ({
+  const [templates, setTemplates] = useState<Option[]>([]);
+
+  const [orderTokens, setOrderTokens] = useState<Option[]>([]);
+
+  const { token, orderTokenList, templateList } = AuthStore((state) => ({
     token: state.token,
+    orderTokenList: state.orderTokens,
+    templateList: state.templates,
   }));
+
   const onSubmit = (data: OrderFormType) => {
     if (!orderId) {
       postNewOrder(data);
@@ -121,16 +130,36 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
   };
 
   useEffect(() => {
-    if (!orderId || !!order) return;
+    if (!orderId) {
+      // get usable tokens
+      const usableTokens = getUsableTokens(orderTokenList);
+
+      if (usableTokens.length === 0) {
+        forceBackToOrderNotify(
+          showNotify,
+          "幸福密碼額度不足",
+          "請聯絡開發商加值額度",
+          router
+        );
+        return;
+      }
+
+      setOrderTokens(
+        usableTokens.map((token, index) => {
+          return { id: index.toString(), label: token, value: token };
+        })
+      );
+      return;
+    }
+
+    if (!!order) return;
 
     openLoader(true);
+
     getOrder(token, orderId).then((result) => {
       openLoader(false);
       if (!result) {
-        showNotify("open", "找不到訂單", "請再試一次", () => {
-          showNotify("close", "", "");
-          router.replace("/vendor/order");
-        });
+        forceBackToOrderNotify(showNotify, "找不到訂單", "請再試一次", router);
         return;
       }
 
@@ -143,6 +172,16 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
       setCreatedAt(toLocalDateTimeString(new Date(result["order-created-at"])));
     });
   }, [orderId]);
+
+  useEffect(() => {
+    if (templateList.length === 0) return;
+
+    setTemplates(
+      templateList.map((template, index) => {
+        return { id: index, label: template.name, value: template.id };
+      })
+    );
+  }, [templateList]);
 
   useEffect(() => {
     if (!uploadImg) return;
@@ -160,19 +199,18 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
       onSubmit={handleSubmit(onSubmit)}
       encType="multipart/form-data"
     >
-      <Modal open={openImgModal} onClose={setImgModal}>
-        <div className="w-screen h-screen flex justify-center items-center p-4">
-          <div className="bg-white w-full max-w-60p rounded-lg">
-            <ImageUpload
-              setOpen={(open) => setImgModal(open)}
-              setFile={(file) => {
-                setUploadImg(file);
-                setImgModal(false);
-              }}
-            />
-          </div>
+      <Modal.Base isOpen={openImgModal} setOpen={setImgModal}>
+        <div className="bg-white w-full max-w-60p rounded-lg">
+          <ImageUpload
+            isOpen={openImgModal}
+            setOpen={(open) => setImgModal(open)}
+            setFile={(file) => {
+              setUploadImg(file);
+              setImgModal(false);
+            }}
+          />
         </div>
-      </Modal>
+      </Modal.Base>
 
       <div className="flex mb-4">
         <h2 className="text-2xl font-bold">
@@ -188,13 +226,13 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
             : "建立訂單"}
         </h2>
         {!orderId && (
-          <div className="max-w-36 ml-4">
+          <div className="ml-4">
             <Form.Input
-              type="text"
-              label="Token"
+              type="select"
+              label="幸福密碼"
               name="order-token"
+              options={orderTokens}
               control={control}
-              size="small"
               required
             />
           </div>
@@ -226,17 +264,11 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
 
         {orderId && (
           <div className="flex space-x-4 mt-8 px-8 pt-8 border-t">
-            <Button.Basic
-              type="button"
-              className="bg-blue-500 text-white active:bg-blue-600"
-            >
+            <Button.Basic type="button" className="bg-orange-cis text-white">
               <span>複製卡片連結</span>
             </Button.Basic>
 
-            <Button.Basic
-              type="button"
-              className="bg-blue-500 text-white active:bg-blue-600"
-            >
+            <Button.Basic type="button" className="bg-orange-cis text-white">
               <span>下載完整卡片</span>
             </Button.Basic>
           </div>
@@ -265,7 +297,7 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
             required
           />
         </FormGroup>
-        <div className="flex -my-4">
+        <div className="flex flex-col md:flex-row -my-4">
           <FormGroup title="聯絡人">
             <Form.Input
               type="text"
@@ -385,10 +417,7 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
             className="w-1/2"
             type="select"
             name="card-template"
-            options={[
-              { id: "1", label: "藍色東京", value: "1" },
-              { id: "2", label: "粉色巴黎", value: "2" },
-            ]}
+            options={templates}
             onChange={(e) => console.log(e)}
             control={control}
           />
@@ -431,10 +460,10 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
         <div className="px-8 pb-4 flex justify-end space-x-4">
           <Button.Basic
             type="button"
-            className="text-blue-500 bg-white"
+            className="text-blue-cis border border-blue-cis bg-white"
             onClick={() =>
               showNotify("open", "尚未儲存訂單", "確定要返回列表頁？", () => {
-                showNotify("close", "", "");
+                showNotify("close");
                 router.back();
               })
             }
@@ -442,10 +471,7 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
             <span>返回</span>
           </Button.Basic>
 
-          <Button.Basic
-            type="submit"
-            className="bg-blue-500 text-white active:bg-blue-600"
-          >
+          <Button.Basic type="submit" className="bg-blue-cis text-white">
             <span>{orderId ? `儲存` : `新增`}</span>
           </Button.Basic>
         </div>

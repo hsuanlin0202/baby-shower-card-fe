@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NextRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import { Modal } from "@mui/material";
 import clsx from "clsx";
 import { FormGroup } from "../order";
 import Form from "components/elements/form";
-import { Button, ColorPicker } from "components/elements";
+import { Button, ColorPicker, Modal } from "components/elements";
 import { useInitData } from "hooks";
 import { BabyCardPreview } from "./BabyCardPreview";
 import { ImageUploadButton } from "./ImageUploadButton";
 import { organizeTemplateFormData, onChangePicture } from "functions/page";
-import { ImageUploadTypes } from "types";
+import { ImageUploadTypes, TemplateFormTypes, TemplateTypes } from "types";
+import { getTemplate, postTemplates, putTemplates } from "api";
+import { AuthStore } from "store/auth";
 
 type Props = {
   id: string;
@@ -20,7 +21,15 @@ type Props = {
 export const TemplateDetail = ({ id, router }: Props): JSX.Element => {
   const { showNotify, openLoader } = useInitData();
 
-  const { control, setValue, getValues, handleSubmit } = useForm();
+  const { token, username } = AuthStore((state) => ({
+    token: state.token,
+    username: state.username,
+  }));
+
+  const { control, setValue, getValues, handleSubmit } =
+    useForm<TemplateFormTypes>();
+
+  const [template, setTemplate] = useState<TemplateTypes>();
 
   const [logoData, setLogoData] = useState<ImageUploadTypes>(null);
 
@@ -35,32 +44,77 @@ export const TemplateDetail = ({ id, router }: Props): JSX.Element => {
       data,
       color,
       bgData.blob,
-      logoData.blob
+      logoData.blob,
+      username
     );
+
+    if (!id) newTemplate(formData);
+
+    if (!!id) editTemplate(formData);
   };
+
+  const newTemplate = (formData: FormData): void => {
+    console.log("POST");
+
+    postTemplates(token, formData).then((result) => {
+      console.log(result);
+    });
+  };
+
+  const editTemplate = (formData: FormData): void => {
+    console.log("PUT");
+    putTemplates(token, id, formData).then((result) => {
+      console.log(result);
+    });
+  };
+
+  useEffect(() => {
+    if (!id || !!template) {
+      return;
+    }
+    openLoader(true);
+    getTemplate(id).then((result) => {
+      openLoader(false);
+      if (!result) {
+        showNotify(
+          "open",
+          "找不到模板",
+          "請再試一次",
+          () => {
+            showNotify("close");
+            router.replace("/vendor/template");
+          },
+          true
+        );
+        return;
+      }
+
+      setTemplate(result);
+      setLogoData({ ...logoData, string: result.partnerLogo });
+      setBgData({ ...bgData, string: result.backgroundImage });
+      setColor(result.color);
+      setValue("partner-name", result.partnerName);
+      setValue("name", result.name);
+    });
+  }, [id]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Modal open={openPreview} onClose={setPreview}>
-        <div
-          className="w-screen h-screen flex justify-center items-center p-4"
-          onClick={() => setPreview(false)}
-        >
-          <BabyCardPreview
-            logo={(logoData?.string as string) || ""}
-            background={(bgData?.string as string) || ""}
-            partner={getValues("partner")}
-            color={color}
-          />
-        </div>
-      </Modal>
+      <Modal.Base isOpen={openPreview} setOpen={setPreview} backgroundClose>
+        <BabyCardPreview
+          logo={(logoData?.string as string) || ""}
+          background={(bgData?.string as string) || ""}
+          partner={getValues("partner-name")}
+          color={color}
+        />
+      </Modal.Base>
 
       <h2 className="text-2xl font-bold">{id ? `編輯模板` : "新增模板"}</h2>
 
       <div className="border rounded-lg shadow-lg py-4 my-4">
-        <FormGroup title="開放模板">
+        {/* <FormGroup title="開放模板">
           <Form.Input type="switch" name="template-active" control={control} />
-        </FormGroup>
+        </FormGroup> */}
         <FormGroup title="模板名稱" required>
           <Form.Input
             type="text"
@@ -96,7 +150,7 @@ export const TemplateDetail = ({ id, router }: Props): JSX.Element => {
         <FormGroup title="店家名稱">
           <Form.Input
             type="text"
-            name="partner"
+            name="partner-name"
             control={control}
             size="small"
           />
@@ -134,7 +188,7 @@ export const TemplateDetail = ({ id, router }: Props): JSX.Element => {
             type="button"
             className={clsx(
               "text-white active:bg-blue-600",
-              bgData ? "bg-blue-500" : "bg-gray-300"
+              bgData ? " bg-orange-cis opacity-70" : "bg-gray-300"
             )}
             onClick={() => {
               if (!bgData) return;
@@ -147,7 +201,7 @@ export const TemplateDetail = ({ id, router }: Props): JSX.Element => {
           <div className="flex space-x-4">
             <Button.Basic
               type="button"
-              className="text-blue-500 bg-white"
+              className="text-blue-cis border border-blue-cis bg-white"
               onClick={() =>
                 showNotify("open", "尚未儲存模板", "確定要返回列表頁？", () => {
                   showNotify("close", "", "");
@@ -160,7 +214,7 @@ export const TemplateDetail = ({ id, router }: Props): JSX.Element => {
 
             <Button.Basic
               type="submit"
-              className="bg-blue-500 text-white active:bg-blue-600"
+              className="bg-blue-cis text-white active:bg-blue-600"
             >
               <span>儲存</span>
             </Button.Basic>

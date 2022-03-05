@@ -50,8 +50,9 @@ export const VendorOrderPage = ({ router }: Props): JSX.Element => {
 
   const { showNotify, openLoader } = useInitData();
 
-  const { token } = AuthStore((state) => ({
+  const { token, setOrderUsedTokens } = AuthStore((state) => ({
     token: state.token,
+    setOrderUsedTokens: state.setOrderUsedTokens,
   }));
 
   const postSearch = (data: { keyword: string }) => {
@@ -71,6 +72,9 @@ export const VendorOrderPage = ({ router }: Props): JSX.Element => {
     getOrders(token).then((result) => {
       openLoader(false);
       setOrders(result);
+
+      // set used token
+      setOrderUsedTokens(result.map((order) => order.token));
     });
   };
 
@@ -103,8 +107,8 @@ export const VendorOrderPage = ({ router }: Props): JSX.Element => {
     <div>
       <TopSection onSubmit={postSearch} pushPage={pushPage} />
 
-      <div className="mt-4 flex flex-col items-end">
-        <div className="w-1/3">
+      <div className="px-4 md:p-0 mt-4 flex flex-col items-end">
+        <div className="w-2/3 md:w-1/3">
           <Form.Input
             type="select"
             name="sort"

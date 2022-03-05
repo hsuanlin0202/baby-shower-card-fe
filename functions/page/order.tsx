@@ -1,3 +1,4 @@
+import { NextRouter } from "next/router";
 import { OrderFormType } from "types";
 
 export const organizeFormData = (
@@ -41,4 +42,38 @@ export const postErrorCode = (message: string): string => {
   if (message.includes("token")) return "Token不存在。";
 
   return "未知錯誤，請稍後再試。";
+};
+
+export const forceBackToOrderNotify = (
+  showNotify: (
+    type: "open" | "close",
+    title?: string,
+    message?: string,
+    action?: () => void,
+    force?: boolean
+  ) => void,
+  title: string,
+  content: string,
+  router: NextRouter
+) =>
+  showNotify(
+    "open",
+    title,
+    content,
+    () => {
+      showNotify("close");
+      router.replace("/vendor/order");
+    },
+    true
+  );
+
+export const getUsableTokens = (orderTokenList: {
+  all: string[];
+  used: string[];
+}) => {
+  const usableTokenList = [];
+  orderTokenList.all.forEach((token) => {
+    if (!orderTokenList.used.includes(token)) usableTokenList.push(token);
+  });
+  return usableTokenList;
 };

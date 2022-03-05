@@ -34,7 +34,7 @@ const Information = (): JSX.Element => {
   const getPartnerInformation = (): void => {
     openLoader(true);
 
-    getPartner(token, partners[0], []).then((res) => {
+    getPartner(token, partners[0].id, []).then((res) => {
       openLoader(false);
 
       setInformation(res);

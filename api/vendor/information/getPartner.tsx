@@ -1,22 +1,77 @@
-import { RemoveUndefinedFromObj } from 'functions/converters';
-import { UserTypes, VendorInformationTypes, VendorTemplateTypes } from 'types';
-import { get, BABY_API, ErrorResponse } from '../../base';
+import { RemoveUndefinedFromObj } from "functions/converters";
+import { UserTypes, VendorInformationTypes, VendorTemplateTypes } from "types";
+import { get, BABY_API, ErrorResponse } from "../../base";
+
+
+export interface DatedBy {
+  id:                 number;
+  firstname:          string;
+  lastname:           string;
+  username:           string;
+  email:              string;
+  password:           string;
+  resetPasswordToken: string;
+  registrationToken:  string;
+  isActive:           boolean;
+  blocked:            boolean;
+  preferedLanguage:   string;
+  createdAt:          string;
+  updatedAt:          string;
+}
+
+export interface Employee {
+  id:                 number;
+  username:           string;
+  email:              string;
+  provider:           string;
+  password:           string;
+  resetPasswordToken: string;
+  confirmationToken:  string;
+  confirmed:          boolean;
+  blocked:            boolean;
+  createdAt:          string;
+  updatedAt:          string;
+}
+
+export interface Template {
+  id:          number;
+  name:        string;
+  textColor:   string;
+  createdAt:   string;
+  updatedAt:   string;
+  publishedAt: string;
+  background:  string;
+  partnerLogo: string;
+  partnerName: string;
+  active:      boolean;
+}
+
+export interface Token {
+  id:          number;
+  content:     string;
+  createdAt:   string;
+  updatedAt:   string;
+  publishedAt: string;
+}
 
 interface PartnerResponse {
-  id: number;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-  publishedAt: string;
-  contact: string;
-  contactPhone: string;
-  contactEmail: string;
+  id:             number;
+  name:           string;
+  createdAt:      string;
+  updatedAt:      string;
+  publishedAt:    string;
+  contact:        string;
+  contactPhone:   string;
+  contactEmail:   string;
   contactAddress: string;
-  openHour: string;
-  information: string;
-  templates: {
-    data: PartnerTemplatesResponse[];
-  };
+  openHour:       string;
+  information:    string;
+  tokens:         Token[];
+  users:          Employee[];
+  templates:      Template[];
+  employees:      Employee[];
+  createdBy:      DatedBy;
+  updatedBy:      DatedBy;
 }
 
 interface PartnerTemplatesResponse {
@@ -31,13 +86,17 @@ interface PartnerTemplatesResponse {
   };
 }
 
-function toTemplate(list: PartnerTemplatesResponse): VendorTemplateTypes {
+function toTemplate(template: Template): VendorTemplateTypes {
   return {
-    id: list.id,
-    name: list.attributes.name,
-    textColor: list.attributes.textColor,
-    background: list.attributes.background,
+    id: template.id,
+    name: template.name,
+    textColor: template.textColor,
+    background: template.background,
   };
+}
+
+function toTokens(token: Token): string {
+  return token.content;
 }
 
 function toPartner(data: PartnerResponse): VendorInformationTypes {
@@ -50,14 +109,12 @@ function toPartner(data: PartnerResponse): VendorInformationTypes {
     contactAddress: data.contactAddress,
     openHour: data.openHour,
     information: data.information,
-    templates: !data.templates ? [] : data.templates.data.map((template) => toTemplate(template)),
+    tokens:!data.tokens?[]:data.tokens.map((token)=>toTokens(token)),
+    templates: !data.templates
+      ? []
+      : data.templates.map((template) => toTemplate(template)),
   };
 }
-
-// interface GetPartnerResponse {
-//   data: PartnerResponse;
-//   meta: {};
-// }
 
 /**
  * [GET partners/[id]]
@@ -66,13 +123,13 @@ function toPartner(data: PartnerResponse): VendorInformationTypes {
  */
 export function getPartner(
   token: string,
-  id: string,
+  id: number,
   populate?: string[]
 ): Promise<VendorInformationTypes> {
   const populateList = populate.map((item) => {
     return `populate=${item}`;
   });
-  const populateString = populateList.join().replaceAll(',', '&');
+  const populateString = populateList.join().replaceAll(",", "&");
   return get<PartnerResponse>(
     BABY_API(`partners/${id}${populateString ? `?${populateString}` : ``}`),
 

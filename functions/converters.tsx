@@ -19,5 +19,5 @@ export const DateStringFormat = (date: string): string => {
     tempDate.getMonth() < 9
       ? `0${tempDate.getMonth() + 1}`
       : tempDate.getMonth() + 1
-  }-${tempDate.getDate()}`;
+  }-${tempDate.getDate() < 9 ? `0${tempDate.getDate()}` : tempDate.getDate()}`;
 };

@@ -84,13 +84,15 @@ export function Select<T>({
         </FormControl>
       )}
 
-      {!!control && (
+      {!!control && options.length > 0 && (
         <Controller
           name={name}
           control={control}
           rules={{ required }}
           defaultValue={
-            options[0].value as UnpackNestedValue<PathValue<T, Path<T>>>
+            (options[0]?.value || "") as UnpackNestedValue<
+              PathValue<T, Path<T>>
+            >
           }
           render={({ field, fieldState: { error } }) => {
             return (
@@ -103,7 +105,7 @@ export function Select<T>({
                     name,
                     id: name,
                   }}
-                  value={field.value || options[0].value}
+                  value={field.value || options[0]?.value || ""}
                   {...field}
                 >
                   {options.map(({ id, value, label }) => (

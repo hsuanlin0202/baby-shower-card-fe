@@ -4,21 +4,27 @@ import { get, BABY_API, ErrorResponse } from "../base";
 
 function toOrder(data: OrderData): OrderListTypes {
   return {
-    orderId: data.id,
-    orderNo: data.attributes.orderNo,
-    contact: data.attributes.contact,
-    mobile: data.attributes.mobile,
-    active: data.attributes.active,
-    createdAt: DateStringFormat(data.attributes.createdAt),
+    id: data.id,
+    orderNo: data.orderNo,
+    contact: data.contact,
+    mobile: data.mobile,
+    active: data.active,
+    createdAt: DateStringFormat(data.createdAt),
+    token: data.token.content,
+    title: data.card.title,
   };
+}
+
+function sortOrder(data: OrderData[]): OrderListTypes[] {
+  const temp = data.map((item) => toOrder(item));
+  const sort = temp.sort((a, b) => {
+    return a.id - b.id;
+  });
+  return sort;
 }
 
 interface OrderData {
   id: number;
-  attributes: OrderAttributes;
-}
-
-interface OrderAttributes {
   author: string;
   orderNo: string;
   contact: string;
@@ -30,21 +36,16 @@ interface OrderAttributes {
   updatedAt: string;
   publishedAt: string;
   card: Card;
-  users: Users;
+  token: Token;
+  users: User[];
+  createdBy: null;
+  updatedBy: UpdatedBy | null;
 }
 
 interface Card {
-  data: Data | null;
-}
-
-interface Data {
   id: number;
-  attributes: DataAttributes;
-}
-
-interface DataAttributes {
   title: string;
-  description: null | string;
+  description: string;
   publicAt: null;
   closeAt: null;
   createdAt: string;
@@ -54,41 +55,41 @@ interface DataAttributes {
   fatherName: string;
   motherName: string;
   babyName: string;
-  babyBirthday: Date | null;
+  babyBirthday: string;
   public: boolean;
   photo: string;
 }
 
-interface Users {
-  data: UsersDatum[];
-}
-
-interface UsersDatum {
+interface Token {
   id: number;
-  attributes: UserAttributes;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
 }
 
-interface UserAttributes {
+interface UpdatedBy {
+  id: number;
+  firstname: string;
+  lastname: string;
+  username: null;
   email: string;
-  name: null;
+  password: string;
+  resetPasswordToken: null;
+  registrationToken: null;
+  isActive: boolean;
+  blocked: boolean;
+  preferedLanguage: null;
   createdAt: string;
   updatedAt: string;
 }
 
-interface Meta {
-  pagination: Pagination;
-}
-
-interface Pagination {
-  page: number;
-  pageSize: number;
-  pageCount: number;
-  total: number;
-}
-
-interface GetOrdersResponse {
-  data: OrderData[];
-  meta: Meta;
+interface User {
+  id: number;
+  email: string;
+  name: null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 /**
@@ -97,20 +98,14 @@ interface GetOrdersResponse {
  * get orders by auth
  */
 export function getOrders(token: string): Promise<OrderListTypes[]> {
-  return get<GetOrdersResponse>(
+  return get<OrderData[]>(
     BABY_API(`orders?populate=*`),
 
     {
       Authorization: `Bearer ${token}`,
     }
   )
-    .then((result) => {
-      const temp = result.data.map((item) => toOrder(item));
-      const sort = temp.sort((a, b) => {
-        return a.orderId - b.orderId;
-      });
-      return sort;
-    })
+    .then((result) => sortOrder(result))
     .catch(() => {
       return null;
     });

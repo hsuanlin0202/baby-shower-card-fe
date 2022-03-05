@@ -9,6 +9,7 @@ export type TextProps<T> = CommonProps<T> & {
   size?: "small" | "medium";
   rows?: number;
   errorMsg?: string;
+  placeholder?: string;
 };
 export const Text = <T,>({
   className,
@@ -23,8 +24,11 @@ export const Text = <T,>({
   rows = 1,
   pattern,
   errorMsg,
+  placeholder = "",
   ...props
 }: TextProps<T>): JSX.Element => {
+  const parseLines = (value): string => value.replace(/(\\n)/g, "\n");
+
   return (
     <Controller
       name={name}
@@ -34,13 +38,13 @@ export const Text = <T,>({
         field: { value, onChange, name, ref },
         fieldState: { error },
       }) => (
-        <div>
+        <div className={className}>
           <TextField
             id={name}
             label={label ? label : undefined}
-            className={clsx("w-full", className)}
+            className={"w-full"}
             variant="outlined"
-            value={value || ""}
+            value={parseLines(value || "")}
             InputProps={{
               startAdornment: icon && <span className="w-4 mr-2">{icon}</span>,
               ...props,
@@ -53,6 +57,7 @@ export const Text = <T,>({
             size={size}
             rows={rows}
             multiline={rows > 1}
+            placeholder={placeholder}
           />
           {Boolean(error) && (
             <p className="text-xs text-red-600">

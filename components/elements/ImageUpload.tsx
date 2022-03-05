@@ -1,6 +1,12 @@
 // @ts-nocheck
 import clsx from "clsx";
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, {
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  ReactNode,
+} from "react";
 import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -25,9 +31,16 @@ const getFile = (canvas, crop): Blob => {
 
 type Props = {
   setFile: (file: Blob) => void;
+  isOpen: boolean;
   setOpen?: (open: boolean) => void;
+  cancelIcon?: ReactNode;
 };
-export const ImageUpload = ({ setFile, setOpen }: Props): JSX.Element => {
+export const ImageUpload = ({
+  setFile,
+  isOpen,
+  setOpen,
+  cancelIcon,
+}: Props): JSX.Element => {
   const [upImg, setUpImg] = useState();
 
   const [isPreview, setPreview] = useState<boolean>(false);
@@ -36,7 +49,9 @@ export const ImageUpload = ({ setFile, setOpen }: Props): JSX.Element => {
 
   const previewCanvasRef = useRef(null);
 
-  const [crop, setCrop] = useState({ unit: "%", width: 100, aspect: 1 });
+  const initCrop = { unit: "%", width: 100, aspect: 1 };
+
+  const [crop, setCrop] = useState(initCrop);
 
   const [completedCrop, setCompletedCrop] = useState(null);
 
@@ -85,14 +100,26 @@ export const ImageUpload = ({ setFile, setOpen }: Props): JSX.Element => {
     );
   }, [completedCrop]);
 
+  useEffect(() => {
+    if (isOpen) return;
+    setUpImg(null);
+    setPreview(false);
+    setCrop(initCrop);
+    setCompletedCrop(null);
+  }, [isOpen]);
+
   return (
     <div className="p-4 max-h-screen flex flex-col">
       {setOpen && (
         <div className="w-full flex justify-end mb-4">
           <button type="button" onClick={() => setOpen(false)}>
-            <span className="text-gray-500">
-              <ClearIcon />
-            </span>
+            {!!cancelIcon ? (
+              cancelIcon
+            ) : (
+              <span className="text-gray-500">
+                <ClearIcon />
+              </span>
+            )}
           </button>
         </div>
       )}
@@ -115,7 +142,7 @@ export const ImageUpload = ({ setFile, setOpen }: Props): JSX.Element => {
         onChange={onSelectFile}
       />
 
-      {!isPreview && !!upImg && (
+      {upImg && !isPreview && (
         <div className="max-h-60v w-full overflow-hidden overflow-y-scroll">
           <ReactCrop
             src={upImg}

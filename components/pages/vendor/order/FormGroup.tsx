@@ -14,7 +14,7 @@ export const FormGroup = ({
   title,
   children,
   icon,
-  titleSpace = "min-w-40",
+  titleSpace = "min-w-28 md:min-w-40",
   contentSpace = "w-56",
   note,
   required = false,

@@ -7,8 +7,8 @@ export const vendorPath = [
 ];
 
 export const familyPath = [
-  { title: "編輯寶寶卡片", path: "edit" },
-  { title: "留言管理", path: "comment" },
-  { title: "聯絡廠商", path: "information" },
-  { title: "登出", path: "logout" },
+  { title: "編輯寶寶卡片", path: "/family/card/[id]/edit" },
+  { title: "留言管理", path: "/family/card/[id]/comment" },
+  { title: "聯絡廠商", path: "/family/card/[id]/information" },
+  { title: "登出", path: "/logout" },
 ];

@@ -18,7 +18,10 @@ export const ImageUploadButton = ({
           className="relative border border-gray-300 bg-black flex items-center justify-center cursor-pointer"
           htmlFor={htmlFor}
         >
-          <img className="w-56 hover:opacity-40 z-10 bg-white" src={imgPath} />
+          <img
+            className="w-56 hover:opacity-40 z-10 bg-gray-200"
+            src={imgPath}
+          />
           <div className="absolute text-white z-0">重選圖片</div>
         </label>
       )}

@@ -9,35 +9,110 @@ interface GetRoleResponse {
   provider: string;
   confirmed: boolean;
   blocked: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  role?: number;
-  partners?: string[];
-  orders?: string[];
-  templates?: string[];
-  company?: string;
+  createdAt: string;
+  updatedAt: string;
+  role: Role;
+  partners: Partner[];
+  orders: Order[];
+  templates: Template[];
+  company: string;
+  createdBy: CreatedBy;
+  updatedBy: CreatedBy;
+}
+
+interface CreatedBy {
+  id: number;
+  firstname: string;
+  lastname: string;
+  username: string;
+  email: string;
+  password: string;
+  resetPasswordToken: string;
+  registrationToken: string;
+  isActive: boolean;
+  blocked: boolean;
+  preferedLanguage: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Order {
+  id: number;
+  author: string;
+  orderNo: string;
+  contact: string;
+  contactGender: string;
+  mobile: string;
+  active: boolean;
+  expiredAt: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+}
+
+interface Partner {
+  id: number;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  contact: string;
+  contactPhone: string;
+  contactEmail: string;
+  contactAddress: string;
+  openHour: string;
+  information: string;
+}
+
+interface Role {
+  id: number;
+  name: string;
+  description: string;
+  type: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Template {
+  id: number;
+  name: string;
+  textColor: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  background: string;
+  partnerLogo: string;
+  partnerName: string;
+}
+
+function toPartners(data: Partner) {
+  return { id: data.id, name: data.name };
+}
+
+function toOrders(data: Order) {
+  return data.id;
 }
 
 function toUser(raw: GetRoleResponse): UserTypes {
   if (!raw.id || !raw.username || !raw.email) return null;
 
   const rawData = {
-    role: raw.role || undefined,
-    partners: raw.partners || undefined,
-    orders: raw.orders || undefined,
-    templates: raw.templates || undefined,
-    company: raw.company || undefined,
+    partners: raw.partners.map((item) => toPartners(item)) || [],
+    orders: raw.orders.map((item) => toOrders(item)) || [],
+    // templates: raw.templates || undefined,
   };
 
   return {
     id: raw.id,
     username: raw.username,
     email: raw.email,
-    ...RemoveUndefinedFromObj(rawData),
+    blocked: raw.blocked,
+    role: raw.role.id,
+    partners: raw.partners.map((item) => toPartners(item)) || [],
+    orders: raw.orders.map((item) => toOrders(item)) || [],
+    // ...RemoveUndefinedFromObj(rawData),
   };
 }
-
-interface getUserQuery {}
 
 /**
  * [GET users/me]
