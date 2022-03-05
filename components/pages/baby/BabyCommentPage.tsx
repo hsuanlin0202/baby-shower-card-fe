@@ -1,6 +1,7 @@
-import { DateStringFormat, getContrastColorByLightness } from "functions";
-import { NextRouter } from "next/router";
 import { useState } from "react";
+import { NextRouter } from "next/router";
+import AddIcon from "@mui/icons-material/Add";
+import { DateStringFormat, getContrastColorByLightness } from "functions";
 import { BabyCardTypes, MessageTypes } from "types";
 import { BackButton, CommentModal } from ".";
 
@@ -28,11 +29,16 @@ export const BabyCommentPage = ({
   const [isOpen, setOpen] = useState<boolean>(false);
 
   return (
-    <div className="w-full h-full px-6 pb-4 flex flex-col justify-around items-center space-y-4 text-base">
+    <div className="w-full text-base px-4">
       <style jsx>
         {`
           .textColor {
             color: ${card.template.textColor};
+          }
+          .card-background-image-dynamic {
+            background-image: url("${card.template.background}");
+            background-position: center;
+            background-size: 100%;
           }
           .colored-background {
             background-color: ${card.template.textColor};
@@ -49,18 +55,18 @@ export const BabyCommentPage = ({
         router={router}
       />
 
-      <nav className="w-full">
+      <nav className="w-full h-10">
         <BackButton onClick={() => router.back()} />
       </nav>
 
-      <header className="w-full">
+      <header className="w-full h-24">
         <p>來自親朋好友溫暖的祝福</p>
-        <h1 className="text-2xl mt-2 -mb-4">{card.babyName}，祝福你...</h1>
+        <h1 className="text-2xl mt-2">{card.babyName}，祝福你...</h1>
       </header>
 
-      <ul className="w-full h-70v overflow-y-scroll">
+      <ul className="w-full mb-20">
         {messages.map((message, index) => (
-          <div
+          <li
             key={`message-${index}`}
             className="w-full bg-brown-600 rounded-lg p-4 mb-5"
           >
@@ -71,18 +77,23 @@ export const BabyCommentPage = ({
               </span>
             </h2>
             <p>{message.content}</p>
-          </div>
+          </li>
         ))}
       </ul>
 
-      <footer>
-        <button
-          type="button"
-          className="px-10 py-2 text-sm rounded-md colored-background"
-          onClick={() => setOpen(true)}
-        >
-          <span>留下祝福</span>
-        </button>
+      <footer className="fixed bottom-0 py-6 w-full flex justify-center ">
+        {!isOpen && (
+          <button
+            type="button"
+            className="p-2 flex justify-center items-center text-sm rounded-lg shadow-xl colored-background"
+            onClick={() => setOpen(true)}
+          >
+            <span>
+              <AddIcon />
+            </span>
+            <span className="text-sm ml-1">留下祝福</span>
+          </button>
+        )}
       </footer>
     </div>
   );
