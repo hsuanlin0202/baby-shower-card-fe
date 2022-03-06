@@ -21,7 +21,7 @@ export const TopSection = ({ pushPage, onSubmit }: Props): JSX.Element => {
         <span>新增</span>
       </Button.Basic>
 
-      <form
+      {/* <form
         className="w-2/3 md:w-1/2 flex justify-end space-x-4"
         onSubmit={handleSubmit(onSubmit)}
       >
@@ -39,7 +39,7 @@ export const TopSection = ({ pushPage, onSubmit }: Props): JSX.Element => {
         >
           <span>搜尋</span>
         </Button.Basic>
-      </form>
+      </form> */}
     </div>
   );
 };

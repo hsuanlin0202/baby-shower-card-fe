@@ -137,7 +137,7 @@ export const BabyCardPage = ({
       <button
         type="button"
         className="px-10 py-2 text-sm rounded-md colored-background"
-        onClick={() => exportAsImage(exportRef.current, "test")}
+        // onClick={() => exportAsImage(exportRef.current, "test")}
       >
         <span>保存回憶</span>
       </button>
