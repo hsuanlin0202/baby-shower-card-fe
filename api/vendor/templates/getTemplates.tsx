@@ -1,5 +1,5 @@
 import { TemplateTypes } from "types";
-import { get, BABY_API, ErrorResponse } from "../../base";
+import { get, BABY_API } from "../../base";
 
 function toTemplate(data: TemplatesData): TemplateTypes {
   return {
@@ -9,10 +9,8 @@ function toTemplate(data: TemplatesData): TemplateTypes {
     partnerLogo: data.attributes.partnerLogo,
     backgroundImage: data.attributes.background,
     color: data.attributes.textColor,
-    active: true,
-    // createdAt: data.attributes.createdAt
-    // updatedAt: string;
-    partner: data.attributes.partners.data[0].id,
+    active: data.attributes.active,
+    partner: data.attributes.partners.data[0]?.id || 0,
   };
 }
 
@@ -30,6 +28,7 @@ interface TemplatesAttributes {
   background: string;
   partnerLogo: string;
   partnerName: string;
+  active: boolean;
   partners: Partners;
 }
 
@@ -44,9 +43,9 @@ interface PartnersData {
 
 interface PartnersAttributes {
   name: string;
-  createdAt: Date;
-  updatedAt: Date;
-  publishedAt: Date;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
   contact: string;
   contactPhone: string;
   contactEmail: string;
@@ -80,9 +79,11 @@ export function getTemplates(partner: string): Promise<TemplateTypes[]> {
   return get<GetOrdersResponse>(BABY_API(`templates?populate=*`))
     .then((result) => {
       const temp = result.data.map((item) => toTemplate(item));
+
       const findPartner = temp.filter(
-        (item) => item.partner.toString() === partner.toString()
+        (item) => item.partner.toString() === partner
       );
+
       return findPartner;
     })
     .catch(() => {
