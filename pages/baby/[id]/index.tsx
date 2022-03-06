@@ -34,7 +34,8 @@ export default function BabyCard() {
           () => {
             showNotify("close", "", "");
             router.push("/baby");
-          }
+          },
+          true
         );
         return;
       }
@@ -44,8 +45,12 @@ export default function BabyCard() {
   }, []);
 
   return (
-    <Layout.Baby title={card?.babyName} textColor={card?.template.textColor}>
-      <BabyCardPage card={card} router={router} />
+    <Layout.Baby
+      title={card?.babyName}
+      textColor={card?.template.textColor}
+      background={card?.template.background}
+    >
+      <BabyCardPage card={card} router={router} showNotify={showNotify} />
     </Layout.Baby>
   );
 }
