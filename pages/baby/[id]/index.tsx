@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { BabyCardTypes } from "types";
 import { BabyCardPage } from "components/pages/baby";
 import { useInitData } from "hooks";
+import { AuthStore } from "store/auth";
 
 export default function BabyCard() {
   const { showNotify, openLoader } = useInitData();
@@ -14,6 +15,10 @@ export default function BabyCard() {
   const { id } = router.query;
 
   const [card, setCard] = useState<BabyCardTypes>();
+
+  // const { setBabyCardId } = AuthStore((state) => ({
+  //   setBabyCardId: state.setBabyCardId,
+  // }));
 
   useEffect(() => {
     if (!id) router.push("/baby");
@@ -29,18 +34,23 @@ export default function BabyCard() {
           () => {
             showNotify("close", "", "");
             router.push("/baby");
-          }
+          },
+          true
         );
         return;
       }
-
+      // setBabyCardId(card.id);
       setCard(card);
     });
   }, []);
 
   return (
-    <Layout.Base title={card?.babyName}>
-      <BabyCardPage card={card} />
-    </Layout.Base>
+    <Layout.Baby
+      title={card?.babyName}
+      textColor={card?.template.textColor}
+      background={card?.template.background}
+    >
+      <BabyCardPage card={card} router={router} showNotify={showNotify} />
+    </Layout.Baby>
   );
 }

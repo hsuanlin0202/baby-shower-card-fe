@@ -68,6 +68,7 @@ export interface OrderListTypes {
   createdAt: string;
   id: number;
   token?:string;
+  title:string;
 }
 
 export interface InputLayoutProps {

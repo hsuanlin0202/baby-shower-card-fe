@@ -5,14 +5,14 @@ import { useInitData } from "hooks";
 import { useRouter } from "next/router";
 
 const CardEdit = (): JSX.Element => {
-  const { showNotify, openLoader } = useInitData();
+  const { showNotify } = useInitData();
 
   const router = useRouter();
 
   const cardId = router.query.id;
 
   const backAction = (): void => {
-    showNotify("open", "尚未儲存訂單", "確定要返回列表頁？", () => {
+    showNotify("open", "尚未儲存卡片", "確定要返回列表頁？", () => {
       showNotify("close", "", "");
       router.back();
     });

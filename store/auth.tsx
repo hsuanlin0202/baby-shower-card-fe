@@ -3,6 +3,8 @@ import create from "zustand";
 import { persist } from "zustand/middleware";
 
 type AuthState = UserTypes & {
+  babyCardId: number;
+  setBabyCardId: (id: number) => void;
   token: string;
   expiresIn: number;
   orderTokens: { all: string[]; used: string[] };
@@ -29,6 +31,7 @@ const initUser = {
   templates: [],
   orderTokens: { all: [], used: [] },
   blocked: false,
+  babyCardId: 0,
 };
 
 export const AuthStore = create<AuthState>(
@@ -48,6 +51,7 @@ export const AuthStore = create<AuthState>(
         }),
       setOrderUsedTokens: (tokens) =>
         set({ orderTokens: { all: get().orderTokens.all, used: tokens } }),
+      setBabyCardId: (id) => set({ babyCardId: id }),
       logout: () =>
         set({
           ...initUser,

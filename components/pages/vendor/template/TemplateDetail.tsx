@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { NextRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import { Modal } from "@mui/material";
 import clsx from "clsx";
 import { FormGroup } from "../order";
 import Form from "components/elements/form";
-import { Button, ColorPicker } from "components/elements";
+import { Button, ColorPicker, Modal } from "components/elements";
 import { useInitData } from "hooks";
 import { BabyCardPreview } from "./BabyCardPreview";
 import { ImageUploadButton } from "./ImageUploadButton";
@@ -101,19 +100,14 @@ export const TemplateDetail = ({ id, router }: Props): JSX.Element => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Modal open={openPreview} onClose={setPreview}>
-        <div
-          className="w-screen h-screen flex justify-center items-center p-4"
-          onClick={() => setPreview(false)}
-        >
-          <BabyCardPreview
-            logo={(logoData?.string as string) || ""}
-            background={(bgData?.string as string) || ""}
-            partner={getValues("partner-name")}
-            color={color}
-          />
-        </div>
-      </Modal>
+      <Modal.Base isOpen={openPreview} setOpen={setPreview} backgroundClose>
+        <BabyCardPreview
+          logo={(logoData?.string as string) || ""}
+          background={(bgData?.string as string) || ""}
+          partner={getValues("partner-name")}
+          color={color}
+        />
+      </Modal.Base>
 
       <h2 className="text-2xl font-bold">{id ? `編輯模板` : "新增模板"}</h2>
 

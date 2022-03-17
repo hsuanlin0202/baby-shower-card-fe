@@ -4,3 +4,4 @@ export * from "./ActionLoader";
 export * from "./Button";
 export * from "./ImageUpload";
 export * from "./ColorPicker";
+export * from "./Modal";
