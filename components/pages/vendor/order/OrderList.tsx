@@ -107,7 +107,7 @@ export const VendorOrderPage = ({ router }: Props): JSX.Element => {
     <div>
       <TopSection onSubmit={postSearch} pushPage={pushPage} />
 
-      <div className="px-4 md:p-0 mt-4 flex flex-col items-end">
+      {/* <div className="px-4 md:p-0 mt-4 flex flex-col items-end">
         <div className="w-2/3 md:w-1/3">
           <Form.Input
             type="select"
@@ -116,7 +116,7 @@ export const VendorOrderPage = ({ router }: Props): JSX.Element => {
             onChange={(e) => console.log(e)}
           />
         </div>
-      </div>
+      </div> */}
 
       <div className="mt-4 w-full overflow-x-scroll rounded-t-md">
         <div className="w-full min-w-228">

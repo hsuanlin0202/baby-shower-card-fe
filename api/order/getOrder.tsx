@@ -97,6 +97,7 @@ function toOrder(data: OrderResponse): OrderFormType {
     "card-public": data.card.public,
     "email-1": data.users[0]?.email || "",
     "email-2": data.users[1]?.email || "",
+    "order-token": data.token.content,
   };
 }
 

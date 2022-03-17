@@ -3,9 +3,8 @@ import { useEffect, useState } from "react";
 import { NextRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { Modal } from "@mui/material";
 import Form from "components/elements/form";
-import { Button, ImageUpload } from "components/elements";
+import { Button, ImageUpload, Modal } from "components/elements";
 import { OrderFormType } from "types";
 import { Option } from "components/elements/form/types";
 import {
@@ -200,20 +199,18 @@ export const OrderDetail = ({ orderId, router }: Props): JSX.Element => {
       onSubmit={handleSubmit(onSubmit)}
       encType="multipart/form-data"
     >
-      <Modal open={openImgModal} onClose={setImgModal}>
-        <div className="w-screen h-screen flex justify-center items-center p-4">
-          <div className="bg-white w-full max-w-60p rounded-lg">
-            <ImageUpload
-              isOpen={openImgModal}
-              setOpen={(open) => setImgModal(open)}
-              setFile={(file) => {
-                setUploadImg(file);
-                setImgModal(false);
-              }}
-            />
-          </div>
+      <Modal.Base isOpen={openImgModal} setOpen={setImgModal}>
+        <div className="bg-white w-full max-w-60p rounded-lg">
+          <ImageUpload
+            isOpen={openImgModal}
+            setOpen={(open) => setImgModal(open)}
+            setFile={(file) => {
+              setUploadImg(file);
+              setImgModal(false);
+            }}
+          />
         </div>
-      </Modal>
+      </Modal.Base>
 
       <div className="flex mb-4">
         <h2 className="text-2xl font-bold">
