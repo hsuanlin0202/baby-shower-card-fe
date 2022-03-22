@@ -15,3 +15,7 @@ export interface UserTypes {
   orders?: number[];
   // templates?: string[];
 }
+
+export interface EmailTypes {
+  email: string;
+}
