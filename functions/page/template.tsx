@@ -73,6 +73,7 @@ export const onChangePicture = async (
 };
 
 export const getContrastColorByLightness = (color: string): string => {
+  if (!color) return "#FFFFFF";
   let hex = color;
   if (hex.indexOf("#") === 0) hex = hex.slice(1);
 

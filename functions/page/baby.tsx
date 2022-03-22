@@ -5,7 +5,7 @@ export const shareLinkMobile = async (
 ): Promise<void> => {
   const shareData = {
     title: "寶寶滿月了！",
-    text: `${title}，快來看看可愛的寶寶吧！`,
+    text: `${title}快來看看可愛的寶寶吧！`,
     url: url,
   };
 
@@ -14,6 +14,6 @@ export const shareLinkMobile = async (
     // showNotify("open", "已分享", "");
   } catch (err) {
     console.log(err);
-    errorHandler();
+    // errorHandler();
   }
 };

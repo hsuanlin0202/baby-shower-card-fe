@@ -4,6 +4,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { DateStringFormat, getContrastColorByLightness } from "functions";
 import { BabyCardTypes, MessageTypes } from "types";
 import { BackButton, CommentModal } from ".";
+import clsx from "clsx";
 
 type Props = {
   router: NextRouter;
@@ -16,6 +17,7 @@ type Props = {
     action?: () => void,
     force?: boolean
   ) => void;
+  loadMessages: () => void;
 };
 
 export const BabyCommentPage = ({
@@ -23,13 +25,19 @@ export const BabyCommentPage = ({
   messages,
   card,
   showNotify,
+  loadMessages,
 }: Props): JSX.Element => {
   if (!messages) return <></>;
 
   const [isOpen, setOpen] = useState<boolean>(false);
 
   return (
-    <div className="w-full text-base px-4">
+    <div
+      className={clsx(
+        "w-full text-base px-4",
+        messages.length === 0 && "h-full"
+      )}
+    >
       <style jsx>
         {`
           .textColor {
@@ -52,46 +60,58 @@ export const BabyCommentPage = ({
         setOpen={setOpen}
         card={card}
         showNotify={showNotify}
-        router={router}
+        loadMessages={loadMessages}
       />
 
       <nav className="w-full h-10">
         <BackButton onClick={() => router.back()} />
       </nav>
 
-      <header className="w-full h-24">
-        <p>來自親朋好友溫暖的祝福</p>
-        <h1 className="text-2xl mt-2">{card.babyName}，祝福你...</h1>
-      </header>
+      {messages.length > 0 && (
+        <header className="w-full h-24">
+          <p>來自親朋好友溫暖的祝福</p>
+          <h1 className="text-2xl mt-2">{card.babyName}，祝福你...</h1>
+        </header>
+      )}
 
-      <ul className="w-full mb-20">
-        {messages.map((message, index) => (
-          <li
-            key={`message-${index}`}
-            className="w-full bg-brown-600 rounded-lg p-4 mb-5"
-          >
-            <h2 className="flex justify-between items-center pb-2">
-              <span className="font-bold">{message.author}</span>
-              <span className="text-sm">
-                {DateStringFormat(message.createdAt)}
-              </span>
-            </h2>
-            <p>{message.content}</p>
-          </li>
-        ))}
-      </ul>
+      {messages.length > 0 && (
+        <ul className="w-full mb-24">
+          {messages.map((message, index) => (
+            <li
+              key={`message-${index}`}
+              className="w-full bg-brown-600 rounded-lg p-4 mb-5"
+            >
+              <h2 className="flex justify-between items-center pb-2">
+                <span className="font-bold">{message.author}</span>
+                <span className="text-sm">
+                  {DateStringFormat(message.createdAt)}
+                </span>
+              </h2>
+              <p>{message.content}</p>
+            </li>
+          ))}
+        </ul>
+      )}
 
-      <footer className="fixed bottom-0 py-6 w-full flex justify-center ">
+      <footer
+        className={clsx(
+          "fixed bottom-0 left-0 py-6 w-full flex flex-col items-center justify-center text-lg",
+          messages.length === 0 && "h-screen -top-10"
+        )}
+      >
+        {messages.length == 0 && (
+          <div className="mb-6">留下給{card.babyName}的祝福吧！</div>
+        )}
         {!isOpen && (
           <button
             type="button"
-            className="p-2 flex justify-center items-center text-sm rounded-lg shadow-xl colored-background"
+            className="px-4 py-2 flex justify-center items-center rounded-lg shadow-xl colored-background"
             onClick={() => setOpen(true)}
           >
             <span>
               <AddIcon />
             </span>
-            <span className="text-sm ml-1">留下祝福</span>
+            <span className="ml-4">留下祝福</span>
           </button>
         )}
       </footer>

@@ -57,6 +57,7 @@ const Login = () => {
 
         if (result.role === 3) {
           // get partner tokens, templates
+
           getPartner(token, result.partners[0].id, [
             "tokens",
             "templates",
@@ -93,13 +94,7 @@ const Login = () => {
 
   return (
     <Layout.Base title="登入">
-      <style>{`
-      .background-main-image {
-        background-image: url('/bg.png');
-      }
-      
-      `}</style>
-      <div className="background-main-image bg-contain text-brown-cis w-screen h-screen p-4 md:p-0 flex flex-col justify-center items-center">
+      <div className="card-background-image bg-contain text-brown-cis w-screen h-screen p-4 md:p-0 flex flex-col justify-center items-center">
         <div className="flex-1 flex flex-col justify-center items-center">
           <h1 className="text-5xl font-bold">卡寶之心</h1>
           <p className="text-2xl">Joy Baby Card</p>
@@ -121,7 +116,7 @@ const Login = () => {
         {state.type === "logged" && <>後台尚未開放</>}
 
         <div className="flex-1 w-full md:w-2/5 md:max-w-lg pt-10 flex justify-around">
-          <a>忘記密碼</a>
+          <a href="/forgot">忘記密碼</a>
           <a>問題回報</a>
         </div>
       </div>
