@@ -33,6 +33,8 @@ export const BabyCardPage = ({
 
   const exportRef = useRef();
 
+  const [imgTest, setImg] = useState<string>();
+
   const currentUrl = `https://www.joybabycard.com${router.asPath}`;
 
   const shareTitle = `${card.fatherName}和${card.motherName}的寶寶滿月囉！`;
@@ -41,10 +43,10 @@ export const BabyCardPage = ({
 
   const shareLink = (): void => {
     if (window.innerWidth <= 640)
-      shareLinkMobile(currentUrl, shareTitle, () => setOpen(true));
+      shareLinkMobile(currentUrl, shareTitle, () => {});
+
     if (window.innerWidth > 640) setOpen(true);
   };
-
   const exportAsImage = async (element, imageFileName) => {
     const html = document.getElementsByTagName("html")[0];
     const body = document.getElementsByTagName("body")[0];
@@ -60,12 +62,18 @@ export const BabyCardPage = ({
     const canvas = await html2canvas(element, {
       allowTaint: false,
       useCORS: true,
-    });
-    const image = canvas.toDataURL("image/png", 1.0);
-    downloadImage(image, imageFileName);
-    html.style.width = null;
-    body.style.width = null;
+      logging: true,
+    }).then(save);
+    // const image = canvas.toDataURL("image/png", 1.0);
+    // downloadImage(image, imageFileName);
+    // html.style.width = null;
+    // body.style.width = null;
   };
+
+  function save(canvas) {
+    /*html2canvas-0.5.0 work with Promise.js*/
+    setImg(canvas.toDataURL());
+  }
 
   const downloadImage = (blob, fileName) => {
     const fakeLink = window.document.createElement("a");
@@ -81,10 +89,7 @@ export const BabyCardPage = ({
   };
 
   return (
-    <div
-      ref={exportRef}
-      className="flex flex-col justify-center items-center space-y-4"
-    >
+    <div className="min-h-full pb-10 flex flex-col items-center justify-between space-y-4">
       <style jsx>
         {`
           .colored-background {
@@ -97,7 +102,13 @@ export const BabyCardPage = ({
       <Modal.ClearButton isOpen={isOpen} setOpen={setOpen}>
         <ShareModal isInit={isOpen} url={currentUrl} title={shareTitle} />
       </Modal.ClearButton>
-      <div className="flex flex-col justify-center items-center space-y-4">
+
+      {imgTest && <img src={imgTest} />}
+
+      <div
+        ref={exportRef}
+        className="flex flex-col justify-center items-center space-y-4"
+      >
         <div>
           {card.template.logo && (
             <img className="h-12" src={card.template.logo} alt="logo" />
@@ -110,9 +121,9 @@ export const BabyCardPage = ({
           )}
         </div>
 
-        <img className="w-5/6" src={card.photo} alt="babyPhoto330x330" />
+        <img className="w-75 h-75" src={card.photo} alt="babyPhoto330x330" />
 
-        <section className="flex flex-col items-center space-y-2 baby-main-font">
+        <section className="flex flex-col items-center space-y-4 baby-main-font">
           <h1 className="text-2xl font-semibold">
             {`${card.babyName}，滿月囉！`}
           </h1>
@@ -120,7 +131,10 @@ export const BabyCardPage = ({
           <p
             className="max-w-80p text-base leading-relaxed text-center"
             dangerouslySetInnerHTML={{
-              __html: card.description.replaceAll("\\n", "<br/>"),
+              __html: card.description
+                .replaceAll("\n", "<br/>")
+                .replaceAll("\\n", "<br/>")
+                .replaceAll("\r\n", "<br/>"),
             }}
           />
 
@@ -137,7 +151,7 @@ export const BabyCardPage = ({
       <button
         type="button"
         className="px-10 py-2 text-sm rounded-md colored-background"
-        // onClick={() => exportAsImage(exportRef.current, "test")}
+        onClick={() => exportAsImage(exportRef.current, "test")}
       >
         <span>保存回憶</span>
       </button>
@@ -159,13 +173,13 @@ export const BabyCardPage = ({
         />
       </div>
 
-      <a href="#">
+      {/* <a href="#">
         <p className="text-xs underline">彌月禮盒滿意度調查</p>
-      </a>
+      </a> */}
 
-      <footer className="w-full h-10 leading-10 colored-background md:bg-transparent text-xs text-center">
+      {/* <footer className="w-full h-10 leading-10 colored-background md:bg-transparent text-xs text-center">
         <p>Created by Joy Baby Card</p>
-      </footer>
+      </footer> */}
     </div>
   );
 };

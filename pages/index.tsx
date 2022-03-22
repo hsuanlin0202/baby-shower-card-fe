@@ -57,6 +57,7 @@ const Login = () => {
 
         if (result.role === 3) {
           // get partner tokens, templates
+
           getPartner(token, result.partners[0].id, [
             "tokens",
             "templates",

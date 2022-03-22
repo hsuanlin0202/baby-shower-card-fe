@@ -11,7 +11,7 @@ type Props = {
   isOpen: boolean;
   setOpen: (e: boolean) => void;
   card: BabyCardTypes;
-  router: NextRouter;
+  loadMessages: () => void;
   showNotify: (
     type: "open" | "close",
     title?: string,
@@ -30,7 +30,7 @@ export const CommentModal = ({
   isOpen,
   setOpen,
   card,
-  router,
+  loadMessages,
   showNotify,
 }: Props): JSX.Element => {
   const { control, handleSubmit } = useForm<FormTypes>();
@@ -48,7 +48,8 @@ export const CommentModal = ({
         "已送出",
         "已將您的祝福送出。",
         () => {
-          router.reload();
+          loadMessages();
+          showNotify("close");
         },
         true
       );
@@ -62,19 +63,7 @@ export const CommentModal = ({
       setOpen={setOpen}
     >
       <div>
-        <style jsx>
-          {`
-            .textColor {
-              color: ${card.template.textColor};
-            }
-            .colored-background {
-              background-color: ${card.template.textColor};
-              color: ${getContrastColorByLightness(card.template.textColor)};
-            }
-          `}
-        </style>
-
-        <h2 className="text-2xl textColor text-center mb-4">
+        <h2 className="text-2xl text-gray-500 text-center mb-4 -mt-4">
           {card.babyName}，祝福你...
         </h2>
         <form className="mx-4" onSubmit={handleSubmit(onSubmit)}>
@@ -102,7 +91,7 @@ export const CommentModal = ({
           <div className="w-full flex justify-center mt-8 mb-6">
             <button
               type="submit"
-              className="mx-auto px-10 py-2 text-sm rounded-md colored-background"
+              className="mx-auto px-10 py-2 text-sm rounded-md bg-gray-500 text-white"
               onClick={() => setOpen(true)}
             >
               <span>送出祝福</span>
