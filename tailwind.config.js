@@ -74,7 +74,7 @@ module.exports = {
       lineHeight: {
         16: "4rem",
       },
-      width: { phone: "414px" },
+      width: { 75: "18.75rem", phone: "414px" },
       minWidth: {
         0: "0rem",
         20: "5rem",
@@ -118,6 +118,7 @@ module.exports = {
         "80p": "80%",
       },
       height: {
+        75: "18.75rem",
         128: "32rem",
         160: "40rem",
         228: "57rem",

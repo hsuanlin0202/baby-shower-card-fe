@@ -63,6 +63,8 @@ export default function CommentPage() {
     });
   }, [id]);
 
+  if (!card) return <></>;
+
   return (
     <Layout.Baby
       title="留下祝福"
@@ -74,6 +76,7 @@ export default function CommentPage() {
         card={card}
         messages={messages}
         showNotify={showNotify}
+        loadMessages={() => getMessagesHandler(card.id)}
       />
     </Layout.Baby>
   );

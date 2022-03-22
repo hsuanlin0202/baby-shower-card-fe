@@ -19,7 +19,7 @@ const Base = ({
   return (
     <MUIModal open={isOpen} onClose={setOpen}>
       <div
-        className="w-screen h-screen flex justify-center items-center p-2 md:p-4"
+        className="w-screen h-screen flex justify-center items-center p-2 md:p-4 -mt-20 md:m-0"
         onClick={() => {
           if (!backgroundClose) return;
           setOpen(false);
@@ -41,7 +41,7 @@ const ClearButton = ({
   return (
     <MUIModal open={isOpen} onClose={setOpen}>
       <div
-        className="w-screen h-screen flex justify-center items-center p-2 md:p-4"
+        className="w-screen h-screen flex justify-center items-center p-2 md:p-4 -mt-20 md:m-0"
         onClick={() => {
           if (!backgroundClose) return;
           setOpen(false);
