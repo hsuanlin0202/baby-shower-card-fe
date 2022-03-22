@@ -1,13 +1,13 @@
-import { EmailTypes, ResultTypes } from "../types";
+import { EmailTypes } from "../types";
 import { post, BABY_API, ErrorResponse } from "./base";
 
 interface EmailResponse {
   ok: boolean;
 }
 
-function toReslut(data: ResultTypes): boolean {
-  return data.ok;
-}
+// function toReslut(data: ResultTypes): boolean {
+//   return data.ok;
+// }
 
 /**
  * [POST auth/forgot-password]
