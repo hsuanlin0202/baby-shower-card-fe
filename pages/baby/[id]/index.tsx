@@ -64,8 +64,8 @@ export default function BabyCard() {
           }
         `}
       </style>
-      <div className="h-full md:h-auto">
-        <div className="children-height">
+      <div className="w-full flex-1 flex flex-col justify-between">
+        <div className="h-full">
           <BabyCardPage card={card} router={router} showNotify={showNotify} />
         </div>
 

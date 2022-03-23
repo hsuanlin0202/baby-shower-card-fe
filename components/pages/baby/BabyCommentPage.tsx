@@ -34,7 +34,7 @@ export const BabyCommentPage = ({
   return (
     <div
       className={clsx(
-        "w-full text-base px-4",
+        "w-full text-base p-4",
         messages.length === 0 && "h-full"
       )}
     >
@@ -95,13 +95,14 @@ export const BabyCommentPage = ({
 
       <footer
         className={clsx(
-          "fixed bottom-0 left-0 py-6 w-full flex flex-col items-center justify-center text-lg",
-          messages.length === 0 && "h-screen -top-10"
+          "fixed bottom-2 left-0 py-6 w-full flex flex-col items-center justify-center text-lg",
+          messages.length === 0 && "h-screen top-10"
         )}
       >
         {messages.length == 0 && (
-          <div className="mb-6">留下給{card.babyName}的祝福吧！</div>
+          <div className="mb-6 -mt-48">留下給{card.babyName}的祝福吧！</div>
         )}
+
         {!isOpen && (
           <button
             type="button"
