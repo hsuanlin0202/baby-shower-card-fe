@@ -27,12 +27,14 @@ export const Baby = ({
             background-size: contain;
             background-color: #000;
           }
+          .flex1 {
+            flex: 1;
+          }
         `}
       </style>
-      <div className="card-background-image-dynamic text-color w-full flex justify-center">
+      <div className="card-background-image-dynamic text-color w-full min-h-screen md:h-phone flex flex-col justify-center items-center">
         <div className="w-screen h-screen glass hidden md:block" />
-
-        <div className="flex flex-col justify-between card-background-image-dynamic shadow-lg static md:fixed top-0 w-full md:w-phone h-screen m-0 pt-4 overflow-auto md:overflow-y-scroll">
+        <div className="flex-1 flex flex-col justify-between card-background-image-dynamic shadow-lg static md:fixed w-full md:w-phone h-full">
           {children}
         </div>
       </div>

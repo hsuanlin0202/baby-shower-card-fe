@@ -89,7 +89,7 @@ export const BabyCardPage = ({
   };
 
   return (
-    <div className="min-h-full pb-10 flex flex-col items-center justify-between space-y-4">
+    <div className="h-full py-6 flex flex-col items-center justify-between space-y-4">
       <style jsx>
         {`
           .colored-background {
@@ -143,8 +143,11 @@ export const BabyCardPage = ({
           </p>
         </section>
 
-        <div className="text-3xl font-bold baby-date-font">
-          {DateStringFormat(card.babyBirthday)}
+        <div className="text-center font-bold baby-date-font">
+          <p>Born on</p>
+          <p className="text-3xl -mt-2">
+            {DateStringFormat(card.babyBirthday)}
+          </p>
         </div>
       </div>
 
