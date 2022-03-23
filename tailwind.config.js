@@ -131,7 +131,13 @@ module.exports = {
         "80v": "80vh",
         phone: "896px",
       },
-      minHeight: { "20v": "20vh", "40v": "40vh", "60v": "60vh", "80v": "80vh" },
+      minHeight: {
+        "20v": "20vh",
+        "40v": "40vh",
+        "60v": "60vh",
+        "80v": "80vh",
+        phone: "896px",
+      },
       maxHeight: { "20v": "20vh", "40v": "40vh", "60v": "60vh", "80v": "80vh" },
       margin: { "-20": "-5rem" },
       fontSize: {
