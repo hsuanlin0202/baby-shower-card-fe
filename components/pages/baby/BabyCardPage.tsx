@@ -13,6 +13,13 @@ import { BabyCardTypes } from "types";
 import { ShareModal, SocialButton } from ".";
 import { Modal } from "components/elements";
 
+const loadImage = (src: string, onload: () => void) => {
+  let img = new Image();
+  img.onload = onload;
+  img.src = src;
+  return img;
+};
+
 type Props = {
   card: BabyCardTypes;
   router: NextRouter;
@@ -88,6 +95,31 @@ export const BabyCardPage = ({
     fakeLink.remove();
   };
 
+  const clickBtn = (): void => {
+    const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+    const ctx = canvas.getContext("2d");
+
+    const img1 = loadImage(
+      "https://www.car-plus.com.tw/static/driver/img-driver-faq-24-hrs.jpg",
+      () => {
+        main(ctx, img1);
+      }
+    );
+  };
+
+  const main = (
+    ctx: CanvasRenderingContext2D,
+    img1: HTMLImageElement
+  ): void => {
+    img1.setAttribute("crossOrigin", "anonymous");
+
+    ctx.drawImage(img1, 0, 0);
+    ctx.font = "30px Comic Sans MS";
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.fillText("Hello World", 256, 256);
+  };
+
   return (
     <div className="h-full py-6 flex flex-col items-center justify-between space-y-4">
       <style jsx>
@@ -104,6 +136,7 @@ export const BabyCardPage = ({
       </Modal.ClearButton>
 
       {imgTest && <img src={imgTest} />}
+      {/* <canvas width="512" height="512" id="canvas"></canvas> */}
 
       <div
         ref={exportRef}
@@ -121,7 +154,7 @@ export const BabyCardPage = ({
           )}
         </div>
 
-        <img className="w-75 h-75" src={card.photo} alt="babyPhoto330x330" />
+        <img className="w-75 h-75" src={card.photo} alt="babyPhoto300x300" />
 
         <section className="flex flex-col items-center space-y-4 baby-main-font">
           <h1 className="text-2xl font-semibold">
@@ -155,6 +188,7 @@ export const BabyCardPage = ({
         type="button"
         className="px-10 py-2 text-sm rounded-md colored-background"
         onClick={() => exportAsImage(exportRef.current, "test")}
+        // onClick={clickBtn}
       >
         <span>保存回憶</span>
       </button>

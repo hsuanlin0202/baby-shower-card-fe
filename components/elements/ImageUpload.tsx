@@ -12,22 +12,8 @@ import "react-image-crop/dist/ReactCrop.css";
 import ClearIcon from "@mui/icons-material/Clear";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { Button } from "./Button";
-
-const getFile = (canvas, crop): Blob => {
-  if (!crop || !canvas) {
-    return;
-  }
-  // 建立 file
-  const dataURL = canvas.toDataURL("image/png");
-  const blobBin = atob(dataURL.split(",")[1]);
-  const array = [];
-  for (let i = 0; i < blobBin.length; i++) {
-    array.push(blobBin.charCodeAt(i));
-  }
-  const file = new Blob([new Uint8Array(array)], { type: "image/png" });
-
-  return file;
-};
+import { dataUrlToBlob, resize } from "functions";
+import { useInitData } from "hooks";
 
 type Props = {
   setFile: (file: Blob) => void;
@@ -41,6 +27,8 @@ export const ImageUpload = ({
   setOpen,
   cancelIcon,
 }: Props): JSX.Element => {
+  const { openLoader } = useInitData();
+
   const [upImg, setUpImg] = useState();
 
   const [isPreview, setPreview] = useState<boolean>(false);
@@ -55,11 +43,13 @@ export const ImageUpload = ({
 
   const [completedCrop, setCompletedCrop] = useState(null);
 
-  const onSelectFile = (e) => {
+  const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>): void => {
     if (e.target.files && e.target.files.length > 0) {
-      const reader = new FileReader();
-      reader.addEventListener("load", () => setUpImg(reader.result));
-      reader.readAsDataURL(e.target.files[0]);
+      resize(e.target.files[0], 800).then((blob) => {
+        const reader = new FileReader();
+        reader.addEventListener("load", () => setUpImg(reader.result));
+        reader.readAsDataURL(blob);
+      });
     }
   };
 
@@ -156,13 +146,14 @@ export const ImageUpload = ({
 
       <div className="w-full">
         <canvas
-          className="mx-auto border"
+          className="mx-auto border bg-gray-300"
           ref={previewCanvasRef}
           style={{
             width: isPreview ? Math.round(completedCrop?.width ?? 0) : 0,
             height: isPreview ? Math.round(completedCrop?.height ?? 0) : 0,
           }}
         />
+
         {upImg && !isPreview && (
           <p
             className={clsx(
@@ -209,9 +200,12 @@ export const ImageUpload = ({
                 return;
               }
 
-              const file = getFile(previewCanvasRef.current, completedCrop);
+              const tempCanvas = previewCanvasRef.current;
 
-              setFile(file);
+              if (!completedCrop || !tempCanvas) return;
+
+              setFile(dataUrlToBlob(tempCanvas.toDataURL("image/png")));
+              setOpen(false);
             }}
           >
             <span>{isPreview ? "完成" : "預覽圖片"}</span>
