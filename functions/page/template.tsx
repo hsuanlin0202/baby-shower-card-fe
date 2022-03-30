@@ -6,15 +6,18 @@ export const organizeTemplateFormData = (
   color: string,
   background: Blob,
   logo: Blob,
-  username: string
+  userId: number,
+  partner
 ): FormData => {
   const timestamp = new Date().getTime();
 
   const organizedData = {
     name: data.name,
     "text-color": color,
-    author: username,
+    author: userId,
     "partner-name": data["partner-name"],
+    active: true,
+    partners: partner,
   };
 
   const formData = new FormData();
@@ -23,15 +26,17 @@ export const organizeTemplateFormData = (
     formData.append(name, organizedData[name]);
   }
 
+  const fileName = data.name.toString().replaceAll(/\s/g, "");
+
   if (background)
     formData.append(
       "background",
       background,
-      `${data.name}_bg_${timestamp}.png`
+      `${fileName}_bg_${timestamp}.png`
     );
 
   if (logo)
-    formData.append("partner-logo", logo, `${data.name}_logo_${timestamp}.png`);
+    formData.append("partner-logo", logo, `${fileName}_logo_${timestamp}.png`);
 
   return formData;
 };

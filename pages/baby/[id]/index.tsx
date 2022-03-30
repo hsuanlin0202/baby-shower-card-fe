@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { BabyCardTypes } from "types";
 import { BabyCardPage } from "components/pages/baby";
 import { useInitData } from "hooks";
-import { AuthStore } from "store/auth";
 import { getContrastColorByLightness } from "functions";
 
 export default function BabyCard() {
@@ -17,15 +16,15 @@ export default function BabyCard() {
 
   const [card, setCard] = useState<BabyCardTypes>();
 
-  // const { setBabyCardId } = AuthStore((state) => ({
-  //   setBabyCardId: state.setBabyCardId,
-  // }));
-
   useEffect(() => {
     if (!id) router.push("/baby");
 
+    getCardHandler(id.toString());
+  }, []);
+
+  const getCardHandler = (id: string): void => {
     openLoader(true);
-    getCard(id.toString()).then((card) => {
+    getCard(id).then((card) => {
       openLoader(false);
       if (!card) {
         showNotify(
@@ -38,12 +37,13 @@ export default function BabyCard() {
           },
           true
         );
+        // getCardHandler(id);
         return;
       }
       // setBabyCardId(card.id);
       setCard(card);
     });
-  }, []);
+  };
 
   if (!card) return <></>;
 

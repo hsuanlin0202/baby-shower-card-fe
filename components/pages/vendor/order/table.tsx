@@ -9,6 +9,7 @@ import TableRow from "@mui/material/TableRow";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Switch from "@mui/material/Switch";
 import { OrderListTypes } from "types";
+import { DateStringFormat } from "functions";
 
 interface Column {
   id:
@@ -79,7 +80,7 @@ const createData = (index: number, data: OrderListTypes): DataType => {
     ),
     contact: data.contact,
     mobile: data.mobile,
-    createdAt: new Date(data.createdAt).toLocaleDateString(),
+    createdAt: DateStringFormat(data.createdAt),
     active: data.active,
     edit: data.id,
   };
