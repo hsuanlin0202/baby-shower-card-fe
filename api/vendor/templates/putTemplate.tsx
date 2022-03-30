@@ -1,23 +1,17 @@
 import { putForm } from "api";
 import { BABY_API, ErrorResponse } from "../../base";
 
-interface PostOrderResponseTypes {
-  data: {
-    id: number;
-    attributes: {
-      author: string;
-      orderNo: string;
-      contact: string;
-      contactGender: string;
-      mobile: string;
-      active: boolean;
-      expiredAt: string;
-      createdAt: string;
-      updatedAt: string;
-      publishedAt: string;
-    };
-  };
-  meta?: {};
+interface PutOrderResponseTypes {
+  id: number;
+  name: string;
+  textColor: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  background: string;
+  partnerLogo: string;
+  partnerName: string;
+  active: boolean;
 }
 
 /**
@@ -30,7 +24,7 @@ export function putTemplates(
   id: string,
   order: FormData
 ): Promise<{ id: number; message: string }> {
-  return putForm<PostOrderResponseTypes & ErrorResponse>(
+  return putForm<PutOrderResponseTypes & ErrorResponse>(
     BABY_API(`templates/${id}`),
     order,
     {
@@ -38,10 +32,10 @@ export function putTemplates(
     },
     15000
   ).then((result) => {
-    if (!result.data) {
+    if (!result.id) {
       return { id: 0, message: result.error.message };
     }
 
-    return { id: result.data.id, message: "" };
+    return { id: result.id, message: "" };
   });
 }

@@ -178,20 +178,18 @@ export const BabyCardPage = ({
 
         <div className="text-center font-bold baby-date-font">
           <p>Born on</p>
-          <p className="text-3xl -mt-2">
-            {DateStringFormat(card.babyBirthday)}
-          </p>
+          <p className="text-3xl">{DateStringFormat(card.babyBirthday)}</p>
         </div>
       </div>
 
-      <button
+      {/* <button
         type="button"
         className="px-10 py-2 text-sm rounded-md colored-background"
         onClick={() => exportAsImage(exportRef.current, "test")}
         // onClick={clickBtn}
       >
         <span>保存回憶</span>
-      </button>
+      </button> */}
 
       <div className="w-full flex justify-evenly">
         {card.commentActive && (

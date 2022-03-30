@@ -21,9 +21,10 @@ type Props = {
 export const TemplateDetail = ({ id, router }: Props): JSX.Element => {
   const { showNotify, openLoader } = useInitData();
 
-  const { token, username } = AuthStore((state) => ({
+  const { token, userId, partner } = AuthStore((state) => ({
     token: state.token,
-    username: state.username,
+    userId: state.id,
+    partner: state.partners[0]?.id,
   }));
 
   const { control, setValue, getValues, handleSubmit } =
@@ -45,8 +46,11 @@ export const TemplateDetail = ({ id, router }: Props): JSX.Element => {
       color,
       bgData.blob,
       logoData.blob,
-      username
+      userId,
+      template?.partner || [partner]
     );
+
+    openLoader(true);
 
     if (!id) newTemplate(formData);
 
@@ -54,17 +58,27 @@ export const TemplateDetail = ({ id, router }: Props): JSX.Element => {
   };
 
   const newTemplate = (formData: FormData): void => {
-    console.log("POST");
+    // console.log("POST");
 
     postTemplates(token, formData).then((result) => {
-      console.log(result);
+      openLoader(false);
+      if (result.id === 0) {
+        showNotify("open", "新增不成功", result.message);
+        return;
+      }
+      showNotify("open", "", "模板新增成功");
     });
   };
 
   const editTemplate = (formData: FormData): void => {
-    console.log("PUT");
+    // console.log("PUT");
     putTemplates(token, id, formData).then((result) => {
-      console.log(result);
+      openLoader(false);
+      if (result.id === 0) {
+        showNotify("open", "更新不成功", result.message);
+        return;
+      }
+      showNotify("open", "", "模板更新成功");
     });
   };
 
@@ -188,7 +202,7 @@ export const TemplateDetail = ({ id, router }: Props): JSX.Element => {
             type="button"
             className={clsx(
               "text-white active:bg-blue-600",
-              bgData ? " bg-orange-cis opacity-70" : "bg-gray-300"
+              bgData ? " bg-orange-cis" : "bg-gray-300"
             )}
             onClick={() => {
               if (!bgData) return;

@@ -91,7 +91,7 @@ export const CommentModal = ({
           <div className="w-full flex justify-center mt-8 mb-6">
             <button
               type="submit"
-              className="mx-auto px-10 py-2 text-sm rounded-md bg-gray-500 text-white"
+              className="mx-auto px-10 py-3 text-base font-bold rounded-md bg-gray-500 text-white"
               onClick={() => setOpen(true)}
             >
               <span>送出祝福</span>
