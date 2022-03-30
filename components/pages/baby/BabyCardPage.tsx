@@ -44,7 +44,7 @@ export const BabyCardPage = ({
 
   const currentUrl = `https://www.joybabycard.com${router.asPath}`;
 
-  const shareTitle = `${card.fatherName}和${card.motherName}的寶寶滿月囉！`;
+  const shareTitle = `${card.fatherName}和${card.motherName}的寶寶滿月囉！來看看可愛的寶寶並留下祝福吧！`;
 
   const [isOpen, setOpen] = useState<boolean>(false);
 
