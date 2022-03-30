@@ -1,8 +1,9 @@
-import { getCard } from "api/card/getCard";
-import Layout from "components/layout";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { getCard } from "api/card/getCard";
 import { BabyCardTypes } from "types";
+import Layout from "components/layout";
 import { BabyCardPage } from "components/pages/baby";
 import { useInitData } from "hooks";
 import { getContrastColorByLightness } from "functions";
@@ -55,7 +56,26 @@ export default function BabyCard() {
     });
   };
 
-  if (!card) return <></>;
+  if (!card)
+    return (
+      <>
+        <Head>
+          <meta property="og:title" content={`寶寶滿月了！`} />
+          <meta
+            property="og:description"
+            content={`來看看可愛的寶寶並留下祝福吧！`}
+          />
+          <meta
+            property="og:image"
+            content="https://storage.googleapis.com/baby-shower-baby-image/joybb-愷心1648658560039-1648658570273.png"
+          />
+          <meta property="og:image:alt" content={`寶寶滿月了！`} />
+          <meta property="og:image:type" content="image/png" />
+          <meta property="og:image:width" content="300" />
+          <meta property="og:image:height" content="300" />
+        </Head>
+      </>
+    );
 
   return (
     <Layout.Baby
@@ -63,6 +83,18 @@ export default function BabyCard() {
       textColor={card?.template.textColor}
       background={card?.template.background}
     >
+      <Head>
+        <meta property="og:title" content={`${card.babyName}滿月了！`} />
+        <meta
+          property="og:description"
+          content={`${card.fatherName}和${card.motherName}的寶寶滿月了，來看看可愛的寶寶並留下祝福吧！`}
+        />
+        <meta property="og:image" content={card.photo} />
+        <meta property="og:image:alt" content={`${card.babyName}滿月了！`} />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="300" />
+        <meta property="og:image:height" content="300" />
+      </Head>
       <style jsx>
         {`
           .colored-background {
