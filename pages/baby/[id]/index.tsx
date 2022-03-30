@@ -29,14 +29,24 @@ export default function BabyCard() {
       if (!card) {
         showNotify(
           "open",
-          "找不到寶寶彌月卡",
-          "請再次確認您的幸福密碼喔！",
+          "Oops!",
+          "請重新整理。",
           () => {
-            showNotify("close", "", "");
-            router.push("/baby");
+            showNotify("close");
+            router.reload();
           },
           true
         );
+        // showNotify(
+        //   "open",
+        //   "找不到寶寶彌月卡",
+        //   "請再次確認您的幸福密碼喔！",
+        //   () => {
+        //     showNotify("close", "", "");
+        //     router.push("/baby");
+        //   },
+        //   true
+        // );
         // getCardHandler(id);
         return;
       }
