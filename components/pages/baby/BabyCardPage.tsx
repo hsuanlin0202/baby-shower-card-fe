@@ -148,7 +148,7 @@ export const BabyCardPage = ({
           )}
 
           {card.template.partner && (
-            <h2 className="text-center baby-main-font">
+            <h2 className="text-center baby-main-font mb-4">
               {card.template.partner}
             </h2>
           )}
@@ -162,7 +162,7 @@ export const BabyCardPage = ({
           </h1>
 
           <p
-            className="max-w-80p text-base leading-relaxed text-center"
+            className=" text-base leading-relaxed text-center"
             dangerouslySetInnerHTML={{
               __html: card.description
                 .replaceAll("\n", "<br/>")
@@ -177,7 +177,7 @@ export const BabyCardPage = ({
         </section>
 
         <div className="text-center font-bold baby-date-font">
-          <p>Born on</p>
+          <p className="text-xl">Born on</p>
           <p className="text-3xl">{DateStringFormat(card.babyBirthday)}</p>
         </div>
       </div>
