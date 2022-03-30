@@ -5,7 +5,7 @@ export const shareLinkMobile = async (
 ): Promise<void> => {
   const shareData = {
     title: "寶寶滿月了！",
-    text: `${title}快來看看可愛的寶寶吧！`,
+    text: `${title}`,
     url: url,
   };
 
