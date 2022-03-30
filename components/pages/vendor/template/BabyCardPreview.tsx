@@ -17,6 +17,7 @@ export const BabyCardPreview = ({
   color,
   partner,
 }: Props): JSX.Element => {
+  console.log(background);
   const contrastColor = getContrastColorByLightness(color);
   return (
     <div

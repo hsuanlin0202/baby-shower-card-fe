@@ -70,7 +70,21 @@ export const VendorOrderPage = ({ router }: Props): JSX.Element => {
   const getOrder = (token: string) => {
     openLoader(true);
     getOrders(token).then((result) => {
+      console.log(result);
       openLoader(false);
+      if (!result) {
+        showNotify(
+          "open",
+          "Oops!",
+          "無法連線，請再試一次",
+          () => {
+            router.back();
+          },
+          true
+        );
+        return;
+      }
+
       setOrders(result);
 
       // set used token

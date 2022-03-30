@@ -119,10 +119,7 @@ export const CardEditDetail = ({ id, router }: Props): JSX.Element => {
           <ImageUpload
             isOpen={openImgModal}
             setOpen={(open) => setImgModal(open)}
-            setFile={(file) => {
-              setUploadImg(file);
-              setImgModal(false);
-            }}
+            setFile={(file) => setUploadImg(file)}
           />
         </div>
       </Modal.Base>
@@ -134,7 +131,7 @@ export const CardEditDetail = ({ id, router }: Props): JSX.Element => {
       >
         <div className="flex flex-col md:flex-row space-x-0 space-y-8 md:space-x-8 md:space-y-0">
           <div
-            className="relative max-w-96 md:max-w-88"
+            className="relative max-w-96 md:max-w-88 cursor-pointer"
             onClick={() => setImgModal(true)}
           >
             <img src={photo as string} />

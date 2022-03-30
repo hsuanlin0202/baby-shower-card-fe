@@ -49,8 +49,14 @@ export const BabyCommentPage = ({
             background-size: 100%;
           }
           .colored-background {
+            background-color: ${card.template.textColor}dd;
+            color: ${getContrastColorByLightness(card.template.textColor)};
+          }
+
+          .add-button {
             background-color: ${card.template.textColor};
             color: ${getContrastColorByLightness(card.template.textColor)};
+            box-shadow: 0px 4px 5px 0px rgba(0, 0, 0, 0.4);
           }
         `}
       </style>
@@ -79,7 +85,7 @@ export const BabyCommentPage = ({
           {messages.map((message, index) => (
             <li
               key={`message-${index}`}
-              className="w-full bg-brown-600 rounded-lg p-4 mb-5"
+              className="w-full colored-background rounded-lg p-4 mb-5"
             >
               <h2 className="flex justify-between items-center pb-2">
                 <span className="font-bold">{message.author}</span>
@@ -95,7 +101,7 @@ export const BabyCommentPage = ({
 
       <footer
         className={clsx(
-          "fixed bottom-2 left-0 py-6 w-full flex flex-col items-center justify-center text-lg",
+          "fixed bottom-1 left-0 py-6 w-full flex flex-col items-center justify-center text-lg",
           messages.length === 0 && "h-screen top-10"
         )}
       >
@@ -106,7 +112,7 @@ export const BabyCommentPage = ({
         {!isOpen && (
           <button
             type="button"
-            className="px-4 py-2 flex justify-center items-center rounded-lg shadow-xl colored-background"
+            className="px-6 py-3 flex justify-center items-center rounded-lg add-button"
             onClick={() => setOpen(true)}
           >
             <span>

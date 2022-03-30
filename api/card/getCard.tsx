@@ -97,10 +97,9 @@ function toCard(data: CardResponse): BabyCardTypes {
  * get Card detail by id for Front Stage
  */
 export function getCard(id: string): Promise<BabyCardTypes> {
-  return get<CardResponse>(BABY_API(`cards/${id}?populate=%2A`), {}, 20000)
+  return get<CardResponse>(BABY_API(`cards/${id}?populate=%2A`), {}, 30000)
     .then((result) => toCard(result))
     .catch((err) => {
-      console.log(err);
       return null;
     });
 }

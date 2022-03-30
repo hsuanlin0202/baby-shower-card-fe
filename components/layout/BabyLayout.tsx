@@ -32,8 +32,8 @@ export const Baby = ({
           }
         `}
       </style>
-      <div className="card-background-image-dynamic text-color w-full min-h-screen md:h-phone flex flex-col justify-center items-center">
-        <div className="w-screen h-screen glass hidden md:block" />
+      <div className="card-background-image-dynamic text-color w-full min-h-screen md:h-phone flex flex-col  items-center">
+        <div className="w-screen h-full glass hidden md:block" />
         <div className="flex-1 flex flex-col justify-between card-background-image-dynamic shadow-lg static md:fixed w-full md:w-phone h-full">
           {children}
         </div>
