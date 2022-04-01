@@ -165,7 +165,7 @@ export const BabyCardPage = ({
         <div className="relative cursor-pointer" onClick={() => joySpecial()}>
           <img className="w-75 h-75" src={card.photo} alt="babyPhoto300x300" />
           {card.id === 11 && (
-            <button className="opacity-70 absolute bottom-0 right-0 p-1 text-xs flex items-center rounded-full border border-white">
+            <button className="opacity-70 absolute bottom-0 right-0 p-1 text-xs flex items-center rounded-full border border-white focus:outline-none">
               <span>
                 <CollectionsIcon />
               </span>
