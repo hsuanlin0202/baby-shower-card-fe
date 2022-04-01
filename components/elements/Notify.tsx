@@ -28,7 +28,7 @@ export const Notify = ({
       aria-labelledby={ariaTitle}
       aria-describedby={ariaDescription}
     >
-      <div className="w-screen h-screen flex justify-center items-center p-4 -mt-20 md:m-0">
+      <div className="w-screen h-screen flex justify-center items-center p-4 -mt-20 md:m-0 outline-none">
         <div className="min-w-80 bg-white rounded-lg">
           <div className="">
             {!!title && (
