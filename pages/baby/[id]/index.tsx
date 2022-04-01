@@ -83,18 +83,6 @@ export default function BabyCard() {
       textColor={card?.template.textColor}
       background={card?.template.background}
     >
-      <Head>
-        <meta property="og:title" content={`${card.babyName}滿月了！`} />
-        <meta
-          property="og:description"
-          content={`${card.fatherName}和${card.motherName}的寶寶滿月了，來看看可愛的寶寶並留下祝福吧！`}
-        />
-        <meta property="og:image" content={card.photo} />
-        <meta property="og:image:alt" content={`${card.babyName}滿月了！`} />
-        <meta property="og:image:type" content="image/png" />
-        <meta property="og:image:width" content="300" />
-        <meta property="og:image:height" content="300" />
-      </Head>
       <style jsx>
         {`
           .colored-background {
