@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { NextRouter } from "next/router";
 import html2canvas from "html2canvas";
-// import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import CollectionsIcon from "@mui/icons-material/Collections";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import {
@@ -120,6 +120,14 @@ export const BabyCardPage = ({
     ctx.fillText("Hello World", 256, 256);
   };
 
+  const joySpecial = (): void => {
+    if (card.id !== 11) return;
+    showNotify("open", "", "是否要開啟寶寶相簿？", () => {
+      window.open("https://photos.app.goo.gl/arL5YzPKQxouBnfA6", "_blank");
+      showNotify("close");
+    });
+  };
+
   return (
     <div className="h-full py-6 flex flex-col items-center justify-between space-y-4">
       <style jsx>
@@ -135,7 +143,7 @@ export const BabyCardPage = ({
         <ShareModal isInit={isOpen} url={currentUrl} title={shareTitle} />
       </Modal.ClearButton>
 
-      {imgTest && <img src={imgTest} />}
+      {/* {imgTest && <img src={imgTest} />} */}
       {/* <canvas width="512" height="512" id="canvas"></canvas> */}
 
       <div
@@ -144,17 +152,26 @@ export const BabyCardPage = ({
       >
         <div>
           {card.template.logo && (
-            <img className="h-12" src={card.template.logo} alt="logo" />
+            <img className="h-8" src={card.template.logo} alt="logo" />
           )}
 
           {card.template.partner && (
-            <h2 className="text-center baby-main-font mb-4">
+            <h2 className="text-center baby-main-font">
               {card.template.partner}
             </h2>
           )}
         </div>
 
-        <img className="w-75 h-75" src={card.photo} alt="babyPhoto300x300" />
+        <div className="relative cursor-pointer" onClick={() => joySpecial()}>
+          <img className="w-75 h-75" src={card.photo} alt="babyPhoto300x300" />
+          {card.id === 11 && (
+            <button className="opacity-70 absolute bottom-0 right-0 p-1 text-xs flex items-center rounded-full border border-white">
+              <span>
+                <CollectionsIcon />
+              </span>
+            </button>
+          )}
+        </div>
 
         <section className="flex flex-col items-center space-y-4 baby-main-font">
           <h1 className="text-2xl font-semibold">
